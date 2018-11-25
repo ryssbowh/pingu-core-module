@@ -14,7 +14,7 @@
     "aliases": {
         "Asset":"Orchestra\\Support\\Facades\\Asset",
         "Theme" : "Igaster\\LaravelTheme\\Facades\\Theme",
-        "Settings":"Modules\\Settings\\Facades\\Settings"
+        "Settings":"Modules\\Core\\Facades\\Settings"
     },
     "files": [
         "start.php"

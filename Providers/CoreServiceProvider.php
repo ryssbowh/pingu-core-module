@@ -6,7 +6,7 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Settings;
+use Modules\Core\Facades\Settings;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -40,6 +40,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerWebMiddlewares($router);
         $this->registerGlobalMiddlewares($kernel);
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        $this->registerSettings();
     }
 
     /**
@@ -49,11 +50,10 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerSettings();
     }
 
     public function registerSettings(){
-        $this->app->singleton('settings','Modules\Settings\Settings');
+        $this->app->singleton('settings','Modules\Core\Settings');
         Settings::init();
         $settings = [
             'mail.driver' => [
