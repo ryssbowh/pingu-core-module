@@ -24,6 +24,7 @@
         "orchestra/asset": "~3.0",
         "igaster/laravel-theme":"2.*",
         "greabock/tentacles": "1.0",
-        "lavary/laravel-menu": "1.7.2"
+        "lavary/laravel-menu": "1.7.2",
+        "composer/installers": "~1.0"
     }
 }
