@@ -1,6 +1,7 @@
 {
     "name": "eskimo/core-module",
     "description": "Core module for eskimo",
+    "type" : "asgard-module",
     "authors": [
         {
             "name": "Boris Blondin",
