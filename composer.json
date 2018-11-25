@@ -22,7 +22,7 @@
     "require": {
         "orchestra/asset": "~3.0",
         "igaster/laravel-theme":"2.*",
-        "greabock/tentacles": "dev-master",
+        "greabock/tentacles": "1.0",
         "lavary/laravel-menu": "1.7.2"
     }
 }
