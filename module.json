@@ -1,0 +1,23 @@
+{
+    "name": "Core",
+    "alias": "core",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\Core\\Providers\\CoreServiceProvider",
+        "Igaster\\LaravelTheme\\themeServiceProvider",
+        "Orchestra\\Asset\\AssetServiceProvider",
+        "Collective\\Html\\HtmlServiceProvider"
+    ],
+    "aliases": {
+        "Asset":"Orchestra\\Support\\Facades\\Asset",
+        "Theme" : "Igaster\\LaravelTheme\\Facades\\Theme",
+        "Settings":"Modules\\Settings\\Facades\\Settings"
+    },
+    "files": [
+        "start.php"
+    ],
+    "requires": []
+}

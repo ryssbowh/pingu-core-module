@@ -1,3 +1,28 @@
 {
-    "name": "eskimo/core-module"
+    "name": "boris/core-module",
+    "description": "Core module for eskimo",
+    "authors": [
+        {
+            "name": "Boris Blondin",
+            "email": "boris@weareeveryone.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Core\\Providers\\CoreServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Core\\": ""
+        }
+    },
+    "require": {
+        "orchestra/asset": "~3.0",
+        "igaster/laravel-theme":"2.*",
+        "greabock/tentacles": "dev-master",
+        "lavary/laravel-menu": "1.7.2"
+    }
 }
