@@ -6,15 +6,15 @@
     "active": 1,
     "order": 0,
     "providers": [
-        "Modules\\Core\\Providers\\CoreServiceProvider",
+        "Barryvdh\\Debugbar\\ServiceProvider",
         "Igaster\\LaravelTheme\\themeServiceProvider",
-        "Orchestra\\Asset\\AssetServiceProvider",
-        "Collective\\Html\\HtmlServiceProvider"
+        "Modules\\Core\\Providers\\CoreServiceProvider"
     ],
     "aliases": {
-        "Asset":"Orchestra\\Support\\Facades\\Asset",
         "Theme" : "Igaster\\LaravelTheme\\Facades\\Theme",
-        "Settings":"Modules\\Core\\Facades\\Settings"
+        "TextSnippet":"Modules\\Core\\Facades\\TextSnippet",
+        "ContextualLinks":"Modules\\Core\\Facades\\ContextualLinks",
+        "Notify":"Modules\\Core\\Facades\\Notify"
     },
     "files": [
         "start.php"

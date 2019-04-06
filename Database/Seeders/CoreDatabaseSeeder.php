@@ -4,6 +4,7 @@ namespace Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Core\Entities\BaseModel;
+use TextSnippet;
 
 class CoreDatabaseSeeder extends Seeder
 {
@@ -14,6 +15,5 @@ class CoreDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        BaseModel::unguard();
     }
 }

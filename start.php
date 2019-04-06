@@ -14,3 +14,18 @@
 if (!app()->routesAreCached()) {
     require __DIR__ . '/Http/routes.php';
 }
+
+function classname($str){
+	if(is_object($str)){
+		$str = get_class($str);
+	}
+	return substr($str,strrpos($str,'\\')+1);
+}
+
+function explodeCamelCase($str){
+	return trim(implode(' ',preg_split('/(?=[A-Z])/', $str)));
+}
+
+function friendlyClassname($str){
+	return explodeCamelCase(classname($str));
+}

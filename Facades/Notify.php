@@ -3,11 +3,11 @@ namespace Modules\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Settings extends Facade {
+class Notify extends Facade {
 
 	protected static function getFacadeAccessor() {
 
-		return 'settings';
+		return 'core.notify';
 
 	}
 

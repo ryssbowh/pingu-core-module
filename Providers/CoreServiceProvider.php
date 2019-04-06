@@ -6,7 +6,8 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Modules\Core\Facades\Settings;
+use Spatie\TranslationLoader\LanguageLine;
+use Asset, View, Theme;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -33,14 +34,15 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function boot(Router $router, Kernel $kernel)
     {
+        $this->registerWebMiddlewares($router);
+        $this->registerGlobalMiddlewares($kernel);
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
         $this->registerFactories();
-        $this->registerWebMiddlewares($router);
-        $this->registerGlobalMiddlewares($kernel);
+        $this->registerAssets();
+        
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
-        $this->registerSettings();
     }
 
     /**
@@ -50,42 +52,23 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function register()
     {
-    }
+        $this->app->bind('core.textSnippet', \Modules\Core\Components\TextSnippet::class);
+        $this->app->bind('core.contextualLinks', \Modules\Core\Components\ContextualLinks::class);
+        $this->app->bind('core.notify', \Modules\Core\Components\Notify::class);
 
-    public function registerSettings(){
-        $this->app->singleton('settings','Modules\Core\Settings');
-        Settings::init();
-        $settings = [
-            'mail.driver' => [
-                'title' => 'Email driver',
-                'section' => 'Emails'
-            ],
-            'mail.username' => [
-                'title' => 'Email username',
-                'section' => 'Emails'
-            ],
-            'mail.port' => [
-                'title' => 'Email port',
-                'section' => 'Emails'
-            ],
-            'mail.password' => [
-                'title' => 'Email password',
-                'section' => 'Emails'
-            ],
-            'app.name' => [
-                'title' => 'Site name',
-                'section' => 'general'
-            ],
-            'session.lifetime' => [
-                'title' => 'Session lifetime',
-                'section' => 'Session'
-            ]
-        ];
-        $encrypt = [
-            'mail.username',
-            'mail.password'
-        ];
-        Settings::registerMany( $settings, $encrypt );
+        $this->app->singleton('view.finder', function ($app) {
+            return new \Modules\Core\Components\themeViewFinder(
+                $app['files'],
+                $app['config']['view.paths'],
+                null
+            );
+        });
+
+        // $providers = config('app.providers');
+        // $index = array_search("Illuminate\Translation\TranslationServiceProvider", $providers);
+        // unset($providers[$index]);
+        // $providers[] = "Spatie\TranslationLoader\TranslationServiceProvider";
+        // config(['app.providers' => $providers]);
     }
 
     public function registerWebMiddlewares(Router $router)
@@ -100,6 +83,15 @@ class CoreServiceProvider extends ServiceProvider
         foreach( $this->globalMiddlewares as $middleware){
             $kernel->pushMiddleware($middleware);
         }
+    }
+
+    public function registerAssets()
+    {
+        Asset::addVersioning();
+        Asset::container('vendor')->add('js-manifest', 'themes/Default/js/manifest.js');
+        Asset::container('vendor')->add('js-vendor', 'themes/Default/js/vendor.js');
+        Asset::container('modules')->add('core-js', 'modules/Core/js/Core.js');
+        Asset::container('modules')->add('core-css', 'modules/Core/css/Core.css');
     }
 
     /**
@@ -124,18 +116,21 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function registerViews()
     {
-        $viewPath = resource_path('views/modules/core');
+        $themePaths = $this->app->make('view.finder')->getThemesPublishPaths('core');
 
         $sourcePath = __DIR__.'/../Resources/views';
 
-        $this->publishes([
-            $sourcePath => $viewPath
-        ],'views');
-
+        foreach($themePaths as $path => $namespace){
+            $this->publishes([
+                $sourcePath => $path
+            ],$namespace);
+        }
+        
         $this->loadViewsFrom(array_merge(array_map(function ($path) {
             return $path . '/modules/core';
         }, \Config::get('view.paths')), [$sourcePath]), 'core');
 
+        View::share( 'contextualLinks', $this->app->make('core.contextualLinks') );
     }
 
     /**
@@ -173,7 +168,6 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [
-        ];
+        return [];
     }
 }

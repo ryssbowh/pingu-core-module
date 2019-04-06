@@ -2,24 +2,25 @@
 
 namespace Modules\Core\Events;
 
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Modules\Core\Entities\TextSnippet;
 
-class SettingChanges
+class TextSnippetTextRetrieved
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use SerializesModels;
+
+    private $textSnippet;
+    private $replacements;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct( $name, $value, $details )
+    public function __construct(TextSnippet $textSnippet, array &$replacements)
     {
-        $this->name = $name;
-        $this->value = $value;
-        $this->details = $details;
+        $this->textSnippet = $textSnippet;
+        $this->replacements = $replacements;
     }
 
     /**

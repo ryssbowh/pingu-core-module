@@ -1,11 +1,20 @@
-const { mix } = require('laravel-mix');
-require('laravel-mix-merge-manifest');
+const mix = require('laravel-mix');
+const path = require('path');
 
-mix.setPublicPath('../../public').mergeManifest();
+var dir = __dirname;
+var name = dir.split(path.sep).pop();
 
-mix.js(__dirname + '/Resources/assets/js/app.js', 'js/core.js')
-    .sass( __dirname + '/Resources/assets/sass/app.scss', 'css/core.css');
+var assetPath = __dirname + '/Resources/assets';
+var publicPath = path.resolve(__dirname,'../../public/modules/'+name);
 
-if (mix.inProduction()) {
-    mix.version();
-}
+//Javascript
+mix.js(assetPath + '/js/app.js', publicPath + '/js/'+name+'.js').sourceMaps();
+mix.autoload({
+	'jquery': ['$', 'jQuery'],
+	'moment' : ['moment'],
+	'bootstrap': ['bootstrap'],
+	'tempusdominus-bootstrap-4': ['datetimepicker']
+});
+
+//Css
+mix.sass(assetPath + '/sass/app.scss', publicPath + '/css/'+name+'.css');

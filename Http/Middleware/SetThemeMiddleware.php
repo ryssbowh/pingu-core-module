@@ -3,6 +3,7 @@
 namespace Modules\Core\Http\Middleware;
 
 use Closure;
+use Asset;
 use Illuminate\Http\Request;
 
 class SetThemeMiddleware
@@ -30,6 +31,10 @@ class SetThemeMiddleware
             }
             \Theme::set( config('core.frontTheme' ));
         }
+
+        $assetPath = \Theme::current()->assetPath;
+        Asset::container('theme')->add('css',$assetPath.'/css/'.\Theme::current()->name.'.css');
+        Asset::container('theme')->add('js',$assetPath.'/js/'.\Theme::current()->name.'.js');
         return $next($request);
     }
 }
