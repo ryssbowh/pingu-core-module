@@ -24,10 +24,6 @@ class MergePackages extends Command
      */
     protected $description = 'Merges package.json for all modules';
 
-    protected $currentModule;
-
-    protected $currentAnswers = [];
-
     protected $autoResolve = 'ask';
 
     /**
@@ -244,7 +240,7 @@ class MergePackages extends Command
     {
         $this->autoResolve = $this->argument('auto-resolve');
         if(!in_array($this->autoResolve, ['ask','lower','higher'])){
-            throw new Exception('Auto resolve argument is not valid, accepted values are : a (ask), h (higher), l (lower)');
+            throw new Exception('Auto resolve argument is not valid, accepted values are : ask, higher, lower');
         }
 
         $basePackage = base_path().'/package.json';
