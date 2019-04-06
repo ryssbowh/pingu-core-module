@@ -41,8 +41,19 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerFactories();
         $this->registerAssets();
+        $this->registerCommands();
         
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+    }
+
+    /**
+     * Registers commands for this module
+     * @return void
+     */
+    public function registerCommands(){
+        $this->commands([
+            \Modules\Core\Console\MergePackages::class
+        ]);
     }
 
     /**
