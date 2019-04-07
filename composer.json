@@ -22,7 +22,6 @@
     },
     "require": {
         "orchestra/asset": "~3.6",
-        "eskimo/laravel-theme": "1.*",
         "greabock/tentacles": "1.0",
         "composer/installers": "~1.0",
         "spatie/laravel-translation-loader": "2.2.*",

@@ -7,11 +7,11 @@
     "order": 0,
     "providers": [
         "Barryvdh\\Debugbar\\ServiceProvider",
-        "Igaster\\LaravelTheme\\themeServiceProvider",
-        "Modules\\Core\\Providers\\CoreServiceProvider"
+        "Modules\\Core\\Providers\\CoreServiceProvider",
+        "Modules\\Core\\Providers\\ThemeServiceProvider"
     ],
     "aliases": {
-        "Theme" : "Igaster\\LaravelTheme\\Facades\\Theme",
+        "Theme" : "Modules\\Core\\Facades\\Theme",
         "TextSnippet":"Modules\\Core\\Facades\\TextSnippet",
         "ContextualLinks":"Modules\\Core\\Facades\\ContextualLinks",
         "Notify":"Modules\\Core\\Facades\\Notify"

@@ -67,14 +67,6 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->bind('core.contextualLinks', \Modules\Core\Components\ContextualLinks::class);
         $this->app->bind('core.notify', \Modules\Core\Components\Notify::class);
 
-        $this->app->singleton('view.finder', function ($app) {
-            return new \Modules\Core\Components\themeViewFinder(
-                $app['files'],
-                $app['config']['view.paths'],
-                null
-            );
-        });
-
         // $providers = config('app.providers');
         // $index = array_search("Illuminate\Translation\TranslationServiceProvider", $providers);
         // unset($providers[$index]);
@@ -127,21 +119,17 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function registerViews()
     {
-        $themePaths = $this->app->make('view.finder')->getThemesPublishPaths('core');
+        $viewPath = resource_path('views/modules/core');
 
         $sourcePath = __DIR__.'/../Resources/views';
 
-        foreach($themePaths as $path => $namespace){
-            $this->publishes([
-                $sourcePath => $path
-            ],$namespace);
-        }
-        
+        $this->publishes([
+            $sourcePath => $viewPath
+        ],'views');
+
         $this->loadViewsFrom(array_merge(array_map(function ($path) {
             return $path . '/modules/core';
         }, \Config::get('view.paths')), [$sourcePath]), 'core');
-
-        View::share( 'contextualLinks', $this->app->make('core.contextualLinks') );
     }
 
     /**
