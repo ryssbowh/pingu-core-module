@@ -59,8 +59,8 @@ class baseThemeCommand extends Command
 
         }
 
-        $viewsPath = \Theme::find($themeName)->viewsPath;
+        $rootPath = \Theme::find($themeName)->getPath();
 
-        return $this->files->exists(themes_path($viewsPath.DIRECTORY_SEPARATOR.'theme.json'));
+        return $this->files->exists($rootPath.DIRECTORY_SEPARATOR.'theme.json');
     }
 }

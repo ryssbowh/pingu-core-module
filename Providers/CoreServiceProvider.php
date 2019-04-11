@@ -38,11 +38,10 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerGlobalMiddlewares($kernel);
         $this->registerTranslations();
         $this->registerConfig();
-        $this->registerViews();
         $this->registerFactories();
         $this->registerAssets();
         $this->registerCommands();
-        
+        $this->loadViewsFrom(base_path('Modules/Core/Resources/views'), 'core');
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
     }
 
@@ -66,12 +65,6 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->bind('core.textSnippet', \Modules\Core\Components\TextSnippet::class);
         $this->app->bind('core.contextualLinks', \Modules\Core\Components\ContextualLinks::class);
         $this->app->bind('core.notify', \Modules\Core\Components\Notify::class);
-
-        // $providers = config('app.providers');
-        // $index = array_search("Illuminate\Translation\TranslationServiceProvider", $providers);
-        // unset($providers[$index]);
-        // $providers[] = "Spatie\TranslationLoader\TranslationServiceProvider";
-        // config(['app.providers' => $providers]);
     }
 
     public function registerWebMiddlewares(Router $router)
@@ -91,8 +84,8 @@ class CoreServiceProvider extends ServiceProvider
     public function registerAssets()
     {
         Asset::addVersioning();
-        Asset::container('vendor')->add('js-manifest', 'themes/Default/js/manifest.js');
-        Asset::container('vendor')->add('js-vendor', 'themes/Default/js/vendor.js');
+        Asset::container('vendor')->add('js-manifest', 'manifest.js');
+        Asset::container('vendor')->add('js-vendor', 'vendor.js');
         Asset::container('modules')->add('core-js', 'modules/Core/js/Core.js');
         Asset::container('modules')->add('core-css', 'modules/Core/css/Core.css');
     }
@@ -110,26 +103,6 @@ class CoreServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../Config/config.php', 'core'
         );
-    }
-
-    /**
-     * Register views.
-     *
-     * @return void
-     */
-    public function registerViews()
-    {
-        $viewPath = resource_path('views/modules/core');
-
-        $sourcePath = __DIR__.'/../Resources/views';
-
-        $this->publishes([
-            $sourcePath => $viewPath
-        ],'views');
-
-        $this->loadViewsFrom(array_merge(array_map(function ($path) {
-            return $path . '/modules/core';
-        }, \Config::get('view.paths')), [$sourcePath]), 'core');
     }
 
     /**

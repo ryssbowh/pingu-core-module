@@ -16,7 +16,7 @@ class Themes
     public function __construct()
     {
         $this->laravelViewsPath = config('view.paths');
-        $this->themesPath = config('core.themes.themes_path', null) ?: config('view.paths')[0];
+        $this->themesPath = base_path('public/'.config('core.themes.themes_path'));
         $this->cachePath = base_path('bootstrap/cache/themes.php');
     }
 
@@ -75,17 +75,11 @@ class Themes
         // Get theme view paths
         $paths = $theme->getViewPaths();
 
-        // fall-back to default paths (set in views.php config file)
-        foreach ($this->laravelViewsPath as $path) {
-            if (!in_array($path, $paths)) {
-                $paths[] = $path;
-            }
-        }
-
         config(['view.paths' => $paths]);
 
         $themeViewFinder = app('view.finder');
         $themeViewFinder->setPaths($paths);
+
         Event::dispatch('core.theme.change', $theme);
         return $theme;
     }
@@ -194,8 +188,10 @@ class Themes
                 // default theme settings
                 $defaults = [
                     'name'       => $themeName,
-                    'asset-path' => $themeName,
-                    'extends'    => null,
+                    'asset-path' => config('core.theme.asset_path'),
+                    'views-path' => config('core.theme.views_path'),
+                    'images-path' => config('core.theme.images_path'),
+                    'extends'    => null
                 ];
 
                 // If theme.json is not an empty file parse json values
@@ -208,10 +204,6 @@ class Themes
                 } else {
                     $data = [];
                 }
-
-                // We already know views-path since we have scaned folders.
-                // we will overide this setting if exists
-                $data['views-path'] = $themeName;
 
                 $themes[] = array_merge($defaults, $data);
             }
@@ -248,7 +240,8 @@ class Themes
             $theme = new Theme(
                 $data['name'],
                 $data['asset-path'],
-                $data['views-path']
+                $data['views-path'],
+                $data['images-path']
             );
 
             // Has a parent theme? Store parent name to resolve later.
@@ -283,6 +276,10 @@ class Themes
 
             if (isset($themeConfig['views-path'])) {
                 $theme->viewsPath = $themeConfig['views-path'];
+            }
+
+            if (isset($themeConfig['images-path'])) {
+                $theme->viewsPath = $themeConfig['images-path'];
             }
 
             if (isset($themeConfig['extends'])) {

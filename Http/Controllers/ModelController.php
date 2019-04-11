@@ -5,7 +5,7 @@ namespace Modules\Core\Http\Controllers;
 use Illuminate\Http\Request;
 use JsGrid,ContextualLinks,Notify;
 use Modules\Core\Entities\BaseModel;
-use Modules\Forms\Components\FormModel;
+use Modules\Forms\FormModel;
 
 class ModelController extends Controller
 {
@@ -36,14 +36,24 @@ class ModelController extends Controller
 	{
 		$validator = $model->makeValidator($request);
 		$validator->validate();
-		$model->formFill($validator->validated());
-		$model->save();
-		if($model->getChanges()){
-			Notify::put('success', $model::friendlyName().' updated successfully');
+		$validated = $validator->validated();
+
+		try{
+			$changes = $model->saveWithRelations($validated);
+			if($changes){
+				Notify::put('success', $model::friendlyName().' has been saved');
+			}
+			else{
+				Notify::put('info', 'No changes made to '.$model::friendlyName());
+			}
 		}
-		else{
-			Notify::put('info', 'No changes done to '.$model::friendlyName());
+		catch(ModelNotSaved $e){
+			Notify::put('error', 'Error while saving '.$model::friendlyName());
 		}
+		catch(ModelRelationsNotSaved $e){
+			Notify::put('error', $model::friendlyName().' was partially saved, check manually');
+		}
+
 		return back();
 	}
 
@@ -79,14 +89,19 @@ class ModelController extends Controller
 		$modelStr = $this->checkIfRouteHasModel($request);
 		$model = new $modelStr;
 		$validator = $model->makeValidator($request);
-		$validator->validate();
-		$model->formFill($validator->validated());
-		if($model->save()){
-			Notify::put('success', $model::friendlyName().' created successfully');
+		$validated = $validator->validate();
+
+		try{
+			$model->saveWithRelations($validated);
+			Notify::put('success', $model::friendlyName().' has been saved');
 		}
-		else{
+		catch(ModelNotSaved $e){
 			Notify::put('info', 'Error while saving '.$model::friendlyName());
 		}
+		catch(ModelRelationsNotSaved $e){
+			Notify::put('info', $model::friendlyName().' was partially saved, check manually');
+		}
+		exit();
 		return back();
 	}
 }

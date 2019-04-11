@@ -1,5 +1,5 @@
 <?php 
-namespace Modules\Core;
+namespace Modules\Core\Components;
 
 class themeManifest
 {

@@ -1,16 +1,11 @@
 <?php 
 namespace Modules\Core\Traits;
 
-trait APIable {
-
-	public function apiableFields()
-	{
-		return array_merge(['id'], $this->fillable);
-	}
+trait APIableModel {
 
 	/**
 	 * api route for API queries
-	 * @return [type] [description]
+	 * @return string
 	 */
 	public static function apiUrl()
 	{

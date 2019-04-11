@@ -31,10 +31,10 @@ class SetThemeMiddleware
             }
             \Theme::set( config('core.frontTheme' ));
         }
-
-        $assetPath = \Theme::current()->assetPath;
-        Asset::container('theme')->add('css',$assetPath.'/css/'.\Theme::current()->name.'.css');
-        Asset::container('theme')->add('js',$assetPath.'/js/'.\Theme::current()->name.'.js');
+        $theme = \Theme::current();
+        $assetPath = config('core.themes.themes_path').'/'.$theme->name.'/'.$theme->assetPath;
+        Asset::container('theme')->add('css', $assetPath.'/'.$theme->name.'.css');
+        Asset::container('theme')->add('js', $assetPath.'/'.$theme->name.'.js');
         return $next($request);
     }
 }

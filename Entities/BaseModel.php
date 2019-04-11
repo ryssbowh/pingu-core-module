@@ -9,14 +9,8 @@ use Modules\Core\Traits\ModelEventThrower;
 class BaseModel extends Model
 {
 	use EloquentTentacle, ModelEventThrower;
-	
-    //LARAVEL ATTRIBUTES
+
     protected $fillable = [];
-    // protected $guarded = [];
-    protected $attributes = [];
-    public $timestamps = false;
-    protected $dates = [];
-    protected $dateFormat = 'U';
 
     public static $friendlyName;
     protected static $recordEvents = ['created','updated','deleted'];

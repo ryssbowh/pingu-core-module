@@ -10,6 +10,7 @@ class Theme
     public $name;
     public $viewsPath;
     public $assetPath;
+    public $imagesPath;
     public $settings = [];
 
     /** @var Theme  */
@@ -18,13 +19,14 @@ class Theme
     /** @var \Modules\Core\Components\Themes */
     private $themes;
 
-    public function __construct($themeName, $assetPath = null, $viewsPath = null, Theme $parent = null)
+    public function __construct($themeName, $assetPath = null, $viewsPath = null, $imagesPath = null, Theme $parent = null)
     {
         $this->themes = resolve('core.themes');
 
         $this->name = $themeName;
-        $this->assetPath = ($assetPath === null ? $themeName : $assetPath) . '/views';
-        $this->viewsPath = ($viewsPath === null ? $themeName : $viewsPath) . '/assets';
+        $this->assetPath = ($assetPath === null ? config('core.themes.asset_path') : $assetPath);
+        $this->viewsPath = ($viewsPath === null ? config('core.themes.views_path') : $viewsPath);
+        $this->imagesPath = ($imagesPath === null ? config('core.themes.images_path') : $imagesPath);
         $this->parent = $parent;
 
         $this->themes->add($this);
@@ -37,11 +39,8 @@ class Theme
         $paths = [];
         $theme = $this;
         do {
-            if (substr($theme->viewsPath, 0, 1) === DIRECTORY_SEPARATOR) {
-                $path = base_path(substr($theme->viewsPath, 1));
-            } else {
-                $path = themes_path($theme->viewsPath);
-            }
+            $path = $theme->getPath().$theme->viewsPath;
+            
             if (!in_array($path, $paths)) {
                 $paths[] = $path;
             }
@@ -112,6 +111,11 @@ class Theme
         }
     }
 
+    public function getPath($sub = '')
+    {
+        return themes_path($this->name.'/'.$sub);
+    }
+
     public function getParent()
     {
         return $this->parent;
@@ -124,8 +128,9 @@ class Theme
 
     public function install($clearPaths = false)
     {
-        $viewsPath = themes_path($this->viewsPath);
-        $assetPath = themes_path($this->assetPath);
+        $viewsPath = $this->getPath($this->viewsPath);
+        $assetPath = $this->getPath($this->assetPath);
+        $imagesPath = $this->getPath($this->imagesPath);
 
         if ($clearPaths) {
             if (File::exists($viewsPath)) {
@@ -134,17 +139,23 @@ class Theme
             if (File::exists($assetPath)) {
                 File::deleteDirectory($assetPath);
             }
+            if (File::exists($imagesPath)) {
+                File::deleteDirectory($imagesPath);
+            }
         }
 
         File::makeDirectory($viewsPath);
         File::makeDirectory($assetPath);
+        File::makeDirectory($imagesPath);
 
         $themeJson = new \Modules\Core\Components\themeManifest(array_merge($this->settings, [
             'name' => $this->name,
             'extends' => $this->parent ? $this->parent->name : null,
             'asset-path' => $this->assetPath,
+            'asset-path' => $this->viewsPath,
+            'asset-path' => $this->assetPath,
         ]));
-        $themeJson->saveToFile("$viewsPath/theme.json");
+        $themeJson->saveToFile($this->getPath()."/theme.json");
 
         $this->themes->rebuildCache();
     }
@@ -171,14 +182,12 @@ class Theme
 
     public function loadSettings($settings = [])
     {
-
-        // $this->settings = $settings;
-
         $this->settings = array_diff_key((array) $settings, array_flip([
             'name',
             'extends',
             'views-path',
             'asset-path',
+            'images-path',
         ]));
 
     }
