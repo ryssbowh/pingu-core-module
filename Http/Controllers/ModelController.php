@@ -101,7 +101,5 @@ class ModelController extends Controller
 		catch(ModelRelationsNotSaved $e){
 			Notify::put('info', $model::friendlyName().' was partially saved, check manually');
 		}
-		exit();
-		return back();
 	}
 }

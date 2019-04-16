@@ -2,12 +2,14 @@
 
 namespace Modules\Core\Providers;
 
+use Asset, View, Theme, Blade, Settings;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use Modules\Forms\Fields\Number;
+use Modules\Forms\Fields\Text;
 use Spatie\TranslationLoader\LanguageLine;
-use Asset, View, Theme;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -43,6 +45,27 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerCommands();
         $this->loadViewsFrom(base_path('Modules/Core/Resources/views'), 'core');
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+
+        Blade::directive('d', function ($data) {
+            return sprintf("<?php dump(%s); ?>",
+                'all' !== $data ? "get_defined_vars()['__data']" : $data
+            );
+        });
+
+        Settings::registerMany([
+            'app.name' => [
+                'Title' => 'Site name',
+                'Section' => 'Core',
+                'type' => Text::class,
+                'validation' => 'required'
+            ],
+            'session.lifetime' => [
+                'Title' => 'Session Lifetime',
+                'Section' => 'Core',
+                'type' => Number::class,
+                'validation' => 'required|integer'
+            ]
+        ]);
     }
 
     /**
