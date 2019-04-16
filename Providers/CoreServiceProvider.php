@@ -43,15 +43,21 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerFactories();
         $this->registerAssets();
         $this->registerCommands();
-        $this->loadViewsFrom(base_path('Modules/Core/Resources/views'), 'core');
+        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'core');
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
+        /**
+         * Add dump function to blade
+         */
         Blade::directive('d', function ($data) {
             return sprintf("<?php dump(%s); ?>",
                 'all' !== $data ? "get_defined_vars()['__data']" : $data
             );
         });
 
+        /**
+         * Register settings
+         */
         Settings::registerMany([
             'app.name' => [
                 'Title' => 'Site name',
