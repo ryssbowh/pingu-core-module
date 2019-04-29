@@ -31,6 +31,7 @@
         "pingu/user-module": "1.0.*",
         "pingu/settings-module": "1.0.*",
         "pingu/forms-module": "1.0.*",
-        "pingu/jsgrid-module": "1.0.*"
+        "pingu/jsgrid-module": "1.0.*",
+        "pingu/page-module": "1.0.*"
     }
 }
