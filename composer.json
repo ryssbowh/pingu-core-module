@@ -22,8 +22,24 @@
     },
     "repositories": [
         {
-            "type": "git",
-            "url": "http://gitlabboris.ddns.net/pingu"
+            "type": "vcs",
+            "url": "http://gitlabboris.ddns.net/pingu/activity-module"
+        },
+        {
+            "type": "vcs",
+            "url": "http://gitlabboris.ddns.net/pingu/user-module"
+        },
+        {
+            "type": "vcs",
+            "url": "http://gitlabboris.ddns.net/pingu/settings-module"
+        },
+        {
+            "type": "vcs",
+            "url": "http://gitlabboris.ddns.net/pingu/forms-module"
+        },
+        {
+            "type": "vcs",
+            "url": "http://gitlabboris.ddns.net/pingu/jsgrid-module"
         }
     ],
     "require": {
