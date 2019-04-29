@@ -23,23 +23,7 @@
     "repositories": [
         {
             "type": "git",
-            "url": "http://gitlabboris.ddns.net/pingu/activity-module"
-        },
-        {
-            "type": "git",
-            "url": "http://gitlabboris.ddns.net/pingu/user-module"
-        },
-        {
-            "type": "git",
-            "url": "http://gitlabboris.ddns.net/pingu/settings-module"
-        },
-        {
-            "type": "git",
-            "url": "http://gitlabboris.ddns.net/pingu/forms-module"
-        },
-        {
-            "type": "git",
-            "url": "http://gitlabboris.ddns.net/pingu/jsgrid-module"
+            "url": "http://gitlabboris.ddns.net/pingu"
         }
     ],
     "require": {
