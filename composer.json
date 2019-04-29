@@ -1,5 +1,5 @@
 {
-    "name": "eskimo/core-module",
+    "name": "pingu/core-module",
     "description": "Core module for eskimo",
     "type" : "asgard-module",
     "authors": [
@@ -20,12 +20,39 @@
             "Modules\\Core\\": ""
         }
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "http://gitlabboris.ddns.net/pingu/activity-module"
+        },
+        {
+            "type": "git",
+            "url": "http://gitlabboris.ddns.net/pingu/user-module"
+        },
+        {
+            "type": "git",
+            "url": "http://gitlabboris.ddns.net/pingu/settings-module"
+        },
+        {
+            "type": "git",
+            "url": "http://gitlabboris.ddns.net/pingu/forms-module"
+        },
+        {
+            "type": "git",
+            "url": "http://gitlabboris.ddns.net/pingu/jsgrid-module"
+        }
+    ],
     "require": {
         "orchestra/asset": "~3.6",
         "greabock/tentacles": "1.0",
         "composer/installers": "~1.0",
         "spatie/laravel-translation-loader": "2.2.*",
         "spatie/laravel-schemaless-attributes": "1.3.0",
-        "barryvdh/laravel-debugbar": "3.2.1"
+        "barryvdh/laravel-debugbar": "3.2.1",
+        "pingu/activity-module": "1.0.*",
+        "pingu/user-module": "1.0.*",
+        "pingu/settings-module": "1.0.*",
+        "pingu/forms-module": "1.0.*",
+        "pingu/jsgrid-module": "1.0.*"
     }
 }
