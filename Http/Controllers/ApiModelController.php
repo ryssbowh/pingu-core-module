@@ -3,7 +3,7 @@
 namespace Modules\Core\Http\Controllers;
 
 use Illuminate\Http\Request;
-use JsGrid,ContextualLinks,Notify;
+use ContextualLinks,Notify;
 use Modules\Core\Entities\BaseModel;
 use Modules\Forms\Form;
 
