@@ -20,7 +20,7 @@ class ModelController extends Controller
 		ContextualLinks::addLinks($model->getContextualLinks());
 		$form = new FormModel($attrs, [],  $model);
 		$form->end();
-		return view('pages.editObject')->with([
+		return view('pages.editModel')->with([
 			'form' => $form,
 			'object' => $model::friendlyName(),
 		]);
@@ -34,9 +34,7 @@ class ModelController extends Controller
 	 */
 	public function update(Request $request, BaseModel $model)
 	{
-		$validator = $model->makeValidator($request);
-		$validator->validate();
-		$validated = $validator->validated();
+		$validated = $model->validateForm($request, $model->editFormFields());
 
 		try{
 			$changes = $model->saveWithRelations($validated);
@@ -73,7 +71,7 @@ class ModelController extends Controller
 		$attrs = ['method' => 'POST', 'url' => $url];
 		$form = new FormModel($attrs, [], $modelStr);
 		$form->end();
-		return view('pages.addObject')->with([
+		return view('pages.addModel')->with([
 			'form' => $form,
 			'object' => $modelStr::friendlyName(),
 		]);
@@ -88,8 +86,7 @@ class ModelController extends Controller
 	{
 		$modelStr = $this->checkIfRouteHasModel($request);
 		$model = new $modelStr;
-		$validator = $model->makeValidator($request);
-		$validated = $validator->validate();
+		$validated = $model->validateForm($request, $model->addFormFields());
 
 		try{
 			$model->saveWithRelations($validated);
@@ -101,5 +98,7 @@ class ModelController extends Controller
 		catch(ModelRelationsNotSaved $e){
 			Notify::put('info', $model::friendlyName().' was partially saved, check manually');
 		}
+
+		return back();
 	}
 }

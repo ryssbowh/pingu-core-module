@@ -46,3 +46,16 @@ if (!function_exists('theme_url')) {
     }
 
 }
+
+function route_exists($uri)
+{
+    if(!is_string($uri)) return false;
+    $uri = trim($uri, '/');
+    $routes = \Route::getRoutes()->getRoutes();
+    foreach($routes as $r){
+        if($r->uri() == $uri and in_array('GET', $r->methods())){
+            return true;
+        }
+    }
+    return false;
+}

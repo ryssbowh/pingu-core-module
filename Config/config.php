@@ -44,6 +44,8 @@ return [
         'asset_path' => 'assets',
         'images_path' => 'images',
 
+        'modules_namespaced_views' => 'modules',
+
         /*
         |--------------------------------------------------------------------------
         | Set behavior if an asset is not found in a Theme hierarchy.
