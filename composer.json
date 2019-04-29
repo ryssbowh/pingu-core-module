@@ -20,28 +20,6 @@
             "Modules\\Core\\": ""
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "http://gitlabboris.ddns.net/pingu/activity-module"
-        },
-        {
-            "type": "vcs",
-            "url": "http://gitlabboris.ddns.net/pingu/user-module"
-        },
-        {
-            "type": "vcs",
-            "url": "http://gitlabboris.ddns.net/pingu/settings-module"
-        },
-        {
-            "type": "vcs",
-            "url": "http://gitlabboris.ddns.net/pingu/forms-module"
-        },
-        {
-            "type": "vcs",
-            "url": "http://gitlabboris.ddns.net/pingu/jsgrid-module"
-        }
-    ],
     "require": {
         "orchestra/asset": "~3.6",
         "greabock/tentacles": "1.0",
