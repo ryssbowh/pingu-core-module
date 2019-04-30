@@ -1,6 +1,14 @@
 # Core module
 
+## v1.0.6 More readme, added todo section
+## v1.0.5 More readme
 ## v1.0.4 Wrote Readme
+
+## TODO
+[ ] Make admin home page
+[ ] make composer install themes in proper folder automatically
+[ ] write an install script
+[ ] Include themes in merge-packages command
 
 ### Notify
 Notify is a facade used to display messages to the user. it uses session to store them. see Components/Notify.php.
@@ -28,12 +36,12 @@ Provides with a base controller that has a method that checks if the route has a
 ### Middlewares
 the HomepageMiddleware sets the homepage when the uri is /.
 
-the setApiMiddleware sets the theme for an api call (theme is set by the call through a _isAdmin variable).
+the setApiMiddleware sets the theme for an api call (theme is set by the call through a \_isAdmin variable).
 
 the setThemeMiddleware sets the current theme. If the url starts with /admin the theme will be the admin theme defined in config.
 
 ### Base model
-The base model ** which all models must extend ** provides with methods for url segments and route slugs, as well as a friendly name methods that are used often.
+The base model **which all models must extend** provides with methods for url segments and route slugs, as well as a friendly name methods that are used often.
 
 ### functions
 The start.php provides with a couple of useful functions.
