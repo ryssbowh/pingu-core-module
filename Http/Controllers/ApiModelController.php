@@ -63,7 +63,7 @@ class ApiModelController extends Controller
 		$model = $this->checkIfRouteHasModel($request);
 		$post = $request->post();
 		$model = $model::findOrFail($post['id']);
-		$validator = $model->makeValidator($request);
+		$validator = $model->makeValidator($request, $model->editFormFields());
 		$validator->validate();
 		$model->formFill($validator->validated());
 		$model->save();
