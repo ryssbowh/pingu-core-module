@@ -10,20 +10,26 @@ That was a test but is not used atm.
 
 ### Contextual Links
 Contextual links are used to display links when viewing a model. The idea is to make it so that any page can have contextual links but at the moment is defined at model only.
+
 Will probably need rewritten as not the most intuitive way to use it.
 
 ### Api
 Provides a contract to make a model Apiable, this contract only has one method for now (apiUrl).
+
 Visible fields for an api request are set by the models $visible variable.
 
 ### Controllers
 Provides with an api controller for models that handles some basic operation on models.
+
 Provides with an model controller that allows creating/editing through a form.
+
 Provides with a base controller that has a method that checks if the route has a model attached to it. This is useful when you want to attach a model to a route : `Route::get('a-route', ['model' => Page::class])`. You can then use the model controller.
 
 ### Middlewares
 the HomepageMiddleware sets the homepage when the uri is /.
-the setApiMiddleware sets the theme for an api call (theme is set by the call through a _isAdmin variable)
+
+the setApiMiddleware sets the theme for an api call (theme is set by the call through a _isAdmin variable).
+
 the setThemeMiddleware sets the current theme. If the url starts with /admin the theme will be the admin theme defined in config.
 
 ### Base model
@@ -40,6 +46,7 @@ Changes to it includes :
 
 ### Commands
 Includes commands provided by [igaster/laravel-theme](https://github.com/igaster/laravel-theme) from which packaging commands have been removed.
+
 The core:merge-packages will look at the base packages.json and all modules packages.json and merge them. option to auto resolve conflicts.
 
 ### stubs
@@ -48,8 +55,11 @@ The modules stubs are used to change the content of the files generated when cre
 ### Assets
 sass and js can be define in any module or theme. packages.json can be defined in modules.
 @todo extend this functionnality to themes.
+
 When adding a library to a module's packages.json, you'll need to run the command `./artisan core:merge-packages` in order to merge them into a master packages.json at the root folder. Then you can run npm run watch. This way, when using `mix.extract` all the libraries will be in 2 separate files, vendor.js and manifest.js.
+
 A good practice in js would be to have a file for each module to provide with functions that may be reused. The core module would have a core.js file that exports Core. Other modules can then import it with a `import Core from 'core';`
+
 Core comes with helpers for ajax that may be reused.
 
 ### Config
