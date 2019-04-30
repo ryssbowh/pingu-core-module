@@ -1,7 +1,6 @@
 # Core module
 
-## v1.0.6 More readme, added todo section
-## v1.0.5 More readme
+## v1.0.5 More readme, added todo section
 ## v1.0.4 Wrote Readme
 
 ## TODO
