@@ -1,0 +1,22 @@
+{
+    "name": "Core",
+    "alias": "core",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Barryvdh\\Debugbar\\ServiceProvider",
+        "Modules\\Core\\Providers\\CoreServiceProvider"
+    ],
+    "aliases": {
+        "Theme" : "Modules\\Core\\Facades\\Theme",
+        "TextSnippet":"Modules\\Core\\Facades\\TextSnippet",
+        "ContextualLinks":"Modules\\Core\\Facades\\ContextualLinks",
+        "Notify":"Modules\\Core\\Facades\\Notify"
+    },
+    "files": [
+        "start.php"
+    ],
+    "requires": []
+}
