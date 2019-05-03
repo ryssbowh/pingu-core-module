@@ -1,11 +1,12 @@
 # Core module
 
+## v1.0.9 Added themes as composer dependencies
 ## v1.0.5 More readme, added todo section
 ## v1.0.4 Wrote Readme
 
 ## TODO
 - [ ] Make admin home page
-- [ ] make composer install themes in proper folder automatically
+- [x] make composer install themes in proper folder automatically
 - [ ] write an install script
 - [ ] Include themes in merge-packages command
 

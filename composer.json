@@ -33,6 +33,7 @@
         "pingu/forms-module": "1.0.*",
         "pingu/jsgrid-module": "1.0.*",
         "pingu/page-module": "1.0.*",
-        "pingu/admin-theme": "1.0.*"
+        "pingu/admin-theme": "1.0.*",
+        "pingu/default-theme": "1.0.*"
     }
 }
