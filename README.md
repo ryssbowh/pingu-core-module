@@ -5,9 +5,10 @@
  
 ## TODO
 - [ ] Make admin home page
-- [ ] make composer install themes in proper folder automatically
+- [x] make composer install themes in proper folder automatically
 - [ ] write an install script
 - [ ] Include themes in merge-packages command
+- [ ] Fix modules views publishing
  
 ### Notify
 Notify is a facade used to display messages to the user. it uses session to store them. see Components/Notify.php.

@@ -17,15 +17,15 @@ class SetApiThemeMiddleware
      */
     public function handle(Request $request, Closure $next)
     {   
-        $isAdmin = $request->all()['_isAdmin'] ?? false;;
+        $setTheme = $request->all()['_setTheme'] ?? false;;
         
-        if($isAdmin){
+        if($setTheme == 'admin'){
             if(!\Theme::exists(config('core.adminTheme'))){
                 throw new \Exception(config('core.adminTheme' )." isn't a valid admin theme", 1);
             }
             \Theme::set(config('core.adminTheme'));
         }
-        else{
+        elseif($setTheme == 'front'){
             if(!\Theme::exists(config('core.frontTheme'))) {
                 throw new \Exception(config('core.frontTheme' )." isn't a valid front theme", 1);
             }
