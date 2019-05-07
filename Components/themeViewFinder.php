@@ -42,7 +42,7 @@ class themeViewFinder extends FileViewFinder
         $newPaths = [];
         foreach($paths as $path){
             $pathRelativeToApp = substr($path, strlen(base_path()) + 1);
-            if (strpos($pathRelativeToApp, config('modules.namespace')) === 0){
+            if (strpos($pathRelativeToApp, 'Modules') === 0){
                 $newPath = '/'.config('core.themes.modules_namespaced_views').'/'.$namespace;
             }
             elseif (strpos($pathRelativeToApp, 'vendor') === 0){

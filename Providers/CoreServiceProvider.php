@@ -75,9 +75,9 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('core.textSnippet', \Pingu\Core\Components\TextSnippet::class);
-        $this->app->bind('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
-        $this->app->bind('core.notify', \Pingu\Core\Components\Notify::class);
+        $this->app->singleton('core.textSnippet', \Pingu\Core\Components\TextSnippet::class);
+        $this->app->singleton('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
+        $this->app->singleton('core.notify', \Pingu\Core\Components\Notify::class);
     }
 
     public function registerWebMiddlewares(Router $router)
