@@ -54,24 +54,6 @@ class CoreServiceProvider extends ServiceProvider
                 'all' !== $data ? "get_defined_vars()['__data']" : $data
             );
         });
-
-        /**
-         * Register settings
-         */
-        Settings::registerMany([
-            'app.name' => [
-                'Title' => 'Site name',
-                'Section' => 'Core',
-                'type' => Text::class,
-                'validation' => 'required'
-            ],
-            'session.lifetime' => [
-                'Title' => 'Session Lifetime',
-                'Section' => 'Core',
-                'type' => Number::class,
-                'validation' => 'required|integer'
-            ]
-        ]);
     }
 
     /**
