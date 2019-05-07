@@ -2,8 +2,10 @@
 
 namespace Pingu\Core\Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use Pingu\Forms\Fields\Number;
 use Pingu\Forms\Fields\Text;
+use Pingu\Permissions\Entities\Permission;
 use Settings;
 
 class CoreDatabaseSeeder extends Seeder
@@ -29,5 +31,8 @@ class CoreDatabaseSeeder extends Seeder
                 'validation' => 'required|integer'
             ]
         ]);
+
+        Permission::findOrCreate(['name' => 'access admin area', 'section' => 'Core']);
+        Permission::findOrCreate(['name' => 'view site in maintenance mode', 'section' => 'Core']);
     }
 }

@@ -20,9 +20,11 @@ class CoreServiceProvider extends ServiceProvider
      */
     protected $defer = false;
 
+    protected $routeMiddlewares = [
+        'home' => \Pingu\Core\Http\Middleware\HomepageMiddleware::class
+    ];
+
     protected $webMiddlewares = [
-        'homepage' => \Pingu\Core\Http\Middleware\HomepageMiddleware::class
-        
     ];
 
     protected $globalMiddlewares = [
@@ -37,6 +39,7 @@ class CoreServiceProvider extends ServiceProvider
     public function boot(Router $router, Kernel $kernel)
     {
         $this->registerWebMiddlewares($router);
+        $this->registerRouteMiddlewares($router);
         $this->registerGlobalMiddlewares($kernel);
         $this->registerTranslations();
         $this->registerConfig();
@@ -78,12 +81,13 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton('core.textSnippet', \Pingu\Core\Components\TextSnippet::class);
         $this->app->singleton('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
         $this->app->singleton('core.notify', \Pingu\Core\Components\Notify::class);
+        $this->app->register(RouteServiceProvider::class);
     }
 
-    public function registerWebMiddlewares(Router $router)
+    public function registerRouteMiddlewares(Router $router)
     {
-        foreach( $this->webMiddlewares as $name => $middleware){
-            $router->pushMiddlewareToGroup('web',$middleware);
+        foreach( $this->routeMiddlewares as $name => $middleware){
+            $router->aliasMiddleware($name, $middleware);
         }
     }
 
@@ -91,6 +95,13 @@ class CoreServiceProvider extends ServiceProvider
     {
         foreach( $this->globalMiddlewares as $middleware){
             $kernel->pushMiddleware($middleware);
+        }
+    }
+
+    public function registerWebMiddlewares(Router $router)
+    {
+        foreach($this->webMiddlewares as $middleware){
+            $router->pushMiddlewareToGroup('web', $middleware);
         }
     }
 

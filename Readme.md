@@ -1,5 +1,14 @@
 # Core module
 
+## v1.0.14
+- integrated permissions (seeder)
+- fixed default module order
+- fixed home middleware
+- home page, admin home page
+- admin route group
+- improved base controller
+- improved notify
+
 ## v1.0.9 Added themes as composer dependencies
 ## v1.0.5 More readme, added todo section
 ## v1.0.4 Wrote Readme

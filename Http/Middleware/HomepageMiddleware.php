@@ -16,8 +16,9 @@ class HomepageMiddleware
      */
     public function handle(Request $request, Closure $next)
     {   
-        if($request->path() == '/'){
-            return redirect( config('core.homepage') );
+        $home = config('core.homepage');
+        if($request->path() == '/' and $home != '/'){
+            return redirect($home);
         }
         return $next($request);
     }

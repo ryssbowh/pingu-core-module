@@ -11,10 +11,6 @@
 |
 */
 
-if (!app()->routesAreCached()) {
-    require __DIR__ . '/Http/routes.php';
-}
-
 function classname($str){
 	if(is_object($str)){
 		$str = get_class($str);

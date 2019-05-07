@@ -35,4 +35,24 @@ class Notify
 		}
 		return $return;
 	}
+
+	public function success(string $message)
+	{
+		$this->put('success', $message);
+	}
+
+	public function info(string $message)
+	{
+		$this->put('info', $message);
+	}
+
+	public function warning(string $message)
+	{
+		$this->put('warning', $message);
+	}
+
+	public function danger(string $message)
+	{
+		$this->put('danger', $message);
+	}
 }

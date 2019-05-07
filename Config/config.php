@@ -2,7 +2,7 @@
 
 return [
     'name' => 'Core',
-    'homepage' => '/home',
+    'homepage' => '/',
     'adminTheme' => 'Admin',
     'frontTheme' => 'Default',
     'themes' => [
