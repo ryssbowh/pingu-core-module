@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Core\Http\Controllers;
+namespace Pingu\Core\Http\Controllers;
 
 use Illuminate\Http\Request;
 use ContextualLinks,Notify;
-use Modules\Core\Entities\BaseModel;
-use Modules\Forms\FormModel;
+use Pingu\Core\Entities\BaseModel;
+use Pingu\Forms\FormModel;
 
 class ModelController extends Controller
 {

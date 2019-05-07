@@ -1,7 +1,7 @@
 <?php 
-namespace Modules\Core\Console;
+namespace Pingu\Core\Console;
 
-use Modules\Core\Facades\Theme;
+use Pingu\Core\Facades\Theme;
 
 class createTheme extends baseThemeCommand
 {
@@ -44,7 +44,7 @@ class createTheme extends baseThemeCommand
             $parentTheme = $this->choice('Which one', $themes);
         }
 
-        $themeJson = new \Modules\Core\Components\themeManifest([
+        $themeJson = new \Pingu\Core\Components\themeManifest([
             "name" => $themeName,
             "extends" => $parentTheme,
             "views-path" => $viewsPath,

@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\Core\Providers;
+namespace Pingu\Core\Providers;
 
 use Asset, View, Theme, Blade, Settings;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Modules\Forms\Fields\Number;
-use Modules\Forms\Fields\Text;
+use Pingu\Forms\Fields\Number;
+use Pingu\Forms\Fields\Text;
 use Spatie\TranslationLoader\LanguageLine;
 
 class CoreServiceProvider extends ServiceProvider
@@ -21,12 +21,12 @@ class CoreServiceProvider extends ServiceProvider
     protected $defer = false;
 
     protected $webMiddlewares = [
-        'homepage' => \Modules\Core\Http\Middleware\HomepageMiddleware::class
+        'homepage' => \Pingu\Core\Http\Middleware\HomepageMiddleware::class
         
     ];
 
     protected $globalMiddlewares = [
-        \Modules\Core\Http\Middleware\SetThemeMiddleware::class
+        \Pingu\Core\Http\Middleware\SetThemeMiddleware::class
     ];
 
     /**
@@ -79,9 +79,11 @@ class CoreServiceProvider extends ServiceProvider
      * @return void
      */
     public function registerCommands(){
-        $this->commands([
-            \Modules\Core\Console\MergePackages::class
-        ]);
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \Pingu\Core\Console\MergePackages::class
+            ]);
+        }
     }
 
     /**
@@ -91,9 +93,9 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('core.textSnippet', \Modules\Core\Components\TextSnippet::class);
-        $this->app->bind('core.contextualLinks', \Modules\Core\Components\ContextualLinks::class);
-        $this->app->bind('core.notify', \Modules\Core\Components\Notify::class);
+        $this->app->bind('core.textSnippet', \Pingu\Core\Components\TextSnippet::class);
+        $this->app->bind('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
+        $this->app->bind('core.notify', \Pingu\Core\Components\Notify::class);
     }
 
     public function registerWebMiddlewares(Router $router)

@@ -11,13 +11,13 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Modules\\Core\\Providers\\CoreServiceProvider"
+                "Pingu\\Core\\Providers\\CoreServiceProvider"
             ]
         }
     },
     "autoload": {
         "psr-4": {
-            "Modules\\Core\\": ""
+            "Pingu\\Core\\": ""
         }
     },
     "require": {

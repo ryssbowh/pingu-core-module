@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Core\Components;
+namespace Pingu\Core\Components;
 
 use Request;
 

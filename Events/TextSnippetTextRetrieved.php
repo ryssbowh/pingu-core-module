@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Core\Events;
+namespace Pingu\Core\Events;
 
 use Illuminate\Queue\SerializesModels;
-use Modules\Core\Entities\TextSnippet;
+use Pingu\Core\Entities\TextSnippet;
 
 class TextSnippetTextRetrieved
 {

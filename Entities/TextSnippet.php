@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Entities;
+namespace Pingu\Core\Entities;
 
 class TextSnippet extends BaseModel
 {

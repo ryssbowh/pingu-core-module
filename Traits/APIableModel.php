@@ -1,5 +1,5 @@
 <?php 
-namespace Modules\Core\Traits;
+namespace Pingu\Core\Traits;
 
 trait APIableModel {
 

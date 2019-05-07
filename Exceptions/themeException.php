@@ -1,5 +1,5 @@
 <?php 
-namespace Modules\Core\Exceptions;
+namespace Pingu\Core\Exceptions;
 /**
  * Define a custom exception class
  */

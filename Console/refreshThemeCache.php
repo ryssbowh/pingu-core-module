@@ -1,7 +1,7 @@
 <?php 
-namespace Modules\Core\Console;
+namespace Pingu\Core\Console;
 
-use Modules\Core\Facades\Theme;
+use Pingu\Core\Facades\Theme;
 
 class refreshThemeCache extends baseThemeCommand
 {

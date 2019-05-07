@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Http\Middleware;
+namespace Pingu\Core\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -16,7 +16,7 @@ class HomepageMiddleware
      */
     public function handle(Request $request, Closure $next)
     {   
-        if( $request->path() == '/' ){
+        if($request->path() == '/'){
             return redirect( config('core.homepage') );
         }
         return $next($request);

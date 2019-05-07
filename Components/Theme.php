@@ -1,5 +1,5 @@
 <?php 
-namespace Modules\Core\Components;
+namespace Pingu\Core\Components;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
@@ -16,7 +16,7 @@ class Theme
     /** @var Theme  */
     public $parent;
 
-    /** @var \Modules\Core\Components\Themes */
+    /** @var \Pingu\Core\Components\Themes */
     private $themes;
 
     public function __construct($themeName, $assetPath = null, $viewsPath = null, $imagesPath = null, Theme $parent = null)
@@ -148,7 +148,7 @@ class Theme
         File::makeDirectory($assetPath);
         File::makeDirectory($imagesPath);
 
-        $themeJson = new \Modules\Core\Components\themeManifest(array_merge($this->settings, [
+        $themeJson = new \Pingu\Core\Components\themeManifest(array_merge($this->settings, [
             'name' => $this->name,
             'extends' => $this->parent ? $this->parent->name : null,
             'asset-path' => $this->assetPath,

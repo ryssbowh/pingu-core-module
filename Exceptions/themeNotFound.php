@@ -1,5 +1,5 @@
 <?php 
-namespace Modules\Core\Exceptions;
+namespace Pingu\Core\Exceptions;
 
 class themeNotFound extends \Exception{
 

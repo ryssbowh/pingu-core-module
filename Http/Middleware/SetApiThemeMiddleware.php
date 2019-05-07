@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Http\Middleware;
+namespace Pingu\Core\Http\Middleware;
 
 use Closure;
 use Asset;

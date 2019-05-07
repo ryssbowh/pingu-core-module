@@ -7,13 +7,13 @@
     "order": 0,
     "providers": [
         "Barryvdh\\Debugbar\\ServiceProvider",
-        "Modules\\Core\\Providers\\CoreServiceProvider"
+        "Pingu\\Core\\Providers\\CoreServiceProvider"
     ],
     "aliases": {
-        "Theme" : "Modules\\Core\\Facades\\Theme",
-        "TextSnippet":"Modules\\Core\\Facades\\TextSnippet",
-        "ContextualLinks":"Modules\\Core\\Facades\\ContextualLinks",
-        "Notify":"Modules\\Core\\Facades\\Notify"
+        "Theme" : "Pingu\\Core\\Facades\\Theme",
+        "TextSnippet":"Pingu\\Core\\Facades\\TextSnippet",
+        "ContextualLinks":"Pingu\\Core\\Facades\\ContextualLinks",
+        "Notify":"Pingu\\Core\\Facades\\Notify"
     },
     "files": [
         "start.php"

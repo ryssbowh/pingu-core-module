@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Core\Entities;
+namespace Pingu\Core\Entities;
 
 use Greabock\Tentacles\EloquentTentacle;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Traits\ModelEventThrower;
+use Pingu\Core\Traits\ModelEventThrower;
 
 class BaseModel extends Model
 {

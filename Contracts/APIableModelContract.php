@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Core\Contracts;
+namespace Pingu\Core\Contracts;
 
 interface APIableModelContract
 {

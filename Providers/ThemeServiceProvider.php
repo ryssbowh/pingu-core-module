@@ -1,10 +1,10 @@
 <?php
-namespace Modules\Core\Providers;
+namespace Pingu\Core\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
-use Modules\Core\Console\{createTheme, refreshThemeCache, listThemes};
+use Pingu\Core\Console\{createTheme, refreshThemeCache, listThemes};
 
 class ThemeServiceProvider extends ServiceProvider
 {
@@ -16,7 +16,7 @@ class ThemeServiceProvider extends ServiceProvider
         |--------------------------------------------------------------------------*/
 
         $this->app->singleton('core.themes', function () {
-            return new \Modules\Core\Components\Themes();
+            return new \Pingu\Core\Components\Themes();
         });
 
         /*--------------------------------------------------------------------------
@@ -24,7 +24,7 @@ class ThemeServiceProvider extends ServiceProvider
         |--------------------------------------------------------------------------*/
 
         $this->app->singleton('view.finder', function ($app) {
-            return new \Modules\Core\Components\themeViewFinder(
+            return new \Pingu\Core\Components\themeViewFinder(
                 $app['files'],
                 $app['config']['view.paths'],
                 null

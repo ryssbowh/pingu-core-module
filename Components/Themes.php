@@ -1,9 +1,9 @@
 <?php 
 
-namespace Modules\Core\Components;
+namespace Pingu\Core\Components;
 
 use Illuminate\Support\Facades\Event;
-use Core\Modules\Exceptions\{themeAlreadyExists, themeNotFound};
+use Pingu\Core\Exceptions\{themeAlreadyExists, themeNotFound};
 
 class Themes
 {

@@ -1,7 +1,7 @@
 <?php 
-namespace Modules\Core\Components;
+namespace Pingu\Core\Components;
 
-use Modules\Core\Facades\Theme;
+use Pingu\Core\Facades\Theme;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\View\FileViewFinder;

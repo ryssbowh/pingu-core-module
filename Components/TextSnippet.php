@@ -1,8 +1,8 @@
 <?php
-namespace Modules\Core\Components;
+namespace Pingu\Core\Components;
 
-use Modules\Core\Entities\TextSnippet as SnippetModel;
-use Modules\Core\Events\TextSnippetTextRetrieved;
+use Pingu\Core\Entities\TextSnippet as SnippetModel;
+use Pingu\Core\Events\TextSnippetTextRetrieved;
 
 class TextSnippet
 {

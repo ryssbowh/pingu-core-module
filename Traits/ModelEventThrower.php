@@ -1,5 +1,5 @@
 <?php 
-namespace Modules\Core\Traits;
+namespace Pingu\Core\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
