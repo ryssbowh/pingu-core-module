@@ -5,6 +5,7 @@
 - Refactored controllers
 - added Routes/admin.php for core and new modules (stubs). Bound to 'access admin area' middleware.
 
+## v1.1.1 Install script
 ## v1.0.5 More readme, added todo section
 ## v1.0.4 Wrote Readme
  
