@@ -1,6 +1,6 @@
 # Core module
 
-## v1.0
+## v1.1
 - Fixed maintenance mode
 - Refactored controllers
 - added Routes/admin.php for core and new modules (stubs). Bound to 'access admin area' middleware.
