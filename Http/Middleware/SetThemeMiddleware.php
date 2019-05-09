@@ -19,17 +19,17 @@ class SetThemeMiddleware
     {   
         $segments = $request->segments();
         
-        if( isset( $segments[0]) and $segments[0] == 'admin' ){
-            if( !\Theme::exists(config('core.adminTheme'))) {
+        if(isset($segments[0]) and $segments[0] == 'admin'){
+            if(!\Theme::exists(config('core.adminTheme'))) {
                 throw new \Exception(config('core.adminTheme' )." isn't a valid admin theme", 1);
             }
-            \Theme::set( config('core.adminTheme' ));
+            \Theme::set(config('core.adminTheme'));
         }
         else{
-            if( !\Theme::exists(config('core.frontTheme'))) {
+            if(!\Theme::exists(config('core.frontTheme'))) {
                 throw new \Exception(config('core.frontTheme' )." isn't a valid front theme", 1);
             }
-            \Theme::set( config('core.frontTheme' ));
+            \Theme::set(config('core.frontTheme'));
         }
         $theme = \Theme::current();
         $assetPath = config('core.themes.themes_path').'/'.$theme->name.'/'.$theme->assetPath;

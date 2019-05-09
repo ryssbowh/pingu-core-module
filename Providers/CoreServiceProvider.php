@@ -7,6 +7,8 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use Pingu\Core\Http\Middleware\CheckForMaintenanceMode;
+use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Forms\Fields\Number;
 use Pingu\Forms\Fields\Text;
 use Spatie\TranslationLoader\LanguageLine;
@@ -25,10 +27,11 @@ class CoreServiceProvider extends ServiceProvider
     ];
 
     protected $webMiddlewares = [
+        CheckForMaintenanceMode::class
     ];
 
     protected $globalMiddlewares = [
-        \Pingu\Core\Http\Middleware\SetThemeMiddleware::class
+        SetThemeMiddleware::class
     ];
 
     /**

@@ -29,6 +29,12 @@ class CoreDatabaseSeeder extends Seeder
                 'Section' => 'Core',
                 'type' => Number::class,
                 'validation' => 'required|integer'
+            ],
+            'core.maintenance.message' => [
+                'Title' => 'Maintenance mode message',
+                'Section' => 'Core',
+                'type' => Text::class,
+                'validation' => 'required'
             ]
         ]);
 

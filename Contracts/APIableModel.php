@@ -1,7 +1,7 @@
 <?php
 namespace Pingu\Core\Contracts;
 
-interface APIableModelContract
+interface APIableModel
 {
 	public static function apiUrl();
 }

@@ -10,6 +10,3 @@
 | contains the "web" middleware group and the permission middleware "can:access admin area".
 |
 */
-
-
-Route::get('/','CoreController@adminHome');

@@ -5,6 +5,11 @@ return [
     'homepage' => '/',
     'adminTheme' => 'Admin',
     'frontTheme' => 'Default',
+    'maintenance' => [
+        'view' => 'core:maintenance-mode',
+        'retryAfter' => '1800',
+        'message' => 'This site is in maintenance, please try again later'
+    ],
     'themes' => [
         'themes_path' => 'themes',
         'views_path' => 'views',

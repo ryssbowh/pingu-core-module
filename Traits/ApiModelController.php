@@ -1,29 +1,29 @@
 <?php
 
-namespace Pingu\Core\Http\Controllers;
+namespace Pingu\Core\Traits;
 
-use Illuminate\Http\Request;
 use ContextualLinks,Notify;
+use Illuminate\Http\Request;
 use Pingu\Core\Entities\BaseModel;
+use Pingu\Forms\Contracts\FormableModel;
 use Pingu\Forms\Form;
 
-class ApiModelController extends Controller
+trait ApiModelController 
 {
 	/**
 	 * api entry point for getting models.
-	 * if looking at a relatedModel, the query can be modified in the method relatedJsGrid{Model} on your related model.
-	 * Example : if looking at a user's roles, the query can be modified in Role::relatedJsGridUser(Request, $user)
 	 * @param  Request $request
 	 * @return array
 	 */
-	public function index(Request $request){
-		$model = $this->checkIfRouteHasModel($request);
-		$model = new $model;
+	public function index(Request $request): array
+	{
+		$modelStr = $this->getModel();
+		$model = new $modelStr;
 
 		$filters = $request->post()['filters'];
 		$options = $request->post()['options'] ?? [];
 
-		$fieldsDef = (new $model)->fieldDefinitions();
+		$fieldsDef = $model->fieldDefinitions();
 		$query = $model->newQuery();
 		foreach($filters['fields'] as $field => $value){
 			$fieldDef = $fieldsDef[$field];
@@ -56,11 +56,11 @@ class ApiModelController extends Controller
 	/**
 	 * Updates a model
 	 * @param  Request $request
-	 * @return BaseModel
+	 * @return FormableModel
 	 */
-	public function update(Request $request)
+	public function update(Request $request): FormableModel
 	{
-		$model = $this->checkIfRouteHasModel($request);
+		$model = $this->getModel();
 		$post = $request->post();
 		$model = $model::findOrFail($post['id']);
 		$validator = $model->makeValidator($request, $model->editFormFields());
@@ -78,7 +78,7 @@ class ApiModelController extends Controller
 	 */
 	public function destroy(Request $request)
 	{
-		$model = $this->checkIfRouteHasModel($request);
+		$model = $this->getModel();
 		$id = $request->post()['id'];
 		$model = $model::findOrFail($id);
 		$model->delete();

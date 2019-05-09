@@ -1,14 +1,20 @@
 # Core module
- 
+
+## v1.0
+- Fixed maintenance mode
+- Refactored controllers
+- added Routes/admin.php for core and new modules (stubs). Bound to 'access admin area' middleware.
+
 ## v1.0.5 More readme, added todo section
 ## v1.0.4 Wrote Readme
  
 ## TODO
-- [ ] Make admin home page
+- [x] Make admin home page
 - [x] make composer install themes in proper folder automatically
 - [ ] write an install script
 - [ ] Include themes in merge-packages command
 - [ ] Fix modules views publishing
+- [ ] Maintenance mode switcher in back end
  
 ### Notify
 Notify is a facade used to display messages to the user. it uses session to store them. see Components/Notify.php.
@@ -31,7 +37,7 @@ Provides with an api controller for models that handles some basic operation on 
  
 Provides with an model controller that allows creating/editing through a form.
  
-Provides with a base controller that has a method that checks if the route has a model attached to it. This is useful when you want to attach a model to a route : `Route::get('a-route', ['model' => Page::class])`. You can then use the model controller.
+Any controller can implements ModelController Contract and define a `getModel` method. The model must implement `FormableModel`. The rest is done automatically (given that you have defined your fields for your model)
  
 ### Middlewares
 the HomepageMiddleware sets the homepage when the uri is /.
@@ -75,3 +81,8 @@ Config includes the admin and front theme, and the config used by [igaster/larav
  
 ### Schema less attributes
 You'll find occurences of schema less attributes package, used to add attributes to models without changing the code of the model. This is promising but is not in use now.
+
+### Maintenance mode
+maintenance mode is to be set by command only.
+default laravel middleware has been overwritten to allow /login to be accessible and to allow users with permissions 'use site in maintenance mode' to use the site normally.
+Message, retry after and view defined in config.
