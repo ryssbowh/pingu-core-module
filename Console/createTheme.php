@@ -65,11 +65,15 @@ class createTheme extends baseThemeCommand
         $this->createComposerFile($themeName);
         $this->createWebpackFile($themeName, $assetPath);
         $this->createReadmeFile($themeName);
+        $this->createConfigFile($themeName);
+        $this->createPackageFile($themeName);
+        $this->createComposeFile($themeName);
 
         $themeJson->saveToFile(themes_path($themeName."/theme.json"));
 
         // Rebuild Themes Cache
         Theme::rebuildCache();
+        $this->info("Theme created !");
     }
 
     public function createComposerFile($name)
@@ -93,6 +97,26 @@ class createTheme extends baseThemeCommand
     public function createReadmeFile($themeName)
     {
         $this->files->put(themes_path($themeName).'/README.md', '');
+    }
+
+    public function createConfigFile($themeName)
+    {
+        $content = file_get_contents(module_path('Core').'/stubs/themes/config.stub');
+        $this->files->put(themes_path($themeName).'/config.php', $content);
+    }
+
+    public function createPackageFile($themeName)
+    {
+        $content = file_get_contents(module_path('Core').'/stubs/themes/package.stub');
+        $this->files->put(themes_path($themeName).'/package.json', $content);
+    }
+
+    public function createComposeFile($themeName)
+    {
+        $content = file_get_contents(module_path('Core').'/stubs/themes/composer_composers.stub');
+        $content = str_replace('$NAME$', $themeName, $content);
+        $this->files->put(themes_path($themeName).'/Composer.php', $content);
+        exec('composer du');
     }
 
 }

@@ -1,0 +1,15 @@
+<?php
+
+namespace Pingu\Themes\$THEME$\Composers;
+
+class $NAME$
+{
+	/**
+	 * Define the variable that will be available for that view.
+	 * @param  [type] $view [description]
+	 */
+	public function compose($view)
+	{
+
+	}
+}

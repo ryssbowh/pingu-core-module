@@ -3,7 +3,8 @@
 namespace $CLASS_NAMESPACE$;
 
 use Illuminate\Routing\Controller;
+use Pingu\Core\Http\Controllers\BaseController;
 
-class $CLASS$ extends Controller
+class $CLASS$ extends BaseController
 {
 }

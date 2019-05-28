@@ -13,7 +13,9 @@
         "Theme" : "Pingu\\Core\\Facades\\Theme",
         "TextSnippet":"Pingu\\Core\\Facades\\TextSnippet",
         "ContextualLinks":"Pingu\\Core\\Facades\\ContextualLinks",
-        "Notify":"Pingu\\Core\\Facades\\Notify"
+        "Notify":"Pingu\\Core\\Facades\\Notify",
+        "ThemeConfig":"Pingu\\Core\\Facades\\ThemeConfig",
+        "DebugBar":"Barryvdh\\Debugbar\\Facade"
     },
     "files": [
         "start.php"

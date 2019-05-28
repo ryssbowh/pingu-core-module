@@ -4,12 +4,14 @@ return [
     'name' => 'Core',
     'homepage' => '/',
     'adminTheme' => 'Admin',
-    'frontTheme' => 'Default',
+    'frontTheme' => 'Front',
     'maintenance' => [
         'view' => 'core:maintenance-mode',
         'retryAfter' => '1800',
         'message' => 'This site is in maintenance, please try again later'
     ],
+    'apiPrefix' => '/api/',
+    'adminPrefix' => '/admin/',
     'themes' => [
         'themes_path' => 'themes',
         'views_path' => 'views',

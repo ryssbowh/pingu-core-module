@@ -4,6 +4,7 @@ namespace Pingu\Core\Components;
 
 use Illuminate\Support\Facades\Event;
 use Pingu\Core\Exceptions\{themeAlreadyExists, themeNotFound};
+use ThemeConfig, View;
 
 class Themes
 {
@@ -76,9 +77,14 @@ class Themes
         $paths = $theme->getViewPaths();
 
         config(['view.paths' => $paths]);
+        $config = (include $theme->getPath('config.php'));
+        ThemeConfig::setConfig($config);
 
         $themeViewFinder = app('view.finder');
         $themeViewFinder->setPaths($paths);
+
+        $composersClass = "Pingu\\Themes\\".$theme->name."\\Composer";
+        View::composers($composersClass::getComposers());
 
         Event::dispatch('core.theme.change', $theme);
         return $theme;

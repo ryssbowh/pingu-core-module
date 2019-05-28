@@ -1,12 +1,14 @@
 <?php 
 namespace Pingu\Core\Traits;
 
-trait APIableModel {
+use Pingu\Core\Exceptions\UriReplacementsSize;
+
+trait AdminableModel {
 
 	/**
 	 * @inheritDoc
 	 */
-	public static function apiIndexUri()
+	public static function adminIndexUri()
 	{
 		return self::routeSlugs();
 	}
@@ -14,7 +16,7 @@ trait APIableModel {
 	/**
 	 * @inheritDoc
 	 */
-	public static function apiPatchUri()
+	public static function adminPatchUri()
 	{
 		return self::routeSlugs();
 	}
@@ -22,7 +24,7 @@ trait APIableModel {
 	/**
 	 * @inheritDoc
 	 */
-	public static function apiCreateUri()
+	public static function adminCreateUri()
 	{
 		return self::routeSlugs().'/create';
 	}
@@ -30,7 +32,7 @@ trait APIableModel {
 	/**
 	 * @inheritDoc
 	 */
-	public static function apiStoreUri()
+	public static function adminStoreUri()
 	{
 		return self::routeSlugs();
 	}
@@ -38,7 +40,7 @@ trait APIableModel {
 	/**
 	 * @inheritDoc
 	 */
-	public static function apiEditUri()
+	public static function adminEditUri()
 	{
 		return self::routeSlug().'/{'.self::routeSlug().'}/edit';
 	}
@@ -46,7 +48,7 @@ trait APIableModel {
 	/**
 	 * @inheritDoc
 	 */
-	public static function apiUpdateUri()
+	public static function adminUpdateUri()
 	{
 		return self::routeSlug().'/{'.self::routeSlug().'}';
 	}
@@ -54,7 +56,7 @@ trait APIableModel {
 	/**
 	 * @inheritDoc
 	 */
-	public static function apiDeleteUri()
+	public static function adminDeleteUri()
 	{
 		return self::routeSlug().'/{'.self::routeSlug().'}';
 	}
@@ -65,12 +67,11 @@ trait APIableModel {
 	 * @param  $prefixed bool
 	 * @return ?string
 	 */
-	public static function getApiUri(string $action, $prefixed = false)
+	public static function getAdminUri(string $action, $prefixed = false)
 	{	
-		$method = 'api'.ucfirst($action).'Uri';
+		$method = 'admin'.ucfirst($action).'Uri';
 		if(method_exists(__CLASS__, $method)){
-			$uri = ($prefixed ? config('core.apiPrefix') : '').static::$method();
-			return '/'.ltrim($uri, '/');
+			return ($prefixed ? config('core.adminPrefix') : '').static::$method();
 		}
 		return null;
 	}
@@ -81,11 +82,11 @@ trait APIableModel {
 	 * @param  boolean $prefixed
 	 * @return ?string
 	 */
-	public static function transformApiUri(string $action, array $replacements, $prefixed = false)
+	public static function transformAdminUri(string $action, array $replacements, $prefixed = false)
 	{
-		$method = 'api'.ucfirst($action).'Uri';
+		$method = 'admin'.ucfirst($action).'Uri';
 		if(method_exists(__CLASS__, $method)){
-			$uri = ($prefixed ? config('core.apiPrefix') : '').static::$method();
+			$uri = ($prefixed ? config('core.adminPrefix') : '').static::$method();
 			return replaceUriSlugs($uri, $replacements);
 		}
 		return null;

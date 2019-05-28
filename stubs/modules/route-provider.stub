@@ -36,6 +36,8 @@ class $CLASS$ extends ServiceProvider
         $this->mapApiRoutes();
 
         $this->mapWebRoutes();
+
+        $this->mapAdminRoutes();
     }
 
     /**
@@ -55,7 +57,7 @@ class $CLASS$ extends ServiceProvider
     /**
      * Define the "api" routes for the application.
      *
-     * These routes are typically stateless.
+     * These routes are typically stateless and are prefixed with 'api'
      *
      * @return void
      */
@@ -70,7 +72,8 @@ class $CLASS$ extends ServiceProvider
     /**
      * Define the "admin web" routes for the application.
      *
-     * These routes are typically stateless.
+     * These routes belongs to "web" middleware group and are subject to 'access admin area' permissions
+     * They are prefixed with 'admin' 
      *
      * @return void
      */

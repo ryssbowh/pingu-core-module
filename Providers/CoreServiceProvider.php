@@ -7,6 +7,9 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use Pingu\Core\Console\MakeComposer;
+use Pingu\Core\Console\MergePackages;
+use Pingu\Core\Http\Middleware\ActivateDebugBar;
 use Pingu\Core\Http\Middleware\CheckForMaintenanceMode;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Forms\Fields\Number;
@@ -27,7 +30,8 @@ class CoreServiceProvider extends ServiceProvider
     ];
 
     protected $webMiddlewares = [
-        CheckForMaintenanceMode::class
+        CheckForMaintenanceMode::class,
+        ActivateDebugBar::class
     ];
 
     protected $globalMiddlewares = [
@@ -69,7 +73,8 @@ class CoreServiceProvider extends ServiceProvider
     public function registerCommands(){
         if ($this->app->runningInConsole()) {
             $this->commands([
-                \Pingu\Core\Console\MergePackages::class
+                MergePackages::class,
+                MakeComposer::class
             ]);
         }
     }
@@ -84,19 +89,20 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton('core.textSnippet', \Pingu\Core\Components\TextSnippet::class);
         $this->app->singleton('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
         $this->app->singleton('core.notify', \Pingu\Core\Components\Notify::class);
+        $this->app->singleton('core.themeConfig', \Pingu\Core\Components\ThemeConfig::class);
         $this->app->register(RouteServiceProvider::class);
     }
 
     public function registerRouteMiddlewares(Router $router)
     {
-        foreach( $this->routeMiddlewares as $name => $middleware){
+        foreach($this->routeMiddlewares as $name => $middleware){
             $router->aliasMiddleware($name, $middleware);
         }
     }
 
     public function registerGlobalMiddlewares(Kernel $kernel)
     {
-        foreach( $this->globalMiddlewares as $middleware){
+        foreach($this->globalMiddlewares as $middleware){
             $kernel->pushMiddleware($middleware);
         }
     }

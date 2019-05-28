@@ -16,6 +16,18 @@
         "moment-timezone": "^0.5.23",
         "popper.js": "^1.14.7",
         "tempusdominus-bootstrap-4": "^5.1.2",
-        "tempusdominus-core": "^5.0.3"
+        "tempusdominus-core": "^5.0.3",
+        "laravel-mix": "^4.0.15",
+        "axios": "^0.18",
+        "browser-sync": "^2.26.3",
+        "browser-sync-webpack-plugin": "^2.2.2",
+        "cross-env": "^5.1.4",
+        "laravel-mix-merge-manifest": "^0.1.2",
+        "font-awesome": "^4.7.0",
+        "directory-list": "^1.1.1",
+        "sass": "^1.20.1",
+        "sass-loader": "^7.1.0",
+        "resolve-url-loader": "^2.3.1",
+        "vue-template-compiler": "^2.6.10"
     }
 }

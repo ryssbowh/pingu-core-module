@@ -4,6 +4,8 @@ namespace Pingu\Core\Entities;
 
 use Greabock\Tentacles\EloquentTentacle;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use Pingu\Core\Exceptions\FieldNotFillable;
 use Pingu\Core\Traits\ModelEventThrower;
 
 class BaseModel extends Model
@@ -15,38 +17,61 @@ class BaseModel extends Model
     public static $friendlyName;
     protected static $recordEvents = ['created','updated','deleted'];
 
-    public static function urlSegment()
+    /**
+     * Routes slugs (plural)
+     * @return string
+     */
+    public static function routeSlugs()
     {
-        return kebab_case(self::friendlyName());
+        return str_plural(Str::snake(class_basename(static::class)));
     }
 
-    public static function urlSegments()
-    {
-        return str_plural(self::urlSegment());
-    }
-
+    /**
+     * Route slug (singular)
+     * @return string
+     */
     public static function routeSlug()
     {
-        return classname(static::class);
+        return Str::snake(class_basename(static::class));
     }
 
+    /**
+     * Model's friendly name
+     * @return [type] [description]
+     */
     public static function friendlyName()
     {
     	return static::$friendlyName ?? friendlyClassname(static::class);
     }
 
-    public function getContextualLinks()
+    /**
+     * Determine if the given attribute may be mass assigned.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function isFillable($key)
     {
-        return [];
+        $isFillable = parent::isFillable($key);
+        if(!$isFillable){
+            throw new FieldNotFillable("Field $key of ".get_class($this)." is not fillable");
+        }
+        return $isFillable;
     }
 
-    public static function adminAddUrl()
-    {
-        return '/admin/'.self::urlSegments().'/create';
+    /**
+     * Static accessible getKeyName
+     * @return  string
+     */
+    protected static function keyName() {
+        return (new static)->getKeyName();
     }
 
-    public static function adminEditUrl()
-    {
-        return '/admin/'.self::urlSegment();
+    /**
+     * Static acessible table name
+     * @return string
+     */
+    protected static function tableName() {
+        return (new static)->getTable();
     }
 }

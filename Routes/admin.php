@@ -13,3 +13,13 @@
 
 
 Route::get('/','CoreController@adminHome');
+Route::get('/settings/core', ['uses' => 'CoreSettingsController@index'])
+	->middleware('can:view core settings')
+	->name('settings.admin.core');
+
+Route::get('/settings/core/edit', ['uses' => 'CoreSettingsController@edit'])
+	->middleware('can:edit core settings')
+	->name('settings.admin.core.edit');
+
+Route::post('/settings/core/edit', ['uses' => 'CoreSettingsController@update'])
+	->middleware('can:edit core settings');

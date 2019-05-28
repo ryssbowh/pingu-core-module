@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Module;
 use Exception;
+use Theme;
 
 class MergePackages extends Command
 {
@@ -243,16 +244,26 @@ class MergePackages extends Command
             throw new Exception('Auto resolve argument is not valid, accepted values are : ask, higher, lower');
         }
 
-        $basePackage = base_path().'/package.json';
-        $packages = $this->decodeFile($basePackage);
-        $final['package.json'] = $this->mergeDevAndDependencies($packages['dependencies'] ?? [], $packages['devDependencies'] ?? [], 'package.json');
-
-        if($modules = Module::all()){
-            foreach ($modules as $module) {
+        if($modules = Module::getOrdered()){
+            foreach ($modules as $index => $module) {
                 $file = $module->getPath().'/package.json';
                 if(file_exists($file)){
                     $moduleJson = $this->decodeFile($file);
-                    $final[$module->getName()] = $this->mergeDevAndDependencies($moduleJson['dependencies'] ?? [], $moduleJson['devDependencies'] ?? [], $module->getName());
+                    if($index == 'Core'){
+                        //Core module is responsible for the base package, the others only define dependencies
+                        $packages = $moduleJson;
+                    }
+                    $final[$module->getName().' module'] = $this->mergeDevAndDependencies($moduleJson['dependencies'] ?? [], $moduleJson['devDependencies'] ?? [], $module->getName());
+                }
+            }
+        }
+
+        if($themes = Theme::all()){
+            foreach ($themes as $theme) {
+                $file = $theme->getPath('/package.json');
+                if(file_exists($file)){
+                    $themeJson = $this->decodeFile($file);
+                    $final[$theme->name.' theme'] = $this->mergeDevAndDependencies($themeJson['dependencies'] ?? [], $themeJson['devDependencies'] ?? [], $theme->name);
                 }
             }
         }

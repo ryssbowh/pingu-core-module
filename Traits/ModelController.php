@@ -4,6 +4,7 @@ namespace Pingu\Core\Traits;
 
 use ContextualLinks,Notify;
 use Illuminate\Http\Request;
+use Pingu\Core\Contracts\HasContextualLinks;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Forms\Contracts\FormableModel;
 use Pingu\Forms\Form;
@@ -36,7 +37,7 @@ trait ModelController
 	{
 		return view('pages.editModel')->with([
 			'form' => $form,
-			'object' => $model::friendlyName(),
+			'model' => $model,
 		]);
 	}
 
@@ -72,7 +73,7 @@ trait ModelController
 	 */
 	protected function addContextualLinks(BaseModel $model)
 	{
-		ContextualLinks::addLinks($model->getContextualLinks());
+		if($model instanceof HasContextualLinks) ContextualLinks::addModelLinks($model);
 	}
 
 	/**
@@ -83,7 +84,7 @@ trait ModelController
 	 */
 	public function update(Request $request, FormableModel $model)
 	{
-		$validated = $this->validateUpdateModelRequest($request, $model);
+		$validated = $this->validateUpdateRequest($request, $model);
 
 		try{
 			$changes = $model->saveWithRelations($validated);
@@ -120,7 +121,7 @@ trait ModelController
 	 */
 	protected function onUpdateSuccess(Request $request, BaseModel $model)
 	{
-		Notify::put('success', $model::friendlyName().' has been saved');
+		Notify::success($model::friendlyName().' has been saved');
 	}
 
 	/**
@@ -131,7 +132,7 @@ trait ModelController
 	 */
 	protected function onUpdateFailure(Request $request, BaseModel $model, ModelNotSaved $exception)
 	{
-		Notify::put('error', 'Error while saving '.$model::friendlyName());
+		Notify::error('Error while saving '.$model::friendlyName());
 	}
 
 	/**
@@ -142,7 +143,7 @@ trait ModelController
 	 */
 	protected function onUpdateRelationshipsFailure(Request $request, BaseModel $model, ModelRelationsNotSaved $exception)
 	{
-		Notify::put('error', $model::friendlyName().' was partially saved, check manually');
+		Notify::error($model::friendlyName().' was partially saved, check manually');
 	}
 
 	/**
@@ -153,7 +154,7 @@ trait ModelController
 	 */
 	protected function validateUpdateModelRequest(Request $request, FormableModel $model)
 	{
-		return $model->validateForm($request, $model->editFormFields());
+		return $model->validateForm($request->post(), $model->editFormFields());
 	}
 
 	/**
@@ -163,7 +164,7 @@ trait ModelController
 	 */
 	public function onModelSavedNoChanges(Request $request, BaseModel $model)
 	{
-		Notify::put('info', 'No changes made to '.$model::friendlyName());
+		Notify::info('No changes made to '.$model::friendlyName());
 	}
 
 	/**
@@ -173,7 +174,7 @@ trait ModelController
 	 */
 	public function onModelSavedChanges(Request $request, BaseModel $model)
 	{
-		Notify::put('success', $model::friendlyName().' has been saved');
+		Notify::success($model::friendlyName().' has been saved');
 	}
 
 	/**
@@ -199,7 +200,7 @@ trait ModelController
 	{
 		return view('pages.addModel')->with([
 			'form' => $form,
-			'object' => $this->getModel()::friendlyName(),
+			'model' => $this->getModel(),
 		]);
 	}
 
@@ -243,7 +244,7 @@ trait ModelController
 		$modelStr = $this->getModel();
 		$model = new $modelStr;
 
-		$validated = $this->validateStoreModelRequest($request, $model);
+		$validated = $this->validateStoreRequest($request, $model);
 
 		try{
 			$model->saveWithRelations($validated);
@@ -274,9 +275,9 @@ trait ModelController
 	 * @param  FormableModel $model 
 	 * @return array
 	 */
-	protected function validateStoreModelRequest(Request $request, FormableModel $model)
+	protected function validateStoreRequest(Request $request, FormableModel $model)
 	{
-		return $model->validateForm($request, $model->addFormFields());
+		return $model->validateForm($request->post(), $model->addFormFields());
 	}
 
 	/**
@@ -286,7 +287,7 @@ trait ModelController
 	 */
 	protected function onStoreSuccess(Request $request, BaseModel $model)
 	{
-		Notify::put('success', $model::friendlyName().' has been saved');
+		Notify::success($model::friendlyName().' has been saved');
 	}
 
 	/**
@@ -297,7 +298,7 @@ trait ModelController
 	 */
 	protected function onStoreFailure(Request $request, BaseModel $model, ModelNotSaved $exception)
 	{
-		Notify::put('info', 'Error while saving '.$model::friendlyName());
+		Notify::info('Error while saving '.$model::friendlyName());
 	}
 
 	/**
@@ -308,7 +309,7 @@ trait ModelController
 	 */
 	protected function onStoreRelationshipsFailure(Request $request, BaseModel $model, ModelRelationsNotSaved $exception)
 	{
-		Notify::put('info', $model::friendlyName().' was partially saved, check manually');
+		Notify::info($model::friendlyName().' was partially saved, check manually');
 	}
 
 }

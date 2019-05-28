@@ -1,10 +1,12 @@
 <?php
 namespace Pingu\Core\Providers;
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Pingu\Core\Console\{createTheme, refreshThemeCache, listThemes};
+use Pingu\Core\Http\Middleware\SetApiThemeMiddleware;
 
 class ThemeServiceProvider extends ServiceProvider
 {
@@ -33,8 +35,10 @@ class ThemeServiceProvider extends ServiceProvider
 
     }
 
-    public function boot()
+    public function boot(Router $router)
     {
+        //Add middleware
+        $router->pushMiddlewareToGroup('api', SetApiThemeMiddleware::class);
 
         /*--------------------------------------------------------------------------
         | Initialize Themes

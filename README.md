@@ -1,5 +1,18 @@
 # Core module
 
+## v1.1.2 
+- Refactored model controller
+- made HasChildren interface
+- made HasItems interface
+- made HasContextualLinks interface
+- refactored model api controller
+- Added theme config
+- Added theme composers
+- Added base npm dependencies into core and ignored them in merge-packages command
+- removed setApiMiddleware
+- Adaptation to Settings refactoring
+- filling a basemodel field that is not fillable throws an exception
+
 ## v1.1
 - Fixed maintenance mode
 - Refactored controllers
@@ -8,12 +21,12 @@
 ## v1.1.1 Install script
 ## v1.0.5 More readme, added todo section
 ## v1.0.4 Wrote Readme
- 
+
 ## TODO
 - [x] Make admin home page
 - [x] make composer install themes in proper folder automatically
-- [ ] write an install script
-- [ ] Include themes in merge-packages command
+- [x] write an install script
+- [x] Include themes in merge-packages command
 - [ ] Fix modules views publishing
 - [ ] Maintenance mode switcher in back end
  
@@ -24,12 +37,12 @@ Notify is a facade used to display messages to the user. it uses session to stor
 That was a test but is not used atm.
  
 ### Contextual Links
-Contextual links are used to display links when viewing a model. The idea is to make it so that any page can have contextual links but at the moment is defined at model only.
+Contextual links are used to display links when viewing a model. The idea is to make it so that any page can have contextual links but at the moment is defined at model only. Your model must implements `HasContextualLinks`.
  
 Will probably need rewritten as not the most intuitive way to use it.
  
 ### Api
-Provides a contract to make a model Apiable, this contract only has one method for now (apiUrl).
+Provides a contract to make a model Apiable, and a controller contract to handle basic operations. Your model must implement `Apiable` and your controller must implement the `ApiModelController`
  
 Visible fields for an api request are set by the models $visible variable.
  
@@ -42,8 +55,6 @@ Any controller can implements ModelController Contract and define a `getModel` m
  
 ### Middlewares
 the HomepageMiddleware sets the homepage when the uri is /.
- 
-the setApiMiddleware sets the theme for an api call (theme is set by the call through a \_isAdmin variable).
  
 the setThemeMiddleware sets the current theme. If the url starts with /admin the theme will be the admin theme defined in config.
  
@@ -58,6 +69,8 @@ The code from [igaster/laravel-theme](https://github.com/igaster/laravel-theme) 
 Changes to it includes :
 - removed default laravel view location, all views belong to a theme here
 - rewrote findNamespacedView of themeViewFinder
+- Themes can define a config which will override the normal config. Access it with `theme_config()` which will return the normal config if it doesn not exists in your theme.
+- Themes can define Composers to add variables to any view. use the command `module:make-composer`.
  
 ### Commands
 Includes commands provided by [igaster/laravel-theme](https://github.com/igaster/laravel-theme) from which packaging commands have been removed.
@@ -68,14 +81,22 @@ The core:merge-packages will look at the base packages.json and all modules pack
 Stubs are used to generate files when creating modules or themes.
  
 ### Assets
-sass and js can be define in any module or theme. packages.json can be defined in modules.
-@todo extend this functionnality to themes.
+sass and js can be defined in any module or theme. packages.json can be defined in themes or modules. The base package.json is ignored by git, the Core one is responsible for its content.
  
 When adding a library to a module's packages.json, you'll need to run the command `./artisan core:merge-packages` in order to merge them into a master packages.json at the root folder. Then you can run npm run watch. This way, when using `mix.extract` all the libraries will be in 2 separate files, vendor.js and manifest.js.
  
 A good practice in js would be to have a file for each module to provide with functions that may be reused. The core module would have a core.js file that exports Core. Other modules can then import it with a `import Core from 'core';`
+
+In order to have core available from other js files you'll need to add an alias in `webpack.mix.js` of your module :
+`mix.webpackConfig({
+  resolve: {
+    alias: {
+      'core': path.resolve(assetPath + '/js/components', './core')
+    }
+  }
+});`
  
-Core comes with helpers for ajax that may be reused.
+Core comes with helpers for ajax that may be reused. If you use those helpers the failed calls will be dumped in the console.
  
 ### Config
 Config includes the admin and front theme, and the config used by [igaster/laravel-theme](https://github.com/igaster/laravel-theme)

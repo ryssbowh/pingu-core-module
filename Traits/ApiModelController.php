@@ -4,28 +4,36 @@ namespace Pingu\Core\Traits;
 
 use ContextualLinks,Notify;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Forms\Contracts\FormableModel;
 use Pingu\Forms\Form;
+use Pingu\Forms\FormModel;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 trait ApiModelController 
 {
 	/**
-	 * api entry point for getting models.
-	 * @param  Request $request
-	 * @return array
+	 * @inheritDoc
 	 */
 	public function index(Request $request): array
 	{
 		$modelStr = $this->getModel();
 		$model = new $modelStr;
 
-		$filters = $request->post()['filters'];
-		$options = $request->post()['options'] ?? [];
+		$filters = $request->input('filters', []);
+		$options = $request->input('options', []);
+		$pageIndex = $request->input('pageIndex', 1);
+		$pageSize = $request->input('pageSize', $model->getPerPage());
+		$sortField = $request->input('sortField', $model->getKeyName());
+		$sortOrder = $request->input('sortOrder', 'asc');
 
 		$fieldsDef = $model->fieldDefinitions();
 		$query = $model->newQuery();
-		foreach($filters['fields'] as $field => $value){
+		foreach($filters as $field => $value){
+			if(!isset($fieldsDef[$field])){
+				throw new HttpException(422, "field $field is not defined");
+			}
 			$fieldDef = $fieldsDef[$field];
 			if(!is_null($value)){
 				$fieldDef['type']::fieldQueryModifier($query, $field, $value);
@@ -34,53 +42,278 @@ trait ApiModelController
 
 		if(isset($options['relatedModel'])){
 			$relatedModel = $options['relatedModel']::find($options['relatedId']);
-			$method = 'relatedJsGrid'.classname($options['relatedModel']);
+			$method = 'relatedJsGrid'.class_basename($options['relatedModel']);
 			$model::$method($query, $relatedModel);
 		}
 
 		$count = $query->count();
 
-		if(isset($filters['sortField'])){
-			$query->orderBy($filters['sortField'], $filters['sortOrder']);
+		if($sortField){
+			$query->orderBy($sortField, $sortOrder);
 		}
 
-		if(isset($filters['pageIndex'])){
-			$query->offset(($filters['pageIndex']-1) * $filters['pageSize'])->take($filters['pageSize']);
-		}
+		$query->offset(($pageIndex-1) * $pageSize)->take($pageSize);
 
 		$models = $query->get();
 
-		return ['data' => $models->toArray(), 'total' => $count];
+		return ['models' => $models->toArray(), 'total' => $count];
 	}
 
 	/**
-	 * Updates a model
-	 * @param  Request $request
-	 * @return FormableModel
+	 * @inheritDoc
 	 */
-	public function update(Request $request): FormableModel
+	public function edit(Request $request, FormableModel $model): array
 	{
-		$model = $this->getModel();
-		$post = $request->post();
-		$model = $model::findOrFail($post['id']);
-		$validator = $model->makeValidator($request, $model->editFormFields());
-		$validator->validate();
-		$model->formFill($validator->validated());
-		$model->save();
-		$model->saveRelationships($validator->validated());
-		$model->refresh();
+		$form = new FormModel(
+			['url' => $this->getUpdateUri($request), 'method' => 'PUT'], 
+			['submit' => ['Save'], 'view' => 'forms.modal', 'title' => 'Edit a '.$model::friendlyName()], 
+			$model
+		);
+		$this->afterUpdateFormCreated($request, $form);
+		$form->end();
+		return ['form' => $form->renderAsString()];
+	}
+
+	/**
+	 * Gets the update uri
+	 * @param  Request $request
+	 * @return string
+	 */
+	protected function getUpdateUri(Request $request)
+	{
+		return rtrim($request->path(), '/edit');
+	}
+
+	/**
+	 * Modify an update form
+	 * @param  Request $request
+	 * @param  Form    $form
+	 */
+	protected function afterUpdateFormCreated(Request $request, Form $form){}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function update(Request $request, FormableModel $model): array
+	{	
+		$validated = $this->validateUpdateRequest($request, $model);
+
+		try{
+			$model->saveWithRelations($validated);
+		}
+		catch(ModelNotSaved $e){
+			$this->onUpdateFailure($request, $model, $e);
+		}
+		catch(ModelRelationsNotSaved $e){
+			$this->onUpdateRelationshipsFailure($request, $model, $e);
+		}
+
+		return $this->onSuccessfullUpdate($request, $model);
+	}
+
+	/**
+	 * Callback when model can't be saved
+	 * @param  Request   $request
+	 * @param  BaseModel $model
+	 * @param  ModelNotSaved $exception 
+	 */
+	protected function onUpdateFailure(Request $request, BaseModel $model, ModelNotSaved $exception)
+	{
+		throw new HttpException(422, $exception->getMessage());
+	}
+
+	/**
+	 * Callback when model's relationships can't be saved
+	 * @param  Request   $request
+	 * @param  BaseModel $model
+	 * @param  ModelRelationsNotSaved $exception 
+	 */
+	protected function onUpdateRelationshipsFailure(Request $request, BaseModel $model, ModelRelationsNotSaved $exception)
+	{
+		throw new HttpException(422, $exception->getMessage());
+	}
+
+	/**
+	 * Returns data after a successfull update
+	 * @param  Request       $request
+	 * @param  FormableModel $model
+	 * @return array
+	 */
+	protected function onSuccessfullUpdate(Request $request, FormableModel $model)
+	{
+		return ['model' => $model, 'message' => $model::friendlyname().' has been updated'];
+	}
+
+	/**
+	 * Vaildates an update request and returns validated data
+	 * @param  Request       $request
+	 * @param  FormableModel $model
+	 * @return array
+	 */
+	protected function validateUpdateRequest(Request $request, FormableModel $model)
+	{
+		return $model->validateForm($request->post(), $model->editFormFields());
+	}
+
+	/**
+	 * Called before destroying a model
+	 * @param  Request       $request
+	 * @param  FormableModel $model
+	 */
+	protected function onDestroying(Request $request, FormableModel $model)
+	{}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function destroy(Request $request, FormableModel $model): array
+	{
+		$this->onDestroying($request, $model);
+		$model = $model->delete();
+		return $this->onSuccessfullDeletion($request);
+	}
+
+	/**
+	 * returns data after successfull deletion
+	 * @param  Request $request
+	 * @return array
+	 */
+	protected function onSuccessfullDeletion(Request $request)
+	{
+		return ['message' => $this->getModel()::friendlyName().' has been deleted'];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function store(Request $request): array
+	{
+		$modelStr = $this->getModel();
+		$model = new $modelStr;
+
+		$validated = $this->validateStoreRequest($request, $model);
+
+		try{
+			$model->saveWithRelations($validated);
+		}
+		catch(ModelNotSaved $e){
+			$this->onStoreFailure($request, $model, $e);
+		}
+		catch(ModelRelationsNotSaved $e){
+			$this->onStoreRelationshipsFailure($request, $model, $e);
+		}
+
+		return $this->onStoreSuccess($request, $model);
+	}
+
+	/**
+	 * Validates a request and return validated array
+	 * @param  Request   $request
+	 * @param  FormableModel $model 
+	 * @return array
+	 */
+	protected function validateStoreRequest(Request $request, FormableModel $model)
+	{
+		return $model->validateForm($request->post(), $model->addFormFields());
+	}
+
+	/**
+	 * Callback when model can't be saved
+	 * @param  Request   $request
+	 * @param  BaseModel $model
+	 * @param  ModelNotSaved $exception 
+	 */
+	protected function onStoreFailure(Request $request, BaseModel $model, ModelNotSaved $exception)
+	{
+		throw new HttpException(422, $exception->getMessage());
+	}
+
+	/**
+	 * Callback when model's relationships can't be saved
+	 * @param  Request   $request
+	 * @param  BaseModel $model
+	 * @param  ModelRelationsNotSaved $exception 
+	 */
+	protected function onStoreRelationshipsFailure(Request $request, BaseModel $model, ModelRelationsNotSaved $exception)
+	{
+		throw new HttpException(422, $exception->getMessage());
+	}
+
+	/**
+	 * [afterSuccessfullStore description]
+	 * @param  Request       $request [description]
+	 * @param  FormableModel $model   [description]
+	 * @return [type]                 [description]
+	 */
+	protected function onStoreSuccess(Request $request, FormableModel $model)
+	{
+		return ['model' => $model, 'message' => $model::friendlyName()." has been created"];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get(Request $request, FormableModel $model): FormableModel
+	{
 		return $model;
 	}
 
 	/**
-	 * Deletes a model
-	 * @param  Request $request
+	 * @inheritDoc
 	 */
-	public function destroy(Request $request)
+	protected function getStoreUri(Request $request): string
 	{
 		$model = $this->getModel();
-		$id = $request->post()['id'];
-		$model = $model::findOrFail($id);
-		$model->delete();
+		return $model::getApiUri('store');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function create(Request $request): array
+	{	
+		$model = $this->getModel();
+		$form = new FormModel(
+			['url' => $this->getStoreUri($request), 'method' => 'POST'], 
+			['submit' => ['Save'], 'view' => 'forms.modal', 'title' => 'Add a '.$model::friendlyName()], 
+			$model
+		);
+		$this->afterStoreFormCreated($request, $form);
+		$form->end();
+		return ['form' => $form->renderAsString()];
+	}
+
+	protected function afterStoreFormCreated(Request $request, Form $form){}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function patch(Request $request): array
+	{
+		$post = $request->post();
+		if(!isset($post['models'])){
+			throw new HttpException(422, "'models' must be set for a patch request");
+		}
+		$model = $this->getModel();
+		$model = new $model;
+		$models = collect();
+		foreach($post['models'] as $data){
+			if(!isset($data[$model->getKeyName()])){
+				throw new HttpException(422, "The primary key is not set for ".$model::friendlyName());
+			}
+			$item = $this->getModel()::findOrFail($data[$model->getKeyName()]);
+			unset($data[$model->getKeyName()]);
+			$validated = $item->validateForm($data, array_keys($data));
+			$item->saveWithRelations($validated);
+			$item->refresh();
+			$models[] = $item;
+
+		}
+		return $this->onSuccessfullPatch($request, $models);
+	}
+
+	public function onSuccessfullPatch(Request $request, Collection $models): array
+	{
+		return ['message' => str_plural($this->getModel()::friendlyName())." have been updated", 'models' => $models];
 	}
 }

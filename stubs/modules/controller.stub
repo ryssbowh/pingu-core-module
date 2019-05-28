@@ -4,9 +4,9 @@ namespace $CLASS_NAMESPACE$;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+use Pingu\Core\Http\Controllers\BaseController;
 
-class $CLASS$ extends Controller
+class $CLASS$ extends BaseController
 {
     /**
      * Display a listing of the resource.

@@ -2,10 +2,10 @@
 
 namespace Pingu\Core\Http\Middleware;
 
-use Closure;
+use Closure, Auth, DebugBar;
 use Illuminate\Http\Request;
 
-class SetApiThemeMiddleware
+class ActivateDebugBar
 {
     /**
      * Handle an incoming request.
@@ -15,13 +15,14 @@ class SetApiThemeMiddleware
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
-    {   
-        $theme = $request->all()['_theme'] ?? false;
-        
-        if($theme and \Theme::exists($theme)){
-            \Theme::set($theme);
+    {
+        $user = Auth::user();
+        if($user and $user->hasPermissionTo('view debug bar')){
+            Debugbar::enable();
         }
-
+        else{
+            Debugbar::disable();
+        }
         return $next($request);
     }
 }
