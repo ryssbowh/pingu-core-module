@@ -29,9 +29,11 @@ class CoreServiceProvider extends ServiceProvider
         'home' => \Pingu\Core\Http\Middleware\HomepageMiddleware::class
     ];
 
-    protected $webMiddlewares = [
-        CheckForMaintenanceMode::class,
-        ActivateDebugBar::class
+    protected $groupMiddlewares = [
+        'web' => [
+            CheckForMaintenanceMode::class,
+            ActivateDebugBar::class
+        ]
     ];
 
     protected $globalMiddlewares = [
@@ -45,7 +47,7 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function boot(Router $router, Kernel $kernel)
     {
-        $this->registerWebMiddlewares($router);
+        $this->registerGroupMiddlewares($router);
         $this->registerRouteMiddlewares($router);
         $this->registerGlobalMiddlewares($kernel);
         $this->registerTranslations();
@@ -107,10 +109,12 @@ class CoreServiceProvider extends ServiceProvider
         }
     }
 
-    public function registerWebMiddlewares(Router $router)
+    public function registerGroupMiddlewares(Router $router)
     {
-        foreach($this->webMiddlewares as $middleware){
-            $router->pushMiddlewareToGroup('web', $middleware);
+        foreach($this->groupMiddlewares as $group => $middlewares){
+            foreach($middlewares as $middleware){
+                $router->pushMiddlewareToGroup($group, $middleware);
+            }
         }
     }
 
