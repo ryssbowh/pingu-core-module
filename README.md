@@ -2,6 +2,7 @@
 
 ## v1.1.2 
 - Refactored model controller
+- made a adminable interface
 - made HasChildren interface
 - made HasItems interface
 - made HasContextualLinks interface
@@ -9,9 +10,10 @@
 - Added theme config
 - Added theme composers
 - Added base npm dependencies into core and ignored them in merge-packages command
-- removed setApiMiddleware
 - Adaptation to Settings refactoring
 - filling a basemodel field that is not fillable throws an exception
+- debug bar as a middleware and subject to permission
+- removed url segments, replaced by route slugs
 
 ## v1.1
 - Fixed maintenance mode
