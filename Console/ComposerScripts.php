@@ -84,6 +84,9 @@ class ComposerScripts
 		file_put_contents('.env', implode("\n", $env));
 
 		try{
+			echo "migrating laravel...\n";
+			exec('./artisan migrate', $output);
+
 			echo "migrating modules...\n";
 			exec('./artisan module:migrate', $output);
 

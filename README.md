@@ -21,6 +21,16 @@
 - added Routes/admin.php for core and new modules (stubs). Bound to 'access admin area' middleware.
 
 ## v1.1.1 Install script
+## v1.0.14
+- integrated permissions (seeder)
+- fixed default module order
+- fixed home middleware
+- home page, admin home page
+- admin route group
+- improved base controller
+- improved notify
+
+## v1.0.9 Added themes as composer dependencies
 ## v1.0.5 More readme, added todo section
 ## v1.0.4 Wrote Readme
 
@@ -42,9 +52,13 @@ That was a test but is not used atm.
 Contextual links are used to display links when viewing a model. The idea is to make it so that any page can have contextual links but at the moment is defined at model only. Your model must implements `HasContextualLinks`.
  
 Will probably need rewritten as not the most intuitive way to use it.
+
+### Adminable models
+Provides a Adminable interface and trait for models to be added/edited through a form in the back end.
  
 ### Api
-Provides a contract to make a model Apiable, and a controller contract to handle basic operations. Your model must implement `Apiable` and your controller must implement the `ApiModelController`
+Provides a contract to make a model Apiable, and a controller contract to handle basic operations. Your model must implement `Apiable` and your controller must implement the `ApiModelController`.
+Each model defines a routeSlug and routeSlugs that are used by this trait to define api routes. Each route can be overriden in each model.
  
 Visible fields for an api request are set by the models $visible variable.
  
@@ -61,7 +75,7 @@ the HomepageMiddleware sets the homepage when the uri is /.
 the setThemeMiddleware sets the current theme. If the url starts with /admin the theme will be the admin theme defined in config.
  
 ### Base model
-The base model **which all models must extend** provides with methods for url segments and route slugs, as well as a friendly name methods that are used often.
+The base model **which all models must extend** provides with methods for route slugs, as well as a friendly name methods that are used often.
  
 ### functions
 The start.php provides with a couple of useful functions.
