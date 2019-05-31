@@ -40,6 +40,7 @@ class CoreDatabaseSeeder extends Seeder
             ]
         ]);
 
+        Permission::findOrCreate(['name' => 'browse site', 'section' => 'Core']);
         $perm1 = Permission::findOrCreate(['name' => 'access admin area', 'section' => 'Core']);
         Permission::findOrCreate(['name' => 'view debug bar', 'section' => 'Core']);
         Permission::findOrCreate(['name' => 'edit core settings', 'section' => 'Core']);
@@ -58,7 +59,7 @@ class CoreDatabaseSeeder extends Seeder
                 'name' => 'Admin',
                 'weight' => 1,
                 'active' => 1,
-                'url' => settings('adminPrefix'),
+                'url' => 'admin',
                 'permission_id' => $perm1->id
             ], $main);
         }

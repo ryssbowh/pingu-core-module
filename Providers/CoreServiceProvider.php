@@ -11,6 +11,8 @@ use Pingu\Core\Console\MakeComposer;
 use Pingu\Core\Console\MergePackages;
 use Pingu\Core\Http\Middleware\ActivateDebugBar;
 use Pingu\Core\Http\Middleware\CheckForMaintenanceMode;
+use Pingu\Core\Http\Middleware\HomepageMiddleware;
+use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Forms\Fields\Number;
 use Pingu\Forms\Fields\Text;
@@ -26,19 +28,33 @@ class CoreServiceProvider extends ServiceProvider
     protected $defer = false;
 
     protected $routeMiddlewares = [
-        'home' => \Pingu\Core\Http\Middleware\HomepageMiddleware::class
+        'home' => HomepageMiddleware::class,
+        'guest' => RedirectIfAuthenticated::class,
     ];
 
     protected $groupMiddlewares = [
         'web' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
             CheckForMaintenanceMode::class,
-            ActivateDebugBar::class
-        ]
+            ActivateDebugBar::class,
+            SetThemeMiddleware::class
+        ],
+        'ajax' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            SetThemeMiddleware::class
+        ],
     ];
 
-    protected $globalMiddlewares = [
-        SetThemeMiddleware::class
-    ];
+    protected $globalMiddlewares = [];
 
     /**
      * Boot the application events.

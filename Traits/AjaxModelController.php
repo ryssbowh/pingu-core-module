@@ -6,12 +6,11 @@ use ContextualLinks,Notify;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Contracts\FormableModel;
 use Pingu\Forms\Form;
 use Pingu\Forms\FormModel;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-trait ApiModelController 
+trait AjaxModelController 
 {
 	/**
 	 * @inheritDoc
@@ -36,7 +35,7 @@ trait ApiModelController
 			}
 			$fieldDef = $fieldsDef[$field];
 			if(!is_null($value)){
-				$fieldDef['type']::fieldQueryModifier($query, $field, $value);
+				$fieldDef['type']::filterQueryModifier($query, $field, $value);
 			}
 		}
 
@@ -62,7 +61,7 @@ trait ApiModelController
 	/**
 	 * @inheritDoc
 	 */
-	public function edit(Request $request, FormableModel $model): array
+	public function edit(Request $request, BaseModel $model): array
 	{
 		$form = new FormModel(
 			['url' => $this->getUpdateUri($request), 'method' => 'PUT'], 
@@ -94,7 +93,7 @@ trait ApiModelController
 	/**
 	 * @inheritDoc
 	 */
-	public function update(Request $request, FormableModel $model): array
+	public function update(Request $request, BaseModel $model): array
 	{	
 		$validated = $this->validateUpdateRequest($request, $model);
 
@@ -136,10 +135,10 @@ trait ApiModelController
 	/**
 	 * Returns data after a successfull update
 	 * @param  Request       $request
-	 * @param  FormableModel $model
+	 * @param  BaseModel $model
 	 * @return array
 	 */
-	protected function onSuccessfullUpdate(Request $request, FormableModel $model)
+	protected function onSuccessfullUpdate(Request $request, BaseModel $model)
 	{
 		return ['model' => $model, 'message' => $model::friendlyname().' has been updated'];
 	}
@@ -147,10 +146,10 @@ trait ApiModelController
 	/**
 	 * Vaildates an update request and returns validated data
 	 * @param  Request       $request
-	 * @param  FormableModel $model
+	 * @param  BaseModel $model
 	 * @return array
 	 */
-	protected function validateUpdateRequest(Request $request, FormableModel $model)
+	protected function validateUpdateRequest(Request $request, BaseModel $model)
 	{
 		return $model->validateForm($request->post(), $model->editFormFields());
 	}
@@ -158,15 +157,15 @@ trait ApiModelController
 	/**
 	 * Called before destroying a model
 	 * @param  Request       $request
-	 * @param  FormableModel $model
+	 * @param  BaseModel $model
 	 */
-	protected function onDestroying(Request $request, FormableModel $model)
+	protected function onDestroying(Request $request, BaseModel $model)
 	{}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function destroy(Request $request, FormableModel $model): array
+	public function destroy(Request $request, BaseModel $model): array
 	{
 		$this->onDestroying($request, $model);
 		$model = $model->delete();
@@ -209,10 +208,10 @@ trait ApiModelController
 	/**
 	 * Validates a request and return validated array
 	 * @param  Request   $request
-	 * @param  FormableModel $model 
+	 * @param  BaseModel $model 
 	 * @return array
 	 */
-	protected function validateStoreRequest(Request $request, FormableModel $model)
+	protected function validateStoreRequest(Request $request, BaseModel $model)
 	{
 		return $model->validateForm($request->post(), $model->addFormFields());
 	}
@@ -242,10 +241,10 @@ trait ApiModelController
 	/**
 	 * [afterSuccessfullStore description]
 	 * @param  Request       $request [description]
-	 * @param  FormableModel $model   [description]
+	 * @param  BaseModel $model   [description]
 	 * @return [type]                 [description]
 	 */
-	protected function onStoreSuccess(Request $request, FormableModel $model)
+	protected function onStoreSuccess(Request $request, BaseModel $model)
 	{
 		return ['model' => $model, 'message' => $model::friendlyName()." has been created"];
 	}
@@ -253,7 +252,7 @@ trait ApiModelController
 	/**
 	 * @inheritDoc
 	 */
-	public function get(Request $request, FormableModel $model): FormableModel
+	public function get(Request $request, BaseModel $model): BaseModel
 	{
 		return $model;
 	}
@@ -264,7 +263,7 @@ trait ApiModelController
 	protected function getStoreUri(Request $request): string
 	{
 		$model = $this->getModel();
-		return $model::getApiUri('store');
+		return $model::getAjaxUri('store');
 	}
 
 	/**

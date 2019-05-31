@@ -10,7 +10,7 @@ return [
         'retryAfter' => '1800',
         'message' => 'This site is in maintenance, please try again later'
     ],
-    'apiPrefix' => '/api/',
+    'ajaxPrefix' => '/ajax/',
     'adminPrefix' => '/admin/',
     'themes' => [
         'themes_path' => 'themes',

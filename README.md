@@ -1,5 +1,13 @@
 # Core module
 
+## v1.1.3
+- renamed api contracts/traits into ajax
+- ajax calls with helpers throw events on body
+- added permission 'browse site' to web routes
+- removed SetAjaxThemeMiddleware
+- moved web middleware in Core provider
+- modified Theme::set
+
 ## v1.1.2 
 - Refactored model controller
 - made a adminable interface
@@ -56,11 +64,13 @@ Will probably need rewritten as not the most intuitive way to use it.
 ### Adminable models
 Provides a Adminable interface and trait for models to be added/edited through a form in the back end.
  
-### Api
-Provides a contract to make a model Apiable, and a controller contract to handle basic operations. Your model must implement `Apiable` and your controller must implement the `ApiModelController`.
-Each model defines a routeSlug and routeSlugs that are used by this trait to define api routes. Each route can be overriden in each model.
+### Ajax
+Provides a contract to make a model Ajaxable, and a controller contract to handle basic operations. Your model must implement `AjaxableModel` and your controller must implement the `AjaxModelController`.
+Each model defines a routeSlug and routeSlugs that are used by this trait to define ajax routes. Each route can be overriden in each model.
  
-Visible fields for an api request are set by the models $visible variable.
+Visible fields for an ajax request are set by the models $visible variable.
+
+Helpers are available for ajax calls (get, post, put, delete, patch), each of those will throw 2 events on the body, `ajax.failed` and `ajax.success`
  
 ### Controllers
 Provides with an api controller for models that handles some basic operation on models.
@@ -87,6 +97,7 @@ Changes to it includes :
 - rewrote findNamespacedView of themeViewFinder
 - Themes can define a config which will override the normal config. Access it with `theme_config()` which will return the normal config if it doesn not exists in your theme.
 - Themes can define Composers to add variables to any view. use the command `module:make-composer`.
+- Admin theme will be set if request starts with /admin or if ajax call define a \_theme=admin
  
 ### Commands
 Includes commands provided by [igaster/laravel-theme](https://github.com/igaster/laravel-theme) from which packaging commands have been removed.
@@ -124,3 +135,6 @@ You'll find occurences of schema less attributes package, used to add attributes
 maintenance mode is to be set by command only.
 default laravel middleware has been overwritten to allow /login to be accessible and to allow users with permissions 'use site in maintenance mode' to use the site normally.
 Message, retry after and view defined in config.
+
+### Debug bar
+Debug bar from [https://github.com/barryvdh/laravel-debugbar](https://github.com/barryvdh/laravel-debugbar) is accessible if you have the permission `view debug bar`

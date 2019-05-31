@@ -1,48 +1,48 @@
 <?php
 namespace Pingu\Core\Contracts;
 
-interface APIableModel
+interface AjaxableModel
 {
 	/**
 	 * api route for index requests
 	 * @return string
 	 */
-	public static function apiIndexUri();
+	public static function ajaxIndexUri();
 
 	/**
 	 * api route for patch requests
 	 * @return string
 	 */
-	public static function apiPatchUri();
+	public static function ajaxPatchUri();
 
 	/**
 	 * api route for create requests
 	 * @return string
 	 */
-	public static function apiCreateUri();
+	public static function ajaxCreateUri();
 
 	/**
 	 * api route for store requests
 	 * @return [type] [description]
 	 */
-	public static function apiStoreUri();
+	public static function ajaxStoreUri();
 
 	/**
 	 * api route for update requests
 	 * @return string
 	 */
-	public static function apiEditUri();
+	public static function ajaxEditUri();
 
 	/**
 	 * api route for edit requests
 	 * @return string
 	 */
-	public static function apiUpdateUri();
+	public static function ajaxUpdateUri();
 
 	/**
 	 * api route for delete requests
 	 * @return string
 	 */
-	public static function apiDeleteUri();
+	public static function ajaxDeleteUri();
 
 }

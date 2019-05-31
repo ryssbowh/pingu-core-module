@@ -33,7 +33,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        $this->mapApiRoutes();
+        $this->mapAjaxRoutes();
 
         $this->mapWebRoutes();
 
@@ -49,7 +49,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        Route::middleware('web')
+        Route::middleware(['web', 'permission:browse site'])
             ->namespace($this->namespace)
             ->group(__DIR__ . '/../Routes/web.php');
     }
@@ -70,17 +70,17 @@ class RouteServiceProvider extends ServiceProvider
     }
 
     /**
-     * Define the "api" routes for the application.
+     * Define the "ajax" routes for the application.
      *
-     * These routes are typically stateless.
+     * These routes all receive session state, CSRF protection, etc.
      *
      * @return void
      */
-    protected function mapApiRoutes()
+    protected function mapAjaxRoutes()
     {
-        Route::prefix('api')
-            ->middleware('api')
+        Route::prefix('ajax')
+            ->middleware('ajax')
             ->namespace($this->namespace)
-            ->group(__DIR__ . '/../Routes/api.php');
+            ->group(__DIR__ . '/../Routes/ajax.php');
     }
 }

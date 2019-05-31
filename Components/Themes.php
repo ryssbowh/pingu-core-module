@@ -2,6 +2,7 @@
 
 namespace Pingu\Core\Components;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Pingu\Core\Exceptions\{themeAlreadyExists, themeNotFound};
 use ThemeConfig, View;
@@ -59,30 +60,66 @@ class Themes
     }
 
     /**
-     * Enable $themeName & set view paths
-     *
+     * set a theme given a request
+     * @param  Illuminate\Http\Request $request
+     * @return ?Theme
+     */
+    public function setByRequest(Request $request)
+    {
+        $setting = 'core.frontTheme';
+
+        if($request->ajax()){
+            $params = $request->all();
+            if(isset($params['_theme'])){
+                if($params['_theme'] == 'admin') $setting = 'core.adminTheme';
+            }
+            else{
+                //ajax call doesn't set a theme, aborting
+                return null;
+            }
+        }
+        else{
+            $segments = $request->segments();
+            if(isset($segments[0]) and $segments[0] == 'admin'){
+                $setting = 'core.adminTheme';
+            }
+        }
+
+        return $this->setByName(config($setting), !$request->wantsJson());
+    }
+
+    /**
+     * Set theme by its name
+     * @param string $themeName
      * @return Theme
      */
-    public function set($themeName)
+    public function setByName(string $themeName, $setAssets = true)
     {
         if ($this->exists($themeName)) {
             $theme = $this->find($themeName);
         } else {
-            $theme = new Theme($themeName);
+            throw new themeNotFound($themeName." isn't a valid theme");
         }
 
         $this->activeTheme = $theme;
 
-        // Get theme view paths
+        // set theme view paths
         $paths = $theme->getViewPaths();
-
         config(['view.paths' => $paths]);
+        app('view.finder')->setPaths($paths);
+
+        //set theme config
         $config = (include $theme->getPath('config.php'));
         ThemeConfig::setConfig($config);
 
-        $themeViewFinder = app('view.finder');
-        $themeViewFinder->setPaths($paths);
+        //register the theme assets
+        if($setAssets){
+            $assetPath = config('core.themes.themes_path').'/'.$theme->name.'/'.$theme->assetPath;
+            \Asset::container('theme')->add('css', $assetPath.'/'.$theme->name.'.css');
+            \Asset::container('theme')->add('js', $assetPath.'/'.$theme->name.'.js');
+        }
 
+        // registers theme composers
         $composersClass = "Pingu\\Themes\\".$theme->name."\\Composer";
         View::composers($composersClass::getComposers());
 
