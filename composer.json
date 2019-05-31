@@ -33,7 +33,7 @@
         "pingu/permissions-module": "1.1.*",
         "pingu/page-module": "1.1.*",
         "pingu/admin-theme": "1.1.*",
-        "pingu/default-theme": "1.1.*",
+        "pingu/front-theme": "1.1.*",
         "pingu/user-module": "1.1.*",
         "pingu/menu-module": "1.1.*"
     }
