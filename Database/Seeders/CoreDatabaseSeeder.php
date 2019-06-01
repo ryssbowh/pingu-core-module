@@ -84,6 +84,12 @@ class CoreDatabaseSeeder extends Seeder
                 'url' => 'settings.admin.core',
                 'permission_id' => $perm2->id
             ], $admin, $settings);
+            MenuItem::create([
+                'name' => 'Structure',
+                'weight' => 2,
+                'active' => 1,
+                'permission_id' => null
+            ], $admin);
         }
     }
 }
