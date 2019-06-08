@@ -16,7 +16,7 @@ class MergePackages extends Command
      *
      * @var string
      */
-    protected $name = 'core:merge-packages';
+    protected $name = 'module:merge-packages';
 
     /**
      * The console command description.

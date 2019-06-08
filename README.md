@@ -15,8 +15,7 @@
 - added phpDocumentor.phar
 - removed TextSnippets
 - added request as variable in `BaseController` constructor
-- added `ProtectedModel` exception
-- added `ParameterMissing` exception
+- added `ProtectedModel`, `ParameterMissing`, `ModelSlugAlreadyRegistered` exceptions
 
 ## v1.1.3
 - renamed api contracts/traits into ajax
@@ -69,17 +68,29 @@
 - [ ] Maintenance mode switcher in back end
 - [ ] Check theme extends
 - [ ] Remake contextual links
+
+### Facades available
+- ContextualLinks
+- ModelRoutes
+- Notify
+- Theme
+- ThemeConfig
  
 ### Notify
 Notify is a facade used to display messages to the user. it uses session to store them. see Components/Notify.php.
  
 ### Text Snippets
-That was a test but is not used atm.
+Removed
  
 ### Contextual Links
 Contextual links are used to display links when viewing a model. The idea is to make it so that any page can have contextual links but at the moment is defined at model only. Your model must implements `HasContextualLinks`.
  
 Will probably need rewritten as not the most intuitive way to use it.
+
+### Routing
+The contract `HasRouteSlugContract` and trait `hasRouteSlug` provides with a method to define a route slug for a model. If you want your model to be referenced in routes, you must extend this contract.
+
+Every module at booting will register the slugs for all its models, duplicates will be checked.
 
 ### Admin routes
 Provides a `HasAdminRoutes` interface and trait for models to define admin routes within the model. The trait provides with methods to replace variables in each route.
@@ -110,10 +121,10 @@ the `ActivateDebugBar` activates the debug bar if the right permission is set.
 `redirectIfAuthenticated` used on routes that are only for non-authenticated users.
  
 ### Base model
-The base model **which all models must extend** provides with methods for route slugs, as well as a friendly name methods that are used often.
+The base model **which all models must extend** provides with friendly names and static route keys methods.
  
 ### functions
-The start.php provides with a couple of useful functions.
+The functions.php provides with a couple of useful functions.
  
 ### Themes
 The code from [igaster/laravel-theme](https://github.com/igaster/laravel-theme) has been ported over.
@@ -127,7 +138,10 @@ Changes to it includes :
 ### Commands
 Includes commands provided by [igaster/laravel-theme](https://github.com/igaster/laravel-theme) from which packaging commands have been removed.
  
-The core:merge-packages will look at the base packages.json and all modules packages.json and merge them. option to auto resolve conflicts.
+- The module:merge-packages will look at the base packages.json and all modules packages.json and merge them. option to auto resolve conflicts.
+- the module:generate-doc will generate the docs for one or all modules with phpDocumentor, in the docs/ folder
+- the module:make-exception generate an exception in the Exceptions/ folder
+- the theme:make-composer generates a new composer for a theme, in the Composers\ folder.
  
 ### stubs
 Stubs are used to generate files when creating modules or themes.
@@ -135,7 +149,7 @@ Stubs are used to generate files when creating modules or themes.
 ### Assets
 sass and js can be defined in any module or theme. packages.json can be defined in themes or modules. The base package.json is ignored by git, the Core one is responsible for its content.
  
-When adding a library to a module's packages.json, you'll need to run the command `./artisan core:merge-packages` in order to merge them into a master packages.json at the root folder. Then you can run npm run watch. This way, when using `mix.extract` all the libraries will be in 2 separate files, vendor.js and manifest.js.
+When adding a library to a module's packages.json, you'll need to run the command `./artisan module:merge-packages` in order to merge them into a master packages.json at the root folder. Then you can run npm run watch. This way, when using `mix.extract` all the libraries will be in 2 separate files, vendor.js and manifest.js.
  
 A good practice in js would be to have a file for each module to provide with functions that may be reused. The core module would have a core.js file that exports Core. Other modules can then import it with a `import Core from 'core';`
 
