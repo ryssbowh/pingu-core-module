@@ -107,6 +107,9 @@ class ComposerScripts
 
 			echo "Publishing configuration...\n";
 			exec('./artisan module:publish-config', $output);
+
+			echo "Clearing cache...\n";
+			exec('./artisan cache:clear', $output); 
 		}
 		catch(\Exception $e){
 			echo "ERROR WHILE INSTALLING : {$e->getMessage()}\n";

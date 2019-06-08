@@ -11,14 +11,14 @@
     ],
     "aliases": {
         "Theme" : "Pingu\\Core\\Facades\\Theme",
-        "TextSnippet":"Pingu\\Core\\Facades\\TextSnippet",
         "ContextualLinks":"Pingu\\Core\\Facades\\ContextualLinks",
+        "ModelRoutes":"Pingu\\Core\\Facades\\ModelRoutes",
         "Notify":"Pingu\\Core\\Facades\\Notify",
         "ThemeConfig":"Pingu\\Core\\Facades\\ThemeConfig",
         "DebugBar":"Barryvdh\\Debugbar\\Facade"
     },
     "files": [
-        "start.php"
+        "functions.php"
     ],
     "requires": []
 }

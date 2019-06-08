@@ -1,5 +1,23 @@
 # Core module
 
+## v1.1.4
+- `AdminableContract` renamed to `HasAdminRoutes`
+- `AjaxableContract` renamed to `HasAjaxRoutes`
+- Contract `ModelController` renamed to `CreatesModelContract` and `EditModelContract`. Traits as well
+- Contract `AjaxableModel` renamed to `EditsAjaxModelContract` and `DeletesAjaxModelContract`
+- route slugs removed from base model and is now a contract/trait `HasRouteSlug`
+- added stubs for event provider, auth provider, functions, exception, documentor
+- modifed stubs for provider
+- renamed start.php into functions.php in each module
+- each module register their slugs through facade `ModelRoutes`
+- added MakeException command
+- added GenerateDoc command
+- added phpDocumentor.phar
+- removed TextSnippets
+- added request as variable in `BaseController` constructor
+- added `ProtectedModel` exception
+- added `ParameterMissing` exception
+
 ## v1.1.3
 - renamed api contracts/traits into ajax
 - ajax calls with helpers throw events on body
@@ -49,6 +67,8 @@
 - [x] Include themes in merge-packages command
 - [ ] Fix modules views publishing
 - [ ] Maintenance mode switcher in back end
+- [ ] Check theme extends
+- [ ] Remake contextual links
  
 ### Notify
 Notify is a facade used to display messages to the user. it uses session to store them. see Components/Notify.php.
@@ -61,28 +81,33 @@ Contextual links are used to display links when viewing a model. The idea is to 
  
 Will probably need rewritten as not the most intuitive way to use it.
 
-### Adminable models
-Provides a Adminable interface and trait for models to be added/edited through a form in the back end.
+### Admin routes
+Provides a `HasAdminRoutes` interface and trait for models to define admin routes within the model. The trait provides with methods to replace variables in each route.
+
+So you could define a `adminListItemsUri` in a model that define the route `content/{parent}/{item}/list`, retrieve it with `getAdminUri('listItems, true)`, and transform the uri with `transformAdminUri('listItems', [$parent, $item], true)`. The variables will be replaced by the route key name of each model. The boolean argument will prefix the route with the admin prefix (defined in config).
  
 ### Ajax
-Provides a contract to make a model Ajaxable, and a controller contract to handle basic operations. Your model must implement `AjaxableModel` and your controller must implement the `AjaxModelController`.
-Each model defines a routeSlug and routeSlugs that are used by this trait to define ajax routes. Each route can be overriden in each model.
+Provides a `HasAjaxRoutes` interface and trait for models to define ajax routes within the model. The trait provides with methods to replace variables in each route, works the exact same way as the admn routes, just the prefix changes.
  
 Visible fields for an ajax request are set by the models $visible variable.
 
-Helpers are available for ajax calls (get, post, put, delete, patch), each of those will throw 2 events on the body, `ajax.failed` and `ajax.success`
+Helpers are available for ajax calls (get, post, put, \_delete, patch), each of those will throw 2 events on the body, `ajax.failed` and `ajax.success`.
  
 ### Controllers
 Provides with an api controller for models that handles some basic operation on models.
  
-Provides with an model controller that allows creating/editing through a form.
- 
-Any controller can implements ModelController Contract and define a `getModel` method. The model must implement `FormableModel`. The rest is done automatically (given that you have defined your fields for your model)
+Provides with three Contracts/Trait for controllers (`HandlesModel`, `EditModel`, `CreatesModel`) to perform edition/creation operation on a model. Lots of hooks are available to change the workflow. HandlesModel is just a concatenation of the two others. the models handled by those controllers must implement `Formable`.
  
 ### Middlewares
-the HomepageMiddleware sets the homepage when the uri is /.
+the `HomepageMiddleware` sets the homepage when the uri is /.
  
-the setThemeMiddleware sets the current theme. If the url starts with /admin the theme will be the admin theme defined in config.
+the `setThemeMiddleware` sets the current theme (if it's an ajax call, \_theme must be set in the call).
+
+the `CheckFormaintenanceMode` does what its name says. /login will always be available. Users can use the site if they have the permission use site in maintenance mode'.
+
+the `ActivateDebugBar` activates the debug bar if the right permission is set.
+
+`redirectIfAuthenticated` used on routes that are only for non-authenticated users.
  
 ### Base model
 The base model **which all models must extend** provides with methods for route slugs, as well as a friendly name methods that are used often.
@@ -95,7 +120,7 @@ The code from [igaster/laravel-theme](https://github.com/igaster/laravel-theme) 
 Changes to it includes :
 - removed default laravel view location, all views belong to a theme here
 - rewrote findNamespacedView of themeViewFinder
-- Themes can define a config which will override the normal config. Access it with `theme_config()` which will return the normal config if it doesn not exists in your theme.
+- Themes can define a config which will override the normal config. Access it with `theme_config()` which will return the normal config if it does not exists in your theme.
 - Themes can define Composers to add variables to any view. use the command `module:make-composer`.
 - Admin theme will be set if request starts with /admin or if ajax call define a \_theme=admin
  

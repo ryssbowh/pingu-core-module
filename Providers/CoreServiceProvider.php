@@ -7,13 +7,16 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use Pingu\Core\Console\GenerateDoc;
 use Pingu\Core\Console\MakeComposer;
+use Pingu\Core\Console\MakeException;
 use Pingu\Core\Console\MergePackages;
 use Pingu\Core\Http\Middleware\ActivateDebugBar;
 use Pingu\Core\Http\Middleware\CheckForMaintenanceMode;
 use Pingu\Core\Http\Middleware\HomepageMiddleware;
 use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
+use Pingu\Core\ModelRoutes;
 use Pingu\Forms\Fields\Number;
 use Pingu\Forms\Fields\Text;
 use Spatie\TranslationLoader\LanguageLine;
@@ -26,6 +29,8 @@ class CoreServiceProvider extends ServiceProvider
      * @var bool
      */
     protected $defer = false;
+
+    protected $modelFolder = 'Entities';
 
     protected $routeMiddlewares = [
         'home' => HomepageMiddleware::class,
@@ -63,6 +68,7 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function boot(Router $router, Kernel $kernel)
     {
+        $this->registerModelSlugs();
         $this->registerGroupMiddlewares($router);
         $this->registerRouteMiddlewares($router);
         $this->registerGlobalMiddlewares($kernel);
@@ -92,9 +98,19 @@ class CoreServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 MergePackages::class,
-                MakeComposer::class
+                MakeComposer::class,
+                MakeException::class,
+                GenerateDoc::class
             ]);
         }
+    }
+
+    /**
+     * Registers all the slugs for this module's models
+     */
+    public function registerModelSlugs()
+    {
+        \ModelRoutes::registerSlugsFromPath(realpath(__DIR__.'/../'.$this->modelFolder));
     }
 
     /**
@@ -104,10 +120,10 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('core.textSnippet', \Pingu\Core\Components\TextSnippet::class);
         $this->app->singleton('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
         $this->app->singleton('core.notify', \Pingu\Core\Components\Notify::class);
         $this->app->singleton('core.themeConfig', \Pingu\Core\Components\ThemeConfig::class);
+        $this->app->singleton('core.modelRoutes', ModelRoutes::class);
         $this->app->register(RouteServiceProvider::class);
     }
 

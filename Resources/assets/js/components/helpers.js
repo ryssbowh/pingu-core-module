@@ -19,8 +19,9 @@ export function ajax(url, data, type = 'POST'){
         data: data,
         dataType: 'json' 
 	}).fail(function(data){
+        $('body').css('cursor', 'initial');
+        if(data.status == 200){ return; }
         let message = "%cAjax call failed : \nStatus: " + data.status;
-        $('body').trigger('ajax.failed', data);
         if(data.responseJSON.message){
             message += "\nMessage : " + data.responseJSON.message;
         }
@@ -28,7 +29,7 @@ export function ajax(url, data, type = 'POST'){
             message += "\nException : " + data.responseJSON.exception;
         }
         console.log(message,"color:red");
-        $('body').css('cursor', 'initial');
+        $('body').trigger('ajax.failed', data);
 	}).done(function(){
         $('body').trigger('ajax.success', data);
         $('body').css('cursor', 'initial');

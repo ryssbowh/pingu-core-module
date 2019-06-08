@@ -1,7 +1,7 @@
 <?php
 namespace Pingu\Core\Components;
 
-use Pingu\Core\Contracts\HasContextualLinks;
+use Pingu\Core\Contracts\Models\HasContextualLinksContract;
 use Request;
 
 class ContextualLinks
@@ -42,7 +42,7 @@ class ContextualLinks
 		return $this->activeLink;
 	}
 
-	public function addModelLinks(HasContextualLinks $model)
+	public function addModelLinks(HasContextualLinksContract $model)
 	{
 		$this->addLinks($model->getContextualLinks());
 	}

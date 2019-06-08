@@ -6,38 +6,21 @@ use Greabock\Tentacles\EloquentTentacle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Pingu\Core\Exceptions\FieldNotFillable;
-use Pingu\Core\Traits\ModelEventThrower;
+use Pingu\Core\Traits\Models\ThrowsEvents;
 
 class BaseModel extends Model
 {
-	use EloquentTentacle, ModelEventThrower;
+	use EloquentTentacle, ThrowsEvents;
 
     protected $fillable = [];
 
     public static $friendlyName;
+
     protected static $recordEvents = ['created','updated','deleted'];
 
     /**
-     * Routes slugs (plural)
-     * @return string
-     */
-    public static function routeSlugs()
-    {
-        return str_plural(Str::snake(class_basename(static::class)));
-    }
-
-    /**
-     * Route slug (singular)
-     * @return string
-     */
-    public static function routeSlug()
-    {
-        return Str::snake(class_basename(static::class));
-    }
-
-    /**
      * Model's friendly name
-     * @return [type] [description]
+     * @return string
      */
     public static function friendlyName()
     {
@@ -65,6 +48,14 @@ class BaseModel extends Model
      */
     protected static function keyName() {
         return (new static)->getKeyName();
+    }
+
+    /**
+     * Static accessible getRouteKeyName
+     * @return  string
+     */
+    protected static function routeKeyName() {
+        return (new static)->getRouteKeyName();
     }
 
     /**

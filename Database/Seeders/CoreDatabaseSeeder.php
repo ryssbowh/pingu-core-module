@@ -42,17 +42,19 @@ class CoreDatabaseSeeder extends Seeder
 
         Permission::findOrCreate(['name' => 'browse site', 'section' => 'Core']);
         $perm1 = Permission::findOrCreate(['name' => 'access admin area', 'section' => 'Core']);
-        Permission::findOrCreate(['name' => 'view debug bar', 'section' => 'Core']);
+        Permission::findOrCreate(['name' => 'view debug bar', 'section' => 'Core', 'helper' => 'This should only be for developers']);
         Permission::findOrCreate(['name' => 'edit core settings', 'section' => 'Core']);
         $perm2 = Permission::findOrCreate(['name' => 'view core settings', 'section' => 'Core']);
-        Permission::findOrCreate(['name' => 'view site in maintenance mode', 'section' => 'Core']);
+        Permission::findOrCreate(['name' => 'view site in maintenance mode', 'section' => 'Core', 'helper' => 'Login will always be available in maintenance mode']);
+        Permission::findOrCreate(['name' => 'put site in maintenance mode', 'section' => 'Core']);
 
         $main = Menu::where(['machineName' => 'main-menu'])->first();
 
         if(!$main){
             $main = Menu::create([
                 'machineName' => 'main-menu',
-                'name' => 'Main Menu'
+                'name' => 'Main Menu',
+                'deletable' => 0
             ]);
 
             MenuItem::create([
@@ -69,12 +71,14 @@ class CoreDatabaseSeeder extends Seeder
         if(!$admin){
             $admin = Menu::create([
                 'machineName' => 'admin-menu',
-                'name' => 'Amin Menu'
+                'name' => 'Amin Menu',
+                'deletable' => 0
             ]);
             $settings = MenuItem::create([
                 'name' => 'Settings',
                 'weight' => 1,
                 'active' => 1,
+                'deletable' => 0,
                 'permission_id' => null
             ], $admin);
             MenuItem::create([
@@ -82,12 +86,14 @@ class CoreDatabaseSeeder extends Seeder
                 'weight' => 1,
                 'active' => 1,
                 'url' => 'settings.admin.core',
+                'deletable' => 0,
                 'permission_id' => $perm2->id
             ], $admin, $settings);
             MenuItem::create([
                 'name' => 'Structure',
                 'weight' => 2,
                 'active' => 1,
+                'deletable' => 0,
                 'permission_id' => null
             ], $admin);
         }

@@ -14,6 +14,11 @@ class $CLASS$ extends ServiceProvider
      */
     protected $defer = false;
 
+    /*
+     * Where are the models located
+     */
+    protected $modelFolder = 'Entities';
+
     /**
      * Boot the application events.
      *
@@ -21,6 +26,7 @@ class $CLASS$ extends ServiceProvider
      */
     public function boot()
     {
+        $this->registerModelSlugs();
         $this->registerTranslations();
         $this->registerConfig();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', '$LOWER_NAME$');
@@ -36,6 +42,16 @@ class $CLASS$ extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(EventServiceProvider::class);
+        $this->app->register(AuthServiceProvider::class);
+    }
+
+    /**
+     * Registers all the slugs for this module's models
+     */
+    public function registerModelSlugs()
+    {
+        \ModelRoutes::registerSlugsFromPath(realpath(__DIR__.'/../'.$this->modelFolder));
     }
 
     /**
