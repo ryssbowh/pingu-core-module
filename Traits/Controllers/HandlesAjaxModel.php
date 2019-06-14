@@ -6,8 +6,9 @@ use ContextualLinks,Notify;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Form;
-use Pingu\Forms\FormModel;
+use Pingu\Forms\Contracts\FormContract;
+use Pingu\Forms\Support\ModelForm;
+use Pingu\Forms\Support\Type;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 trait HandlesAjaxModel 
@@ -34,8 +35,12 @@ trait HandlesAjaxModel
 				throw new HttpException(422, "field $field is not defined");
 			}
 			$fieldDef = $fieldsDef[$field];
+			if(!isset($fieldDef['options']['type'])){
+				$fieldDef['options']['type'] = Type::class;
+			}
+			
 			if(!is_null($value)){
-				$fieldDef['type']::filterQueryModifier($query, $field, $value);
+				$fieldDef['options']['type']::filterQueryModifier($query, $field, $value);
 			}
 		}
 
@@ -63,13 +68,12 @@ trait HandlesAjaxModel
 	 */
 	public function edit(Request $request, BaseModel $model): array
 	{
-		$form = new FormModel(
-			['url' => $this->getUpdateUri($request), 'method' => 'PUT'], 
-			['submit' => ['Save'], 'view' => 'forms.modal', 'title' => 'Edit a '.$model::friendlyName()], 
-			$model
-		);
+		$url = ['url' => $this->getUpdateUri($request)];
+		$form = new ModelForm($url, 'PUT', $model);
+		$form->addViewSuggestion('forms.modal')
+			->addAction('submit', 'submit', 'Save')
+			->options->add('title', 'Edit a '.$model::friendlyName());
 		$this->afterUpdateFormCreated($request, $form);
-		$form->end();
 		return ['form' => $form->renderAsString()];
 	}
 
@@ -116,13 +120,12 @@ trait HandlesAjaxModel
 	public function create(Request $request): array
 	{	
 		$model = $this->getModel();
-		$form = new FormModel(
-			['url' => $this->getStoreUri($request), 'method' => 'POST'], 
-			['submit' => ['Save'], 'view' => 'forms.modal', 'title' => 'Add a '.$model::friendlyName()], 
-			$model
-		);
+		$url = ['url' => $this->getStoreUri($request)];
+		$form = new ModelForm($url, 'POST', new $model);
+		$form->addViewSuggestion('forms.modal')
+			->addAction('submit', 'submit', 'Save')
+			->options->add('title', 'Add a '.$model::friendlyName());
 		$this->afterStoreFormCreated($request, $form);
-		$form->end();
 		return ['form' => $form->renderAsString()];
 	}
 
@@ -194,9 +197,9 @@ trait HandlesAjaxModel
 	/**
 	 * Modify an update form
 	 * @param  Request $request
-	 * @param  Form    $form
+	 * @param  FormContract $form
 	 */
-	protected function afterUpdateFormCreated(Request $request, Form $form){}
+	protected function afterUpdateFormCreated(Request $request, FormContract $form){}
 
 	/**
 	 * Callback when model can't be saved
@@ -354,9 +357,9 @@ trait HandlesAjaxModel
 	/**
 	 * Edit the store form here
 	 * @param  Request $request
-	 * @param  Form    $form
+	 * @param  FormContract $form
 	 */
-	protected function afterStoreFormCreated(Request $request, Form $form){}
+	protected function afterStoreFormCreated(Request $request, FormContract $form){}
 
 	/**
 	 * Returns data after a successfull patch

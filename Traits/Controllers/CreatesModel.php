@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 use Pingu\Core\Contracts\HasContextualLinks;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Form;
-use Pingu\Forms\FormModel;
+use Pingu\Forms\Support\ModelForm;
 
 trait CreatesModel
 {
@@ -83,11 +82,11 @@ trait CreatesModel
 
 	/**
 	 * Get the view for a create request
-	 * @param  FormModel $form
+	 * @param  ModelForm $form
 	 * @param  string $model
 	 * @return view
 	 */
-	protected function getCreateView(FormModel $form)
+	protected function getCreateView(ModelForm $form)
 	{
 		$with = [
 			'form' => $form,
@@ -115,27 +114,30 @@ trait CreatesModel
 	/**
 	 * Builds the form for a create request
 	 * @param  string  $model
-	 * @return FormModel
+	 * @return ModelForm
 	 */
 	protected function getCreateForm()
 	{
 		
 		$url = $this->getStoreUrl();
+		if(!is_array($url)){
+			$url = ['url' => $url];
+		}
 		$model = $this->getStoreModel();
 		$fields = $this->getCreateFields($model);
-		$attrs = ['method' => 'POST', 'url' => $url];
 
-		$form = new FormModel($attrs, [], $model, $fields);
+		$form = new ModelForm($url, 'POST', new $model, $fields);
+		$form->addSubmit('Submit');
 		$this->modifyCreateForm($form);
-		$form->end();
 
 		return $form;
 	}
 
 	/**
 	 * Modify the create form
+	 * @param  ModelForm $form
 	 */
-	protected function modifyCreateForm(FormModel $form){}
+	protected function modifyCreateForm(ModelForm $form){}
 
 	/**
 	 * Get the url for a store request
@@ -145,7 +147,7 @@ trait CreatesModel
 	{
 		$segments = request()->segments();
 		array_pop($segments);
-		return '/'.implode($segments,'/');
+		return ['url' => '/'.implode($segments,'/')];
 	}
 
 	/**

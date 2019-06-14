@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 use Pingu\Core\Contracts\Models\HasContextualLinksContract;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Form;
-use Pingu\Forms\FormModel;
+use Pingu\Forms\Support\Form;
+use Pingu\Forms\Support\ModelForm;
 
 trait EditsModel
 {
@@ -85,7 +85,7 @@ trait EditsModel
 	 * Modify the edit form
 	 * @param  FormModel $form
 	 */
-	protected function modifyEditForm(FormModel $form, BaseModel $model){}
+	protected function modifyEditForm(Form $form, BaseModel $model){}
 
 	/**
 	 * Gets the model being edited
@@ -103,7 +103,7 @@ trait EditsModel
 	 * @param  BaseModel $model 
 	 * @return view
 	 */
-	protected function getEditView(FormModel $form, BaseModel $model)
+	protected function getEditView(Form $form, BaseModel $model)
 	{
 		$with = [
 			'form' => $form,
@@ -137,10 +137,9 @@ trait EditsModel
 	protected function getEditForm(BaseModel $model)
 	{
 		$url = $this->getUpdateUrl($model);
-		$attrs = ['method' => 'PUT', 'url' => $url];
-		$form = new FormModel($attrs, [],  $model);
+		$form = new ModelForm(['url' => $url], 'PUT', $model);
+		$form->addSubmit('Submit');
 		$this->modifyEditForm($form, $model);
-		$form->end();
 		return $form;
 	}
 

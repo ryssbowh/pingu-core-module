@@ -4,7 +4,10 @@ namespace Pingu\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Pingu\Forms\Fields\Number;
-use Pingu\Forms\Fields\Text;
+use Pingu\Forms\Support\Fields\NumberInput;
+use Pingu\Forms\Support\Fields\TextInput;
+use Pingu\Forms\Support\Types\Integer;
+use Pingu\Forms\Support\Types\Text;
 use Pingu\Menu\Entities\Menu;
 use Pingu\Menu\Entities\MenuItem;
 use Pingu\Permissions\Entities\Permission;
@@ -23,18 +26,21 @@ class CoreDatabaseSeeder extends Seeder
             'app.name' => [
                 'Title' => 'Site name',
                 'Section' => 'core',
+                'field' => TextInput::class,
                 'type' => Text::class,
                 'validation' => 'required'
             ],
             'session.lifetime' => [
                 'Title' => 'Session Lifetime',
                 'Section' => 'core',
-                'type' => Number::class,
+                'field' => NumberInput::class,
+                'type' => Integer::class,
                 'validation' => 'required|integer'
             ],
             'core.maintenance.message' => [
                 'Title' => 'Maintenance mode message',
                 'Section' => 'core',
+                'field' => TextInput::class,
                 'type' => Text::class,
                 'validation' => 'required'
             ]

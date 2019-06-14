@@ -3,15 +3,38 @@
 return [
     'name' => 'Core',
     'homepage' => '/',
+    /**
+     * Default back end theme
+     */
     'adminTheme' => 'Admin',
+    /**
+     * Default front theme
+     */
     'frontTheme' => 'Front',
+    /**
+     * Maintenance mode config
+     */
     'maintenance' => [
         'view' => 'core:maintenance-mode',
         'retryAfter' => '1800',
         'message' => 'This site is in maintenance, please try again later'
     ],
+    /**
+     * Prefix for ajax routes
+     */
     'ajaxPrefix' => '/ajax/',
+    /**
+     * Prefix for admin routes
+     */
     'adminPrefix' => '/admin/',
+    'generator' => [
+        /**
+         * Paths for class generation commands
+         */
+        'paths' => [
+            'exceptions' => 'Exceptions'
+        ]
+    ],
     'themes' => [
         'themes_path' => 'themes',
         'views_path' => 'views',
