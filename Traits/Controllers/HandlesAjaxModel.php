@@ -6,7 +6,7 @@ use ContextualLinks,Notify;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Contracts\FormContract;
+use Pingu\Forms\Support\Form;
 use Pingu\Forms\Support\ModelForm;
 use Pingu\Forms\Support\Type;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -71,8 +71,8 @@ trait HandlesAjaxModel
 		$url = ['url' => $this->getUpdateUri($request)];
 		$form = new ModelForm($url, 'PUT', $model);
 		$form->addViewSuggestion('forms.modal')
-			->addAction('submit', 'submit', 'Save')
-			->options->add('title', 'Edit a '.$model::friendlyName());
+			->addSubmit()
+			->option('title', 'Edit a '.$model::friendlyName());
 		$this->afterUpdateFormCreated($request, $form);
 		return ['form' => $form->renderAsString()];
 	}
@@ -123,8 +123,8 @@ trait HandlesAjaxModel
 		$url = ['url' => $this->getStoreUri($request)];
 		$form = new ModelForm($url, 'POST', new $model);
 		$form->addViewSuggestion('forms.modal')
-			->addAction('submit', 'submit', 'Save')
-			->options->add('title', 'Add a '.$model::friendlyName());
+			->addSubmit()
+			->option('title', 'Add a '.$model::friendlyName());
 		$this->afterStoreFormCreated($request, $form);
 		return ['form' => $form->renderAsString()];
 	}
@@ -197,9 +197,9 @@ trait HandlesAjaxModel
 	/**
 	 * Modify an update form
 	 * @param  Request $request
-	 * @param  FormContract $form
+	 * @param  Form $form
 	 */
-	protected function afterUpdateFormCreated(Request $request, FormContract $form){}
+	protected function afterUpdateFormCreated(Request $request, Form $form){}
 
 	/**
 	 * Callback when model can't be saved
@@ -357,9 +357,9 @@ trait HandlesAjaxModel
 	/**
 	 * Edit the store form here
 	 * @param  Request $request
-	 * @param  FormContract $form
+	 * @param  Form $form
 	 */
-	protected function afterStoreFormCreated(Request $request, FormContract $form){}
+	protected function afterStoreFormCreated(Request $request, Form $form){}
 
 	/**
 	 * Returns data after a successfull patch
