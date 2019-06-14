@@ -1,5 +1,8 @@
 # Core module
 
+## v2.0.0
+- forms v2
+
 ## v1.1.4
 - `AdminableContract` renamed to `HasAdminRoutes`
 - `AjaxableContract` renamed to `HasAjaxRoutes`

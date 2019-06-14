@@ -155,8 +155,8 @@ class CoreServiceProvider extends ServiceProvider
         Asset::addVersioning();
         Asset::container('vendor')->add('js-manifest', 'manifest.js');
         Asset::container('vendor')->add('js-vendor', 'vendor.js');
-        Asset::container('modules')->add('core-js', 'modules/Core/js/Core.js');
-        Asset::container('modules')->add('core-css', 'modules/Core/css/Core.css');
+        Asset::container('modules')->add('core-js', 'module-assets/Core/js/Core.js');
+        Asset::container('modules')->add('core-css', 'module-assets/Core/css/Core.css');
     }
 
     /**
