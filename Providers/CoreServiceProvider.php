@@ -166,9 +166,6 @@ class CoreServiceProvider extends ServiceProvider
      */
     protected function registerConfig()
     {
-        $this->publishes([
-            __DIR__.'/../Config/config.php' => config_path('core.php'),
-        ], 'config');
         $this->mergeConfigFrom(
             __DIR__.'/../Config/config.php', 'core'
         );
