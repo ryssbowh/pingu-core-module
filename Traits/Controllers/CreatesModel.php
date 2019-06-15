@@ -178,7 +178,7 @@ trait CreatesModel
 	protected function getStoreValidator(string $model)
 	{
 		$fields = $this->getCreateFields($model);
-		return (new $model)->makeValidator($this->request->post(), $fields);
+		return (new $model)->makeValidator($this->request->all(), $fields);
 	}
 
 	/**

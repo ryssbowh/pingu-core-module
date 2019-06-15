@@ -18,7 +18,8 @@ class Themes
     public function __construct()
     {
         $this->laravelViewsPath = config('view.paths');
-        $this->themesPath = base_path('public/'.config('core.themes.themes_path'));
+        $this->themesFolder = 'themes';
+        $this->themesPath = base_path('public/'.$this->themesFolder);
         $this->cachePath = base_path('bootstrap/cache/themes.php');
     }
 
@@ -114,7 +115,7 @@ class Themes
 
         //register the theme assets
         if($setAssets){
-            $assetPath = config('core.themes.themes_path').'/'.$theme->name.'/'.$theme->assetPath;
+            $assetPath = $this->themesFolder.'/'.$theme->name.'/'.$theme->assetPath;
             \Asset::container('theme')->add('css', $assetPath.'/'.$theme->name.'.css');
             \Asset::container('theme')->add('js', $assetPath.'/'.$theme->name.'.js');
         }
@@ -194,7 +195,7 @@ class Themes
     public function rebuildCache()
     {
         $themes = $this->scanJsonFiles();
-        // file_put_contents($this->cachePath, json_encode($themes, JSON_PRETTY_PRINT));
+        file_put_contents($this->cachePath, json_encode($themes, JSON_PRETTY_PRINT));
         $stub = file_get_contents(realpath(__DIR__ . '/../stubs/theme_cache.stub'));
         $contents = str_replace('[CACHE]', var_export($themes, true), $stub);
         file_put_contents($this->cachePath, $contents);
@@ -271,14 +272,8 @@ class Themes
     {
 
         $parentThemes = [];
-        $themesConfig = config('core.themes.themes', []);
 
         foreach ($this->loadThemesJson() as $data) {
-            // Are theme settings overriden in config/themes.php?
-            if (array_key_exists($data['name'], $themesConfig)) {
-                $data = array_merge($data, $themesConfig[$data['name']]);
-            }
-
             // Create theme
             $theme = new Theme(
                 $data['name'],
@@ -294,42 +289,6 @@ class Themes
 
             // Load the rest of the values as theme Settings
             $theme->loadSettings($data);
-        }
-
-        // Add themes from config/themes.php
-        foreach ($themesConfig as $themeName => $themeConfig) {
-
-            // Is it an element with no values?
-            if (is_string($themeConfig)) {
-                $themeName = $themeConfig;
-                $themeConfig = [];
-            }
-
-            // Create new or Update existing?
-            if (!$this->exists($themeName)) {
-                $theme = new Theme($themeName);
-            } else {
-                $theme = $this->find($themeName);
-            }
-
-            // Load Values from config/themes.php
-            if (isset($themeConfig['asset-path'])) {
-                $theme->assetPath = $themeConfig['asset-path'];
-            }
-
-            if (isset($themeConfig['views-path'])) {
-                $theme->viewsPath = $themeConfig['views-path'];
-            }
-
-            if (isset($themeConfig['images-path'])) {
-                $theme->viewsPath = $themeConfig['images-path'];
-            }
-
-            if (isset($themeConfig['extends'])) {
-                $parentThemes[$themeName] = $themeConfig['extends'];
-            }
-
-            $theme->loadSettings(array_merge($theme->settings, $themeConfig));
         }
 
         // All themes are loaded. Now we can assign the parents to the child-themes

@@ -2,10 +2,10 @@
 
 namespace $NAMESPACE$;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Pingu\Core\Support\ModuleServiceProvider;
 
-class $CLASS$ extends ServiceProvider
+class $CLASS$ extends ModuleServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
@@ -32,6 +32,7 @@ class $CLASS$ extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', '$LOWER_NAME$');
         $this->registerFactories();
         $this->registerAssets();
+        $this->registerModelSlugs(__DIR__.'/../'.$this->modelFolder);
         $this->loadMigrationsFrom(__DIR__ . '/../$MIGRATIONS_PATH$');
     }
 
@@ -54,14 +55,6 @@ class $CLASS$ extends ServiceProvider
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);
-    }
-
-    /**
-     * Registers all the slugs for this module's models
-     */
-    public function registerModelSlugs()
-    {
-        \ModelRoutes::registerSlugsFromPath(realpath(__DIR__.'/../'.$this->modelFolder));
     }
 
     /**

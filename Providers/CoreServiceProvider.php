@@ -6,7 +6,6 @@ use Asset, View, Theme, Blade, Settings;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
-use Illuminate\Support\ServiceProvider;
 use Pingu\Core\Console\GenerateDoc;
 use Pingu\Core\Console\MakeComposer;
 use Pingu\Core\Console\MakeException;
@@ -17,11 +16,13 @@ use Pingu\Core\Http\Middleware\HomepageMiddleware;
 use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Core\ModelRoutes;
+use Pingu\Core\Providers\ThemeServiceProvider;
+use Pingu\Core\Support\ModuleServiceProvider;
 use Pingu\Forms\Fields\Number;
 use Pingu\Forms\Fields\Text;
 use Spatie\TranslationLoader\LanguageLine;
 
-class CoreServiceProvider extends ServiceProvider
+class CoreServiceProvider extends ModuleServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
@@ -62,13 +63,27 @@ class CoreServiceProvider extends ServiceProvider
     protected $globalMiddlewares = [];
 
     /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->singleton('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
+        $this->app->singleton('core.notify', \Pingu\Core\Components\Notify::class);
+        $this->app->singleton('core.themeConfig', \Pingu\Core\Components\ThemeConfig::class);
+        $this->app->singleton('core.modelRoutes', ModelRoutes::class);
+        $this->app->register(RouteServiceProvider::class);
+    }
+
+    /**
      * Boot the application events.
      *
      * @return void
      */
     public function boot(Router $router, Kernel $kernel)
     {
-        $this->registerModelSlugs();
+        $this->registerModelSlugs(__DIR__.'/../'.$this->modelFolder);
         $this->registerGroupMiddlewares($router);
         $this->registerRouteMiddlewares($router);
         $this->registerGlobalMiddlewares($kernel);
@@ -103,28 +118,6 @@ class CoreServiceProvider extends ServiceProvider
                 GenerateDoc::class
             ]);
         }
-    }
-
-    /**
-     * Registers all the slugs for this module's models
-     */
-    public function registerModelSlugs()
-    {
-        \ModelRoutes::registerSlugsFromPath(realpath(__DIR__.'/../'.$this->modelFolder));
-    }
-
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->app->singleton('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
-        $this->app->singleton('core.notify', \Pingu\Core\Components\Notify::class);
-        $this->app->singleton('core.themeConfig', \Pingu\Core\Components\ThemeConfig::class);
-        $this->app->singleton('core.modelRoutes', ModelRoutes::class);
-        $this->app->register(RouteServiceProvider::class);
     }
 
     public function registerRouteMiddlewares(Router $router)
@@ -169,7 +162,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../Config/config.php', 'core'
         );
-        $this->mergeConfigFrom(
+        $this->replaceConfigFrom(
             __DIR__.'/../Config/modules.php', 'modules'
         );
     }

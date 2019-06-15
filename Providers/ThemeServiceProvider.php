@@ -3,10 +3,9 @@ namespace Pingu\Core\Providers;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
+use Pingu\Core\Components\ThemeViewFinder;
 use Pingu\Core\Console\{createTheme, refreshThemeCache, listThemes};
-use Pingu\Core\Http\Middleware\SetApiThemeMiddleware;
 
 class ThemeServiceProvider extends ServiceProvider
 {
@@ -26,7 +25,7 @@ class ThemeServiceProvider extends ServiceProvider
         |--------------------------------------------------------------------------*/
 
         $this->app->singleton('view.finder', function ($app) {
-            return new \Pingu\Core\Components\themeViewFinder(
+            return new ThemeViewFinder(
                 $app['files'],
                 $app['config']['view.paths'],
                 null
@@ -37,22 +36,11 @@ class ThemeServiceProvider extends ServiceProvider
 
     public function boot(Router $router)
     {
-        //Add middleware
-        $router->pushMiddlewareToGroup('api', SetApiThemeMiddleware::class);
-
         /*--------------------------------------------------------------------------
         | Initialize Themes
         |--------------------------------------------------------------------------*/
-
         $themes = $this->app->make('core.themes');
         $themes->scanThemes();
-
-        /*--------------------------------------------------------------------------
-        | Activate default theme
-        |--------------------------------------------------------------------------*/
-        if (!$themes->current() && \Config::get('core.themes.default')) {
-            $themes->set(\Config::get('core.themes.default'));
-        }
 
         /*--------------------------------------------------------------------------
         | Register Console Commands

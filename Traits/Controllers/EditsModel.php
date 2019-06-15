@@ -218,7 +218,7 @@ trait EditsModel
 	protected function getUpdateValidator(BaseModel $model)
 	{
 		$fields = $this->getEditFields($model);
-		return $model->makeValidator($this->request->post(), $fields);
+		return $model->makeValidator($this->request->all(), $fields);
 	}
 
 	/**
