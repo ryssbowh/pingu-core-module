@@ -18,8 +18,8 @@ trait CreatesModel
 	public function create()
 	{
 		$this->beforeCreate();
-
 		$form = $this->getCreateForm();
+		$this->modifyCreateForm($form);
 
 		return $this->getCreateView($form);
 	}
@@ -128,7 +128,6 @@ trait CreatesModel
 
 		$form = new ModelForm($url, 'POST', new $model, $fields);
 		$form->addSubmit('Submit');
-		$this->modifyCreateForm($form);
 
 		return $form;
 	}

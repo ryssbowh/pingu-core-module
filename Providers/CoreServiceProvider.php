@@ -172,6 +172,9 @@ class CoreServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../Config/config.php', 'core'
         );
+        $this->mergeConfigFrom(
+            __DIR__.'/../Config/modules.php', 'modules'
+        );
     }
 
     /**
