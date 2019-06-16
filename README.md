@@ -2,6 +2,12 @@
 
 ## v2.0.0
 - forms v2
+- added helpers upload_max_filesize and temp_path
+- added temp disk
+- added storage link at installation
+- added settings at installation
+- added a ModuleServiceProvider as mother class
+- 
 
 ## v1.1.4
 - `AdminableContract` renamed to `HasAdminRoutes`

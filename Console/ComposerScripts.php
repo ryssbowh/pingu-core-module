@@ -108,6 +108,9 @@ class ComposerScripts
 			echo "Publishing configuration...\n";
 			exec('./artisan module:publish-config', $output);
 
+			echo "Symlinking storage...\n";
+			exec('./artisan storage:link', $output); 
+
 			echo "Clearing cache...\n";
 			exec('./artisan cache:clear', $output); 
 		}

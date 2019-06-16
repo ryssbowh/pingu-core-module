@@ -32,30 +32,24 @@ function friendlyClassname($str){
 	return explodeCamelCase(class_basename($str));
 }
 
-if (!function_exists('themes_path')) {
-
-    /**
-     * Returns the path of a given file for the current theme
-     * @param  string $filename
-     * @return string|null
-     */
-    function themes_path($filename = null)
-    {
-        return app()->make('core.themes')->themes_path($filename);
-    }
+/**
+ * Returns the path of a given file for the current theme
+ * @param  string $filename
+ * @return string|null
+ */
+function themes_path($filename = null)
+{
+    return app()->make('core.themes')->themes_path($filename);
 }
 
-if (!function_exists('theme_url')) {
-    /**
-     * Returns the url of a given resource for the current theme
-     * @param  string $url
-     * @return string|null
-     */
-    function theme_url($url)
-    {
-        return app()->make('core.themes')->url($url);
-    }
-
+/**
+ * Returns the url of a given resource for the current theme
+ * @param  string $url
+ * @return string|null
+ */
+function theme_url($url)
+{
+    return app()->make('core.themes')->url($url);
 }
 
 /**
@@ -119,4 +113,20 @@ function replaceUriSlugs(string $uri, array $replacements){
         $uri = str_replace($matches[$i+1], $replacement->getRouteKey(), $uri);
     }
     return '/'.ltrim($uri, '/');
+}
+    
+/**
+ * upload_max_filesize in Kb
+ */
+function upload_max_filesize()
+{
+    return rtrim(ini_get('upload_max_filesize'),'M')*1000;
+}
+
+function temp_path($file = null){
+    $path = config('filesystems.disks.tmp.root');
+    if($file){
+        $path .= DIRECTORY_SEPARATOR.$file;
+    }
+    return $path;
 }
