@@ -48,11 +48,8 @@ trait EditsModel
 			}
 			$this->afterSuccessfullUpdate($model);
 		}
-		catch(ModelNotSaved $e){
+		catch(\Exception $e){
 			$this->onUpdateFailure($model, $e);
-		}
-		catch(ModelRelationsNotSaved $e){
-			$this->onUpdateRelationshipsFailure($model, $e);
 		}
 
 		return $this->onSuccessfullUpdate($model);
@@ -182,19 +179,13 @@ trait EditsModel
 	 * @param  BaseModel $model
 	 * @param  ModelNotSaved $exception 
 	 */
-	protected function onUpdateFailure(BaseModel $model, ModelNotSaved $exception)
+	protected function onUpdateFailure(BaseModel $model, \Exception $exception)
 	{
-		Notify::error('Error while saving '.$model::friendlyName());
-	}
-
-	/**
-	 * Callback when model's relationships can't be saved
-	 * @param  BaseModel $model
-	 * @param  ModelRelationsNotSaved $exception 
-	 */
-	protected function onUpdateRelationshipsFailure(BaseModel $model, ModelRelationsNotSaved $exception)
-	{
-		Notify::error($model::friendlyName().' was partially saved, check manually');
+		if(env('APP_ENV') == 'local'){
+			throw $exception;
+		}
+		Notify::danger('Error : '.$exception->getMessage());
+		return back();
 	}
 
 	/**

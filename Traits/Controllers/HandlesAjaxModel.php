@@ -32,22 +32,13 @@ trait HandlesAjaxModel
 		$query = $model->newQuery();
 		foreach($filters as $field => $value){
 			if(!isset($fieldsDef[$field])){
-				throw new HttpException(422, "field $field is not defined");
+				continue;
 			}
 			$fieldDef = $fieldsDef[$field];
-			if(!isset($fieldDef['options']['type'])){
-				$fieldDef['options']['type'] = Type::class;
-			}
 			
 			if(!is_null($value)){
-				$fieldDef['options']['type']::filterQueryModifier($query, $field, $value);
+				$fieldDef->option('type')->filterQueryModifier($query, $field, $value);
 			}
-		}
-
-		if(isset($options['relatedModel'])){
-			$relatedModel = $options['relatedModel']::find($options['relatedId']);
-			$method = 'relatedJsGrid'.class_basename($options['relatedModel']);
-			$model::$method($query, $relatedModel);
 		}
 
 		$count = $query->count();

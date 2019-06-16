@@ -4,13 +4,15 @@ namespace Pingu\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Pingu\Forms\Fields\Number;
+use Pingu\Forms\Support\Fields\Email;
 use Pingu\Forms\Support\Fields\NumberInput;
+use Pingu\Forms\Support\Fields\Password;
 use Pingu\Forms\Support\Fields\TextInput;
-use Pingu\Forms\Support\Types\Integer;
-use Pingu\Forms\Support\Types\Text;
 use Pingu\Menu\Entities\Menu;
 use Pingu\Menu\Entities\MenuItem;
 use Pingu\Permissions\Entities\Permission;
+use Pingu\Settings\Forms\Types\Integer;
+use Pingu\Settings\Forms\Types\Text;
 use Settings;
 
 class CoreDatabaseSeeder extends Seeder
@@ -25,32 +27,98 @@ class CoreDatabaseSeeder extends Seeder
         Settings::registerMany([
             'app.name' => [
                 'Title' => 'Site name',
-                'Section' => 'core',
-                'field' => TextInput::class,
+                'Section' => 'general',
+                'field' => TextInput::class, 
                 'type' => Text::class,
-                'validation' => 'required'
+                'validation' => 'required|string',
+                'attributes' => ['required' => true],
+                'weight' => 0
             ],
             'session.lifetime' => [
                 'Title' => 'Session Lifetime',
-                'Section' => 'core',
+                'helper' => 'Controls how long before users have to login again',
+                'Section' => 'general',
+                'unit' => 'seconds',
                 'field' => NumberInput::class,
                 'type' => Integer::class,
-                'validation' => 'required|integer'
+                'validation' => 'required|integer|min:3600',
+                'attributes' => ['required' => true, 'min' => 3600],
+                'weight' => 1
             ],
             'core.maintenance.message' => [
                 'Title' => 'Maintenance mode message',
-                'Section' => 'core',
+                'Section' => 'general',
                 'field' => TextInput::class,
                 'type' => Text::class,
-                'validation' => 'required'
+                'validation' => 'required|string',
+                'attributes' => ['required' => true],
+                'weight' => 2
+            ],
+            'mail.host' => [
+                'Title' => 'Mail host',
+                'Section' => 'mailing',
+                'field' => TextInput::class,
+                'type' => Text::class,
+                'validation' => 'required|string',
+                'attributes' => ['required' => true],
+                'weight' => 0
+            ],
+            'mail.port' => [
+                'Title' => 'Mail port',
+                'Section' => 'mailing',
+                'field' => NumberInput::class,
+                'type' => Integer::class,
+                'validation' => 'required|integer',
+                'attributes' => ['required' => true],
+                'weight' => 1
+            ],
+            'mail.username' => [
+                'Title' => 'Mail username',
+                'Section' => 'mailing',
+                'field' => TextInput::class,
+                'type' => Text::class,
+                'validation' => 'required|string',
+                'attributes' => ['required' => true],
+                'weight' => 2
+            ],
+            'mail.password' => [
+                'Title' => 'Mail password',
+                'Section' => 'mailing',
+                'field' => Password::class,
+                'type' => Text::class,
+                'validation' => 'required|string',
+                'encrypted' => true,
+                'attributes' => ['required' => true],
+                'weight' => 3
+            ],
+            'mail.from.address' => [
+                'Title' => 'Email address from',
+                'Section' => 'mailing',
+                'field' => Email::class,
+                'type' => Text::class,
+                'validation' => 'required|email',
+                'attributes' => ['required' => true],
+                'weight' => 4
+            ],
+            'mail.from.name' => [
+                'Title' => 'Email name from',
+                'Section' => 'mailing',
+                'field' => TextInput::class,
+                'type' => Text::class,
+                'validation' => 'required|string',
+                'attributes' => ['required' => true],
+                'weight' => 5
             ]
         ]);
 
         Permission::findOrCreate(['name' => 'browse site', 'section' => 'Core']);
         $perm1 = Permission::findOrCreate(['name' => 'access admin area', 'section' => 'Core']);
         Permission::findOrCreate(['name' => 'view debug bar', 'section' => 'Core', 'helper' => 'This should only be for developers']);
-        Permission::findOrCreate(['name' => 'edit core settings', 'section' => 'Core']);
-        $perm2 = Permission::findOrCreate(['name' => 'view core settings', 'section' => 'Core']);
+        $perm2 = Permission::findOrCreate(['name' => 'view general settings', 'section' => 'Core']);
+        Permission::findOrCreate(['name' => 'edit general settings', 'section' => 'Core']);
+        $perm3 = Permission::findOrCreate(['name' => 'view mailing settings', 'section' => 'Core']);
+        Permission::findOrCreate(['name' => 'edit mailing settings', 'section' => 'Core']);
+        
         Permission::findOrCreate(['name' => 'view site in maintenance mode', 'section' => 'Core', 'helper' => 'Login will always be available in maintenance mode']);
         Permission::findOrCreate(['name' => 'put site in maintenance mode', 'section' => 'Core']);
 
@@ -88,12 +156,20 @@ class CoreDatabaseSeeder extends Seeder
                 'permission_id' => null
             ], $admin);
             MenuItem::create([
-                'name' => 'Core',
+                'name' => 'General',
                 'weight' => 1,
                 'active' => 1,
-                'url' => 'settings.admin.core',
+                'url' => 'settings.admin.general',
                 'deletable' => 0,
                 'permission_id' => $perm2->id
+            ], $admin, $settings);
+            MenuItem::create([
+                'name' => 'Mailing',
+                'weight' => 1,
+                'active' => 1,
+                'url' => 'settings.admin.mailing',
+                'deletable' => 0,
+                'permission_id' => $perm3->id
             ], $admin, $settings);
             MenuItem::create([
                 'name' => 'Structure',

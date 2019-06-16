@@ -13,13 +13,25 @@
 
 
 Route::get('/','CoreController@adminHome');
-Route::get('/settings/core', ['uses' => 'CoreSettingsController@index'])
-	->middleware('can:view core settings')
-	->name('settings.admin.core');
 
-Route::get('/settings/core/edit', ['uses' => 'CoreSettingsController@edit'])
-	->middleware('can:edit core settings')
-	->name('settings.admin.core.edit');
+/**
+ * Settings
+ */
+Route::get('/settings/general', ['uses' => 'CoreSettingsController@index'])
+	->middleware('can:view general settings')
+	->name('settings.admin.general');
+Route::get('/settings/mailing', ['uses' => 'CoreSettingsController@index'])
+	->middleware('can:view mailing settings')
+	->name('settings.admin.mailing');
 
-Route::post('/settings/core/edit', ['uses' => 'CoreSettingsController@update'])
-	->middleware('can:edit core settings');
+Route::get('/settings/general/edit', ['uses' => 'CoreSettingsController@edit'])
+	->middleware('can:edit general settings')
+	->name('settings.admin.general.edit');
+Route::get('/settings/mailing/edit', ['uses' => 'CoreSettingsController@edit'])
+	->middleware('can:edit mailing settings')
+	->name('settings.admin.mailing.edit');
+
+Route::post('/settings/general/edit', ['uses' => 'CoreSettingsController@update'])
+	->middleware('can:edit general settings');
+Route::post('/settings/mailing/edit', ['uses' => 'CoreSettingsController@update'])
+	->middleware('can:edit mailing settings');
