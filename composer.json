@@ -28,15 +28,16 @@
         "spatie/laravel-schemaless-attributes": "1.3.0",
         "barryvdh/laravel-debugbar": "3.2.1",
         "hanneskod/classtools": "~1.0",
-        "pingu/activity-module": ">=1.1.2",
-        "pingu/forms-module": ">=1.2",
-        "pingu/settings-module": ">=1.1.3",
-        "pingu/permissions-module": ">=1.1.3",
-        "pingu/page-module": ">=1.1.3",
-        "pingu/admin-theme": ">=1.1.3",
-        "pingu/front-theme": ">=1.1.1",
-        "pingu/user-module": ">=1.1.3",
-        "pingu/menu-module": ">=1.1.2",
-        "pingu/content-module": ">=1.0.0"
+        "pingu/activity-module": "^1.1",
+        "pingu/forms-module": "^2.0",
+        "pingu/settings-module": "^2.0",
+        "pingu/permissions-module": "^1.2",
+        "pingu/page-module": "^2.0",
+        "pingu/admin-theme": "^2.0",
+        "pingu/front-theme": "^1.1",
+        "pingu/user-module": "^2.0",
+        "pingu/menu-module": "^2.0",
+        "pingu/content-module": "^2.0",
+        "pingu/media-module": "^2.0"
     }
 }
