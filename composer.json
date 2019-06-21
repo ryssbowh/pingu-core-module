@@ -38,6 +38,7 @@
         "pingu/user-module": "^2.0",
         "pingu/menu-module": "^2.0",
         "pingu/content-module": "^2.0",
-        "pingu/media-module": "^2.0"
+        "pingu/media-module": "^1.0",
+        "pingu/honeypot-module": "^1.0"
     }
 }
