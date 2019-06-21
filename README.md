@@ -7,7 +7,9 @@
 - added storage link at installation
 - added settings at installation
 - added a ModuleServiceProvider as mother class
-- 
+- added EditableModel and DeletableModel middlewares
+- made abstract controllers
+- moved themes in Themes folder and created sym link
 
 ## v1.1.4
 - `AdminableContract` renamed to `HasAdminRoutes`
@@ -114,9 +116,9 @@ Visible fields for an ajax request are set by the models $visible variable.
 Helpers are available for ajax calls (get, post, put, \_delete, patch), each of those will throw 2 events on the body, `ajax.failed` and `ajax.success`.
  
 ### Controllers
-Provides with an api controller for models that handles some basic operation on models.
- 
-Provides with three Contracts/Trait for controllers (`HandlesModel`, `EditModel`, `CreatesModel`) to perform edition/creation operation on a model. Lots of hooks are available to change the workflow. HandlesModel is just a concatenation of the two others. the models handled by those controllers must implement `Formable`.
+Provides with 2 controllers to perform basic oprations on models :
+- AdminModelController : add/edit/delete models. The controllers extending this controller must define `getModel()`. This model must implements the following contracts : `HasAdminRoutesContract` and `FormableContract`
+- AjaxModelController : Same as above but for ajax calls. model must implement `HasAjaxRoutesContract` and `FormableContract`
  
 ### Middlewares
 the `HomepageMiddleware` sets the homepage when the uri is /.
@@ -128,6 +130,10 @@ the `CheckFormaintenanceMode` does what its name says. /login will always be ava
 the `ActivateDebugBar` activates the debug bar if the right permission is set.
 
 `redirectIfAuthenticated` used on routes that are only for non-authenticated users.
+
+the `EditableModel` will check if a model is editable, the model must have a field editable. call it with `editableModel:{modelSlug}`
+
+the `DeletableModel` will check if a model is deletable, the model must have a field deletable. call it with `deletableModel:{modelSlug}`
  
 ### Base model
 The base model **which all models must extend** provides with friendly names and static route keys methods.
@@ -143,6 +149,7 @@ Changes to it includes :
 - Themes can define a config which will override the normal config. Access it with `theme_config()` which will return the normal config if it does not exists in your theme.
 - Themes can define Composers to add variables to any view. use the command `module:make-composer`.
 - Admin theme will be set if request starts with /admin or if ajax call define a \_theme=admin
+- Themes now sits in Themes folder. a symbolic link is created at theme creation. It links public/themes/{themeName} to Themes/{themeName}/public so you can have assets publicly available in your Themes folder. If your running your site in a vagrant it's important to run the create command from within your box, or the link will be incorrect. To access your assets you can use the `theme_url` function.
  
 ### Commands
 Includes commands provided by [igaster/laravel-theme](https://github.com/igaster/laravel-theme) from which packaging commands have been removed.

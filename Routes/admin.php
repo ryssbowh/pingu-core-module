@@ -12,7 +12,7 @@
 */
 
 
-Route::get('/','CoreController@adminHome');
+Route::get('/','CoreController@home');
 
 /**
  * Settings

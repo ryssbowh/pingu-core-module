@@ -18,8 +18,8 @@ class Themes
     public function __construct()
     {
         $this->laravelViewsPath = config('view.paths');
-        $this->themesFolder = 'themes';
-        $this->themesPath = base_path('public/'.$this->themesFolder);
+        $this->themesFolder = 'Themes';
+        $this->themesPath = base_path($this->themesFolder);
         $this->cachePath = base_path('bootstrap/cache/themes.php');
     }
 
@@ -115,9 +115,8 @@ class Themes
 
         //register the theme assets
         if($setAssets){
-            $assetPath = $this->themesFolder.'/'.$theme->name.'/'.$theme->assetPath;
-            \Asset::container('theme')->add('css', $assetPath.'/'.$theme->name.'.css');
-            \Asset::container('theme')->add('js', $assetPath.'/'.$theme->name.'.js');
+            \Asset::container('theme')->add('css', 'themes/'.$theme->name.'.css');
+            \Asset::container('theme')->add('js', 'themes/'.$theme->name.'.js');
         }
 
         // registers theme composers
@@ -234,7 +233,6 @@ class Themes
                     'name'       => $themeName,
                     'asset-path' => config('core.theme.asset_path'),
                     'views-path' => config('core.theme.views_path'),
-                    'images-path' => config('core.theme.images_path'),
                     'extends'    => null
                 ];
 
@@ -278,8 +276,7 @@ class Themes
             $theme = new Theme(
                 $data['name'],
                 $data['asset-path'],
-                $data['views-path'],
-                $data['images-path']
+                $data['views-path']
             );
 
             // Has a parent theme? Store parent name to resolve later.

@@ -7,10 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 use Pingu\Core\Contracts\Models\HasContextualLinksContract;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Support\Form;
 use Pingu\Forms\Support\ModelForm;
 
-trait EditsModel
+trait EditsAdminModel
 {
 	/**
 	 * Edit a model
@@ -51,7 +50,6 @@ trait EditsModel
 		catch(\Exception $e){
 			$this->onUpdateFailure($model, $e);
 		}
-
 		return $this->onSuccessfullUpdate($model);
 	}
 
@@ -80,9 +78,9 @@ trait EditsModel
 
 	/**
 	 * Modify the edit form
-	 * @param  FormModel $form
+	 * @param  ModelForm $form
 	 */
-	protected function modifyEditForm(Form $form, BaseModel $model){}
+	protected function modifyEditForm(ModelForm $form, BaseModel $model){}
 
 	/**
 	 * Gets the model being edited
@@ -96,11 +94,11 @@ trait EditsModel
 
 	/**
 	 * Return the view for an edit request
-	 * @param  FormModel      $form
+	 * @param  ModelForm $form
 	 * @param  BaseModel $model 
 	 * @return view
 	 */
-	protected function getEditView(Form $form, BaseModel $model)
+	protected function getEditView(ModelForm $form, BaseModel $model)
 	{
 		$with = [
 			'form' => $form,
@@ -197,8 +195,9 @@ trait EditsModel
 	{
 		$validator = $this->getUpdateValidator($model);
 		$this->modifyUpdateValidator($validator, $model);
-		$validator->validate();
-		return $validator->validated();
+		$validated = $validator->validate();
+		$validated = $this->_uploadFiles($validated, $model);
+		return $validated;
 	}
 
 	/**
@@ -209,7 +208,7 @@ trait EditsModel
 	protected function getUpdateValidator(BaseModel $model)
 	{
 		$fields = $this->getEditFields($model);
-		return $model->makeValidator($this->request->all(), $fields);
+		return $model->makeValidator($this->request->all(), $fields, true);
 	}
 
 	/**
@@ -244,6 +243,23 @@ trait EditsModel
 	protected function onModelUpdatedWithChanges(BaseModel $model)
 	{
 		Notify::success($model::friendlyName().' has been saved');
+	}
+
+	/**
+	 * Uploads file submitted in post and populate validated array with a Media object
+	 * 
+	 * @param  array     $validated
+	 * @param  BaseModel $model
+	 * @return array
+	 */
+	protected function _uploadFiles(array $validated, BaseModel $model)
+	{
+		$toUpload = array_intersect($validated, $this->request->allFiles());
+		foreach($toUpload as $name => $file){
+			$media = $model->uploadFormFile($file, $name);
+			$validated[$name] = $media;
+		}
+		return $validated;
 	}
 
 }

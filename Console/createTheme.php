@@ -22,18 +22,23 @@ class createTheme extends baseThemeCommand
         }
 
         // Check that theme doesn't exist
-        if ($this->theme_installed($themeName)) {
+        if ($this->files->exists(themes_path($themeName))) {
             $this->error("Error: Theme $themeName already exists");
             return;
         }
 
+        $publicThemePath = themes_path($themeName.'/public');
+        $publicDirectory = public_path(config('core.themes.public_path')).'/'.$themeName;
+
+        if (is_link($publicDirectory)) {
+            unlink($publicDirectory);
+        }
+
         $viewsPath = $this->ask('Views folder', config('core.themes.views_path'));
         $assetPath = $this->ask('Assets folder', config('core.themes.asset_path'));
-        $imagesPath = $this->ask('Images folder', config('core.themes.images_path'));
 
         $viewsPathFull = themes_path($themeName.'/'.$viewsPath);
         $assetPathFull = themes_path($themeName.'/'.$assetPath);
-        $imagePathFull = themes_path($themeName.'/'.$imagesPath);
 
         // Ask for parent theme
         $parentTheme = "";
@@ -48,19 +53,19 @@ class createTheme extends baseThemeCommand
             "name" => $themeName,
             "extends" => $parentTheme,
             "views-path" => $viewsPath,
-            "asset-path" => $assetPath,
-            "images-path" => $imagesPath,
+            "asset-path" => $assetPath
         ]);
 
         // Create Paths + copy theme.json
-        $this->files->makeDirectory(themes_path($themeName));
-        $this->files->makeDirectory($viewsPathFull);
-        $this->files->makeDirectory($assetPathFull);
-        $this->files->makeDirectory($assetPathFull.'/css');
-        $this->files->makeDirectory($assetPathFull.'/js');
+        $this->makeDirectory(themes_path($themeName));
+        $this->makeDirectory($viewsPathFull);
+        $this->makeDirectory($assetPathFull);
+        $this->makeDirectory($publicThemePath);
+        $this->files->link($publicThemePath, $publicDirectory);
+        $this->makeDirectory($assetPathFull.'/css');
+        $this->makeDirectory($assetPathFull.'/js');
         $this->files->put($assetPathFull.'/js/app.js','');
         $this->files->put($assetPathFull.'/css/master.scss','');
-        $this->files->makeDirectory($imagePathFull);
 
         $this->createComposerFile($themeName);
         $this->createWebpackFile($themeName, $assetPath);
@@ -73,7 +78,13 @@ class createTheme extends baseThemeCommand
 
         // Rebuild Themes Cache
         Theme::rebuildCache();
+        exec('composer du 2>/dev/null');
         $this->info("Theme created !");
+    }
+
+    public function makeDirectory($dir)
+    {
+        $this->files->makeDirectory($dir, 0755, true);
     }
 
     public function createComposerFile($name)
@@ -87,8 +98,8 @@ class createTheme extends baseThemeCommand
 
     public function createWebpackFile($themeName, $assetFolder)
     {
-        $content = file_get_contents(module_path('Core').'/stubs/themes/theme.stub');
-        $search = ['$NAME', '$ASSETFOLDER'];
+        $content = file_get_contents(module_path('Core').'/stubs/themes/mix.stub');
+        $search = ['$NAME$', '$ASSETFOLDER$'];
         $replace = [$themeName, $assetFolder];
         $content = str_replace($search, $replace, $content);
         $this->files->put(themes_path($themeName).'/webpack.mix.js', $content);
@@ -116,7 +127,6 @@ class createTheme extends baseThemeCommand
         $content = file_get_contents(module_path('Core').'/stubs/themes/composer_composers.stub');
         $content = str_replace('$NAME$', $themeName, $content);
         $this->files->put(themes_path($themeName).'/Composer.php', $content);
-        exec('composer du');
     }
 
 }

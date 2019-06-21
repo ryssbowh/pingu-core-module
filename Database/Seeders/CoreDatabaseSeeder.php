@@ -41,7 +41,7 @@ class CoreDatabaseSeeder extends Seeder
                 'unit' => 'seconds',
                 'field' => NumberInput::class,
                 'type' => Integer::class,
-                'validation' => 'required|integer|min:3600',
+                'validation' => 'required|integer|min:36000',
                 'attributes' => ['required' => true, 'min' => 3600],
                 'weight' => 1
             ],

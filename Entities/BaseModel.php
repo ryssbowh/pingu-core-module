@@ -28,6 +28,15 @@ class BaseModel extends Model
     }
 
     /**
+     * Model's friendly names
+     * @return string
+     */
+    public static function friendlyNames()
+    {
+        return str_plural(static::friendlyName());
+    }
+
+    /**
      * Determine if the given attribute may be mass assigned.
      *
      * @param  string  $key

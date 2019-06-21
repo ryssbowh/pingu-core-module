@@ -12,6 +12,8 @@ use Pingu\Core\Console\MakeException;
 use Pingu\Core\Console\MergePackages;
 use Pingu\Core\Http\Middleware\ActivateDebugBar;
 use Pingu\Core\Http\Middleware\CheckForMaintenanceMode;
+use Pingu\Core\Http\Middleware\DeletableModel;
+use Pingu\Core\Http\Middleware\EditableModel;
 use Pingu\Core\Http\Middleware\HomepageMiddleware;
 use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
@@ -36,6 +38,8 @@ class CoreServiceProvider extends ModuleServiceProvider
     protected $routeMiddlewares = [
         'home' => HomepageMiddleware::class,
         'guest' => RedirectIfAuthenticated::class,
+        'deletableModel' => DeletableModel::class
+        'editableModel' => EditableModel::class
     ];
 
     protected $groupMiddlewares = [
@@ -57,7 +61,7 @@ class CoreServiceProvider extends ModuleServiceProvider
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             SetThemeMiddleware::class
-        ],
+        ]
     ];
 
     protected $globalMiddlewares = [];

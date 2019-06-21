@@ -38,8 +38,14 @@ return [
     'themes' => [
         'views_path' => 'views',
         'asset_path' => 'assets',
-        'images_path' => 'images',
+        /**
+         * Public path for themes assets linkage
+         */
+        'public_path' => 'themes',
 
+        /**
+         * Folder for module views within themes
+         */
         'modules_namespaced_views' => 'modules',
 
         /*
@@ -49,7 +55,7 @@ return [
         |--------------------------------------------------------------------------
         */
 
-        'asset_not_found' => 'LOG_ERROR',
+        'asset_not_found' => (env('APP_ENV') == 'local') ? 'THROW_EXCEPTION' : 'LOG_ERROR',
 
         /*
         |--------------------------------------------------------------------------

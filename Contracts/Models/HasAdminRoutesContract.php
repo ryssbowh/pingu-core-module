@@ -47,4 +47,10 @@ interface HasAdminRoutesContract extends HasRouteSlugContract
 	 */
 	public static function adminDeleteUri();
 
+	/**
+	 * route for confirm delete requests
+	 * @return string
+	 */
+	public static function adminConfirmDeleteUri();
+
 }

@@ -2,15 +2,11 @@
 
 namespace Pingu\Core\Traits\Controllers;
 
-use ContextualLinks,Notify;
-use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
-use Pingu\Core\Contracts\HasContextualLinks;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Forms\Support\ModelForm;
-use Whoops\Exception\ErrorException;
 
-trait CreatesModel
+trait CreatesAdminModel
 {
 	/**
 	 * Create form for a model. Model must be set within the route
@@ -79,8 +75,7 @@ trait CreatesModel
 	 */
 	protected function getStoreModel()
 	{
-		$model = $this->getModel();
-		return new $model();
+		return $this->model;
 	}
 
 	/**
@@ -94,7 +89,7 @@ trait CreatesModel
 	{
 		$with = [
 			'form' => $form,
-			'model' => $this->getModel(),
+			'model' => $this->model,
 		];
 		$this->addVariablesToCreateView($with);
 		return view($this->getCreateViewName())->with($with);
@@ -184,16 +179,6 @@ trait CreatesModel
 		return $validated;
 	}
 
-	protected function uploadFiles(array $validated, BaseModel $model)
-	{
-		$toUpload = array_intersect($validated, $this->request->allFiles());
-		foreach($toUpload as $name => $file){
-			$media = $model->uploadFormFile($file, $name);
-			$validated[$name] = $media;
-		}
-		return $validated;
-	}
-
 	/**
 	 * makes the validator for a store request
 	 * 
@@ -202,7 +187,7 @@ trait CreatesModel
 	protected function getStoreValidator(BaseModel $model)
 	{
 		$fields = $this->getCreateFields($model);
-		return $model->makeValidator($this->request->all(), $fields);
+		return $model->makeValidator($this->request->all(), $fields, false);
 	}
 
 	/**
@@ -230,7 +215,7 @@ trait CreatesModel
 	 */
 	protected function onModelCreated(BaseModel $model)
 	{
-		Notify::success($model::friendlyName().' has been saved');
+		\Notify::success($model::friendlyName().' has been saved');
 	}
 
 	/**
@@ -251,8 +236,25 @@ trait CreatesModel
 		if(env('APP_ENV') == 'local'){
 			throw $exception;
 		}
-		Notify::danger('Error : '.$exception->getMessage());
+		\Notify::danger('Error : '.$exception->getMessage());
 		return back();
+	}
+
+	/**
+	 * Uploads file submitted in post and populate validated array with a Media object
+	 * 
+	 * @param  array     $validated
+	 * @param  BaseModel $model
+	 * @return array
+	 */
+	protected function uploadFiles(array $validated, BaseModel $model)
+	{
+		$toUpload = array_intersect($validated, $this->request->allFiles());
+		foreach($toUpload as $name => $file){
+			$media = $model->uploadFormFile($file, $name);
+			$validated[$name] = $media;
+		}
+		return $validated;
 	}
 
 }
