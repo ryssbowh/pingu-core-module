@@ -38,7 +38,7 @@ class CoreServiceProvider extends ModuleServiceProvider
     protected $routeMiddlewares = [
         'home' => HomepageMiddleware::class,
         'guest' => RedirectIfAuthenticated::class,
-        'deletableModel' => DeletableModel::class
+        'deletableModel' => DeletableModel::class,
         'editableModel' => EditableModel::class
     ];
 
