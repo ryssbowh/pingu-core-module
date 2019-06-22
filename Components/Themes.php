@@ -268,7 +268,7 @@ class Themes
      */
     public function scanThemes()
     {
-
+        $this->themes = [];
         $parentThemes = [];
 
         foreach ($this->loadThemesJson() as $data) {

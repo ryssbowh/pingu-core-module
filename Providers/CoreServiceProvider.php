@@ -7,9 +7,13 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
 use Pingu\Core\Console\GenerateDoc;
+use Pingu\Core\Console\InstallPingu;
 use Pingu\Core\Console\MakeComposer;
 use Pingu\Core\Console\MakeException;
+use Pingu\Core\Console\MakeModule;
 use Pingu\Core\Console\MergePackages;
+use Pingu\Core\Console\ModuleLink;
+use Pingu\Core\Console\ThemeLink;
 use Pingu\Core\Http\Middleware\ActivateDebugBar;
 use Pingu\Core\Http\Middleware\CheckForMaintenanceMode;
 use Pingu\Core\Http\Middleware\DeletableModel;
@@ -100,6 +104,21 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
         /**
+         * Generates modules links when created/disabled/enabled
+         */
+        \Event::listen('modules.created', function ($name) {
+            \Artisan::call('module:link', ['module' => $name]);
+        });
+
+        \Event::listen('modules.*.enabled', function ($name, $modules){
+            \Artisan::call('module:link', ['module' => $modules[0]->getName()]);
+        });
+
+        \Event::listen('modules.*.disabled', function ($name, $modules){
+            \Artisan::call('module:link', ['module' => $modules[0]->getName(), '--delete' => true]);
+        });
+
+        /**
          * Add dump function to blade
          */
         Blade::directive('d', function ($data) {
@@ -114,14 +133,16 @@ class CoreServiceProvider extends ModuleServiceProvider
      * @return void
      */
     public function registerCommands(){
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                MergePackages::class,
-                MakeComposer::class,
-                MakeException::class,
-                GenerateDoc::class
-            ]);
-        }
+        $this->commands([
+            MergePackages::class,
+            MakeComposer::class,
+            MakeException::class,
+            GenerateDoc::class,
+            InstallPingu::class,
+            ModuleLink::class,
+            ThemeLink::class,
+            MakeModule::class
+        ]);
     }
 
     public function registerRouteMiddlewares(Router $router)

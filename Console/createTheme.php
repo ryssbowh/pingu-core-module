@@ -27,13 +27,6 @@ class createTheme extends baseThemeCommand
             return;
         }
 
-        $publicThemePath = themes_path($themeName.'/public');
-        $publicDirectory = public_path(config('core.themes.public_path')).'/'.$themeName;
-
-        if (is_link($publicDirectory)) {
-            unlink($publicDirectory);
-        }
-
         $viewsPath = $this->ask('Views folder', config('core.themes.views_path'));
         $assetPath = $this->ask('Assets folder', config('core.themes.asset_path'));
 
@@ -60,8 +53,6 @@ class createTheme extends baseThemeCommand
         $this->makeDirectory(themes_path($themeName));
         $this->makeDirectory($viewsPathFull);
         $this->makeDirectory($assetPathFull);
-        $this->makeDirectory($publicThemePath);
-        $this->files->link($publicThemePath, $publicDirectory);
         $this->makeDirectory($assetPathFull.'/css');
         $this->makeDirectory($assetPathFull.'/js');
         $this->files->put($assetPathFull.'/js/app.js','');
@@ -78,13 +69,15 @@ class createTheme extends baseThemeCommand
 
         // Rebuild Themes Cache
         Theme::rebuildCache();
+        Theme::scanThemes();
+        \Artisan::call('theme:link', ['theme' => $themeName]);
         exec('composer du 2>/dev/null');
         $this->info("Theme created !");
     }
 
     public function makeDirectory($dir)
     {
-        $this->files->makeDirectory($dir, 0755, true);
+        $this->files->makeDirectory($dir, 0775, true);
     }
 
     public function createComposerFile($name)

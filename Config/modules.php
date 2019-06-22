@@ -37,6 +37,7 @@ return [
         ],
         'gitkeep' => false
     ],
+    'public_path' => 'modules',
     'namespace' => 'Pingu',
     'composer' => [
         'vendor' => 'pingu',
