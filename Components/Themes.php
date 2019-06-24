@@ -115,8 +115,8 @@ class Themes
 
         //register the theme assets
         if($setAssets){
-            \Asset::container('theme')->add('css', 'themes/'.$theme->name.'.css');
-            \Asset::container('theme')->add('js', 'themes/'.$theme->name.'.js');
+            \Asset::container('theme')->add('css', 'theme-assets/'.$theme->name.'.css');
+            \Asset::container('theme')->add('js', 'theme-assets/'.$theme->name.'.js');
         }
 
         // registers theme composers

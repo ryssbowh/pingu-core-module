@@ -2,7 +2,7 @@ const mix = require('laravel-mix');
 const path = require('path');
 
 var assetPath = './Themes/$NAME$/$ASSETFOLDER$/';
-var publicPath = './themes/';
+var publicPath = 'theme-assets/';
 
 //Javascript
 mix.js(assetPath + 'js/app.js', publicPath + '$NAME$.js').sourceMaps();

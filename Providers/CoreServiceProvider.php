@@ -6,6 +6,7 @@ use Asset, View, Theme, Blade, Settings;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
+use Pingu\Core\Console\BuildAssets;
 use Pingu\Core\Console\GenerateDoc;
 use Pingu\Core\Console\InstallPingu;
 use Pingu\Core\Console\MakeComposer;
@@ -128,14 +129,14 @@ class CoreServiceProvider extends ModuleServiceProvider
      */
     public function registerCommands(){
         $this->commands([
-            MergePackages::class,
             MakeComposer::class,
             MakeException::class,
             GenerateDoc::class,
             InstallPingu::class,
             ModuleLink::class,
             ThemeLink::class,
-            MakeModule::class
+            MakeModule::class,
+            BuildAssets::class
         ]);
     }
 
@@ -167,8 +168,8 @@ class CoreServiceProvider extends ModuleServiceProvider
         Asset::addVersioning();
         Asset::container('vendor')->add('js-manifest', 'manifest.js');
         Asset::container('vendor')->add('js-vendor', 'vendor.js');
-        Asset::container('modules')->add('core-js', 'module-assets/Core/js/Core.js');
-        Asset::container('modules')->add('core-css', 'module-assets/Core/css/Core.css');
+        Asset::container('modules')->add('core-js', 'module-assets/Core.js');
+        Asset::container('modules')->add('core-css', 'module-assets/Core.css');
     }
 
     /**
