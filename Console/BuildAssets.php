@@ -29,21 +29,21 @@ class BuildAssets extends Command
     public function handle()
     {
         $output = [];
-        exec('npm run merge', $output, $return);
+        exec('npm run merge 1>/dev/null', $output, $return);
         if($return !== 0){
             throw AssetException::merging($output);
         }
         $output = [];
-        exec('npm install', $output, $return);
+        exec('npm install 1>/dev/null', $output, $return);
         if($return !== 0){
             throw AssetException::installing($output);
         }
         $output = [];
         if(config('app.env') == 'production'){
-            exec('npm run production', $output, $return);
+            exec('npm run production 1>/dev/null', $output, $return);
         }
         else{
-            exec('npm run development', $output, $return);
+            exec('npm run development 1>/dev/null', $output, $return);
         }
         if($return !== 0){
             throw AssetException::compiling($output);
