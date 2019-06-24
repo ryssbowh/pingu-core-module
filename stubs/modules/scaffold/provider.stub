@@ -2,10 +2,10 @@
 
 namespace $NAMESPACE$;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Pingu\Core\Support\ModuleServiceProvider;
 
-class $CLASS$ extends ServiceProvider
+class $CLASS$ extends ModuleServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
@@ -26,12 +26,23 @@ class $CLASS$ extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerModelSlugs();
+        $this->registerModelSlugs(__DIR__.'/../'.$this->modelFolder);
         $this->registerTranslations();
         $this->registerConfig();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', '$LOWER_NAME$');
         $this->registerFactories();
+        $this->registerAssets();
+        $this->registerModelSlugs(__DIR__.'/../'.$this->modelFolder);
         $this->loadMigrationsFrom(__DIR__ . '/../$MIGRATIONS_PATH$');
+    }
+
+    /**
+     * Register js and css for this module
+     */
+    public function registerAssets()
+    {
+        \Asset::container('modules')->add('$LOWER_NAME$-js', 'module-assets/$STUDLY_NAME$/js/$STUDLY_NAME$.js');
+        \Asset::container('modules')->add('$LOWER_NAME$-css', 'module-assets/$STUDLY_NAME$/css/$STUDLY_NAME$.css');
     }
 
     /**
@@ -47,23 +58,12 @@ class $CLASS$ extends ServiceProvider
     }
 
     /**
-     * Registers all the slugs for this module's models
-     */
-    public function registerModelSlugs()
-    {
-        \ModelRoutes::registerSlugsFromPath(realpath(__DIR__.'/../'.$this->modelFolder));
-    }
-
-    /**
      * Register config.
      *
      * @return void
      */
     protected function registerConfig()
     {
-        $this->publishes([
-            __DIR__.'/../$PATH_CONFIG$/config.php' => config_path('$LOWER_NAME$.php'),
-        ], 'config');
         $this->mergeConfigFrom(
             __DIR__.'/../$PATH_CONFIG$/config.php', '$LOWER_NAME$'
         );

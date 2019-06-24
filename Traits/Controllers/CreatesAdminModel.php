@@ -2,31 +2,29 @@
 
 namespace Pingu\Core\Traits\Controllers;
 
-use ContextualLinks,Notify;
-use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
-use Pingu\Core\Contracts\HasContextualLinks;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Form;
-use Pingu\Forms\FormModel;
+use Pingu\Forms\Support\ModelForm;
 
-trait CreatesModel
+trait CreatesAdminModel
 {
 	/**
 	 * Create form for a model. Model must be set within the route
+	 * 
 	 * @return view
 	 */
 	public function create()
 	{
 		$this->beforeCreate();
-
 		$form = $this->getCreateForm();
+		$this->modifyCreateForm($form);
 
 		return $this->getCreateView($form);
 	}
 
 	/**
 	 * Stores a new model, model must be set within the route
+	 * 
 	 * @return redirect
 	 */
 	public function store()
@@ -35,18 +33,15 @@ trait CreatesModel
 
 		$modelStr = $this->getStoreModel();
 		$model = new $modelStr;
-		$validated = $this->validateStoreRequest($modelStr);
 
 		try{
+			$validated = $this->validateStoreRequest($model);
 			$this->performStore($model, $validated);
 			$this->onModelCreated($model);
 			$this->afterSuccessfullStore($model);
 		}
-		catch(ModelNotSaved $e){
-			$this->onStoreFailure($model, $e);
-		}
-		catch(ModelRelationsNotSaved $e){
-			$this->onStoreRelationshipsFailure($model, $e);
+		catch(\Exception $e){
+			return $this->onStoreFailure($model, $e);
 		}
 
 		return $this->onSuccessfullStore($model);
@@ -54,6 +49,7 @@ trait CreatesModel
 
 	/**
 	 * Store the model
+	 * 
 	 * @param  BaseModel $model
 	 * @param  array     $validated
 	 */
@@ -74,24 +70,26 @@ trait CreatesModel
 
 	/**
 	 * Gets the model being stored
+	 * 
 	 * @return string
 	 */
 	protected function getStoreModel()
 	{
-		return $this->getModel();
+		return $this->model;
 	}
 
 	/**
 	 * Get the view for a create request
-	 * @param  FormModel $form
+	 * 
+	 * @param  ModelForm $form
 	 * @param  string $model
 	 * @return view
 	 */
-	protected function getCreateView(FormModel $form)
+	protected function getCreateView(ModelForm $form)
 	{
 		$with = [
 			'form' => $form,
-			'model' => $this->getModel(),
+			'model' => $this->model,
 		];
 		$this->addVariablesToCreateView($with);
 		return view($this->getCreateViewName())->with($with);
@@ -99,6 +97,7 @@ trait CreatesModel
 
 	/**
 	 * View name for creating models
+	 * 
 	 * @return string
 	 */
 	protected function getCreateViewName()
@@ -108,48 +107,55 @@ trait CreatesModel
 
 	/**
 	 * Callback to add variables to the view
+	 * 
 	 * @param array &$with
 	 */
 	protected function addVariablesToCreateView(array &$with){}
 
 	/**
 	 * Builds the form for a create request
+	 * 
 	 * @param  string  $model
-	 * @return FormModel
+	 * @return ModelForm
 	 */
 	protected function getCreateForm()
 	{
 		
 		$url = $this->getStoreUrl();
+		if(!is_array($url)){
+			$url = ['url' => $url];
+		}
 		$model = $this->getStoreModel();
+		$model = new $model;
 		$fields = $this->getCreateFields($model);
-		$attrs = ['method' => 'POST', 'url' => $url];
 
-		$form = new FormModel($attrs, [], $model, $fields);
-		$this->modifyCreateForm($form);
-		$form->end();
+		$form = new ModelForm($url, 'POST', $model, $fields);
+		$form->addSubmit('Submit');
 
 		return $form;
 	}
 
 	/**
 	 * Modify the create form
+	 * @param  ModelForm $form
 	 */
-	protected function modifyCreateForm(FormModel $form){}
+	protected function modifyCreateForm(ModelForm $form){}
 
 	/**
 	 * Get the url for a store request
+	 * 
 	 * @return string
 	 */
 	protected function getStoreUrl()
 	{
 		$segments = request()->segments();
 		array_pop($segments);
-		return '/'.implode($segments,'/');
+		return ['url' => '/'.implode($segments,'/')];
 	}
 
 	/**
 	 * Callback after store action, this is where you redirect users.
+	 * 
 	 * @return mixed
 	 */
 	protected function onSuccessfullStore(BaseModel $model)
@@ -159,76 +165,96 @@ trait CreatesModel
 
 	/**
 	 * Validates a request and return validated array
-	 * @param  string $model 
+	 * 
+	 * @param  BaseModel $model
 	 * @return array
 	 */
-	protected function validateStoreRequest(string $model)
+	protected function validateStoreRequest(BaseModel $model)
 	{
 		$validator = $this->getStoreValidator($model);
 		$this->modifyStoreValidator($validator);
 		$validator->validate();
-		return $validator->validated();
+		$validated = $validator->validated();
+		$validated = $this->uploadFiles($validated, $model);
+		return $validated;
 	}
 
 	/**
 	 * makes the validator for a store request
+	 * 
 	 * @return Validator
 	 */
-	protected function getStoreValidator(string $model)
+	protected function getStoreValidator(BaseModel $model)
 	{
 		$fields = $this->getCreateFields($model);
-		return (new $model)->makeValidator($this->request->post(), $fields);
+		return $model->makeValidator($this->request->all(), $fields, false);
 	}
 
 	/**
 	 * Gets the list of fields for a create request
+	 * 
 	 * @param  string $model
 	 * @return array
 	 */
-	protected function getCreateFields(string $model)
+	protected function getCreateFields(BaseModel $model)
 	{
-		return (new $model)->getAddFormFields();
+		return $model->getAddFormFields();
 	}
 
 	/**
 	 * Modify the store request validator
+	 * 
 	 * @param  Validator $validator
 	 */
 	protected function modifyStoreValidator(Validator $validator){}
 
 	/**
 	 * Callback after model is sucessfully added
+	 * 
 	 * @param  BaseModel $model
 	 */
 	protected function onModelCreated(BaseModel $model)
 	{
-		Notify::success($model::friendlyName().' has been saved');
+		\Notify::success($model::friendlyName().' has been saved');
 	}
 
 	/**
 	 * Do stuff after a model has been stored
+	 * 
 	 * @param  BaseModel $model
 	 */
 	protected function afterSuccessfullStore(BaseModel $model){}
 
 	/**
-	 * Callback when model can't be saved
+	 * Callback when an exception is caught
+	 * 
 	 * @param  BaseModel $model
 	 * @param  ModelNotSaved $exception 
 	 */
-	protected function onStoreFailure(BaseModel $model, ModelNotSaved $exception)
+	protected function onStoreFailure(BaseModel $model, $exception)
 	{
-		Notify::info('Error while saving '.$model::friendlyName());
+		if(env('APP_ENV') == 'local'){
+			throw $exception;
+		}
+		\Notify::danger('Error : '.$exception->getMessage());
+		return back();
 	}
 
 	/**
-	 * Callback when model's relationships can't be saved
+	 * Uploads file submitted in post and populate validated array with a Media object
+	 * 
+	 * @param  array     $validated
 	 * @param  BaseModel $model
-	 * @param  ModelRelationsNotSaved $exception 
+	 * @return array
 	 */
-	protected function onStoreRelationshipsFailure(BaseModel $model, ModelRelationsNotSaved $exception)
+	protected function uploadFiles(array $validated, BaseModel $model)
 	{
-		Notify::info($model::friendlyName().' was partially saved, check manually');
+		$toUpload = array_intersect($validated, $this->request->allFiles());
+		foreach($toUpload as $name => $file){
+			$media = $model->uploadFormFile($file, $name);
+			$validated[$name] = $media;
+		}
+		return $validated;
 	}
 
 }

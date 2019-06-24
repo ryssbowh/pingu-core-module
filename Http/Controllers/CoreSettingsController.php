@@ -3,21 +3,18 @@
 namespace Pingu\Core\Http\Controllers;
 
 use Illuminate\Support\Collection;
-use Pingu\Settings\Contracts\SettingsController as SettingsControllerContract;
+use Pingu\Settings\Http\Controllers\SettingsController;
 use Pingu\Settings\Http\Requests\SettingsRequest;
-use Pingu\Settings\Traits\SettingsController;
 use Route;
 
-class CoreSettingsController extends BaseController implements SettingsControllerContract
+class CoreSettingsController extends SettingsController
 {
-	use SettingsController;
-
 	/**
 	 * @inheritDoc
 	 */
 	public function getSection()
 	{
-		return 'core';
+		return request()->segments()[2];
 	}
 
 	/**
@@ -25,7 +22,7 @@ class CoreSettingsController extends BaseController implements SettingsControlle
 	 */
 	public function getUpdateRoute()
 	{
-		return route_by_name('settings.admin.core.edit');
+		return route_by_name('settings.admin.'.$this->getSection().'.edit');
 	}
 
 	/**
@@ -33,7 +30,7 @@ class CoreSettingsController extends BaseController implements SettingsControlle
      */
     public function afterUpdatingSettings(SettingsRequest $request, Collection $settings)
     {
-    	return redirect()->route('settings.admin.core');
+    	return redirect()->route('settings.admin.'.$this->getSection());
     }
 
     /**
@@ -41,6 +38,6 @@ class CoreSettingsController extends BaseController implements SettingsControlle
      */
     public function canEdit()
     {
-    	return \Auth::user()->hasPermissionTo('edit core settings');
+    	return \Auth::user()->hasPermissionTo('edit '.$this->getSection().' settings');
     }
 }

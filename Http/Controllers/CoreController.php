@@ -6,11 +6,6 @@ class CoreController extends BaseController
 {
 	public function home()
 	{
-		return view('core::home');
-	}
-
-	public function adminHome()
-	{
-		return view('core::adminHome');
+		return view('pages.home');
 	}
 }

@@ -36,7 +36,7 @@ class MakeException extends GeneratorCommand
 
     public function getDefaultNamespace() : string
     {
-        return $this->laravel['modules']->config('paths.generator.exceptions.path', 'Exceptions');
+        return config('core.generator.paths.exception', 'Exceptions');
     }
 
     /**
@@ -46,10 +46,13 @@ class MakeException extends GeneratorCommand
     {
         $module = $this->laravel['modules']->findOrFail($this->getModuleName());
 
-        return (new Stub('/exception.stub', [
+        $stub = new Stub('/exception.stub', [
             'NAMESPACE' => $this->getClassNamespace($module),
             'CLASS'     => $this->getClass(),
-        ]))->render();
+        ]);
+        $stub->setBasePath(\Module::find('Core')->getPath().'/stubs/modules');
+
+        return $stub->render();
     }
 
     /**
@@ -59,9 +62,9 @@ class MakeException extends GeneratorCommand
     {
         $path = $this->laravel['modules']->getModulePath($this->getModuleName());
 
-        $rulePath = GenerateConfigReader::read('exceptions');
+        $subPath = config('core.generator.paths.exception', 'Exceptions');
 
-        return $path . $rulePath->getPath() . '/' . $this->getFileName() . '.php';
+        return $path . $subPath . '/' . $this->getFileName() . '.php';
     }
 
     /**

@@ -6,22 +6,30 @@ use Asset, View, Theme, Blade, Settings;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
-use Illuminate\Support\ServiceProvider;
+use Pingu\Core\Console\BuildAssets;
 use Pingu\Core\Console\GenerateDoc;
+use Pingu\Core\Console\InstallPingu;
 use Pingu\Core\Console\MakeComposer;
 use Pingu\Core\Console\MakeException;
+use Pingu\Core\Console\MakeModule;
 use Pingu\Core\Console\MergePackages;
+use Pingu\Core\Console\ModuleLink;
+use Pingu\Core\Console\ThemeLink;
 use Pingu\Core\Http\Middleware\ActivateDebugBar;
 use Pingu\Core\Http\Middleware\CheckForMaintenanceMode;
+use Pingu\Core\Http\Middleware\DeletableModel;
+use Pingu\Core\Http\Middleware\EditableModel;
 use Pingu\Core\Http\Middleware\HomepageMiddleware;
 use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Core\ModelRoutes;
+use Pingu\Core\Providers\ThemeServiceProvider;
+use Pingu\Core\Support\ModuleServiceProvider;
 use Pingu\Forms\Fields\Number;
 use Pingu\Forms\Fields\Text;
 use Spatie\TranslationLoader\LanguageLine;
 
-class CoreServiceProvider extends ServiceProvider
+class CoreServiceProvider extends ModuleServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
@@ -35,16 +43,12 @@ class CoreServiceProvider extends ServiceProvider
     protected $routeMiddlewares = [
         'home' => HomepageMiddleware::class,
         'guest' => RedirectIfAuthenticated::class,
+        'deletableModel' => DeletableModel::class,
+        'editableModel' => EditableModel::class
     ];
 
     protected $groupMiddlewares = [
         'web' => [
-            \App\Http\Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
             CheckForMaintenanceMode::class,
             ActivateDebugBar::class,
             SetThemeMiddleware::class
@@ -56,10 +60,24 @@ class CoreServiceProvider extends ServiceProvider
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             SetThemeMiddleware::class
-        ],
+        ]
     ];
 
     protected $globalMiddlewares = [];
+
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->singleton('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
+        $this->app->singleton('core.notify', \Pingu\Core\Components\Notify::class);
+        $this->app->singleton('core.themeConfig', \Pingu\Core\Components\ThemeConfig::class);
+        $this->app->singleton('core.modelRoutes', ModelRoutes::class);
+        $this->app->register(RouteServiceProvider::class);
+    }
 
     /**
      * Boot the application events.
@@ -68,7 +86,7 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function boot(Router $router, Kernel $kernel)
     {
-        $this->registerModelSlugs();
+        $this->registerModelSlugs(__DIR__.'/../'.$this->modelFolder);
         $this->registerGroupMiddlewares($router);
         $this->registerRouteMiddlewares($router);
         $this->registerGlobalMiddlewares($kernel);
@@ -79,6 +97,21 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerCommands();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'core');
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+
+        /**
+         * Generates modules links when created/disabled/enabled
+         */
+        \Event::listen('modules.created', function ($name) {
+            \Artisan::call('module:link', ['module' => $name]);
+        });
+
+        \Event::listen('modules.*.enabled', function ($name, $modules){
+            \Artisan::call('module:link', ['module' => $modules[0]->getName()]);
+        });
+
+        \Event::listen('modules.*.disabled', function ($name, $modules){
+            \Artisan::call('module:link', ['module' => $modules[0]->getName(), '--delete' => true]);
+        });
 
         /**
          * Add dump function to blade
@@ -95,36 +128,16 @@ class CoreServiceProvider extends ServiceProvider
      * @return void
      */
     public function registerCommands(){
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                MergePackages::class,
-                MakeComposer::class,
-                MakeException::class,
-                GenerateDoc::class
-            ]);
-        }
-    }
-
-    /**
-     * Registers all the slugs for this module's models
-     */
-    public function registerModelSlugs()
-    {
-        \ModelRoutes::registerSlugsFromPath(realpath(__DIR__.'/../'.$this->modelFolder));
-    }
-
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->app->singleton('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
-        $this->app->singleton('core.notify', \Pingu\Core\Components\Notify::class);
-        $this->app->singleton('core.themeConfig', \Pingu\Core\Components\ThemeConfig::class);
-        $this->app->singleton('core.modelRoutes', ModelRoutes::class);
-        $this->app->register(RouteServiceProvider::class);
+        $this->commands([
+            MakeComposer::class,
+            MakeException::class,
+            GenerateDoc::class,
+            InstallPingu::class,
+            ModuleLink::class,
+            ThemeLink::class,
+            MakeModule::class,
+            BuildAssets::class
+        ]);
     }
 
     public function registerRouteMiddlewares(Router $router)
@@ -155,8 +168,8 @@ class CoreServiceProvider extends ServiceProvider
         Asset::addVersioning();
         Asset::container('vendor')->add('js-manifest', 'manifest.js');
         Asset::container('vendor')->add('js-vendor', 'vendor.js');
-        Asset::container('modules')->add('core-js', 'modules/Core/js/Core.js');
-        Asset::container('modules')->add('core-css', 'modules/Core/css/Core.css');
+        Asset::container('modules')->add('core-js', 'module-assets/Core.js');
+        Asset::container('modules')->add('core-css', 'module-assets/Core.css');
     }
 
     /**
@@ -166,11 +179,11 @@ class CoreServiceProvider extends ServiceProvider
      */
     protected function registerConfig()
     {
-        $this->publishes([
-            __DIR__.'/../Config/config.php' => config_path('core.php'),
-        ], 'config');
         $this->mergeConfigFrom(
             __DIR__.'/../Config/config.php', 'core'
+        );
+        $this->replaceConfigFrom(
+            __DIR__.'/../Config/modules.php', 'modules'
         );
     }
 

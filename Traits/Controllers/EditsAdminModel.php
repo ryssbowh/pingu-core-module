@@ -7,10 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 use Pingu\Core\Contracts\Models\HasContextualLinksContract;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Form;
-use Pingu\Forms\FormModel;
+use Pingu\Forms\Support\ModelForm;
 
-trait EditsModel
+trait EditsAdminModel
 {
 	/**
 	 * Edit a model
@@ -48,13 +47,9 @@ trait EditsModel
 			}
 			$this->afterSuccessfullUpdate($model);
 		}
-		catch(ModelNotSaved $e){
+		catch(\Exception $e){
 			$this->onUpdateFailure($model, $e);
 		}
-		catch(ModelRelationsNotSaved $e){
-			$this->onUpdateRelationshipsFailure($model, $e);
-		}
-
 		return $this->onSuccessfullUpdate($model);
 	}
 
@@ -83,9 +78,9 @@ trait EditsModel
 
 	/**
 	 * Modify the edit form
-	 * @param  FormModel $form
+	 * @param  ModelForm $form
 	 */
-	protected function modifyEditForm(FormModel $form, BaseModel $model){}
+	protected function modifyEditForm(ModelForm $form, BaseModel $model){}
 
 	/**
 	 * Gets the model being edited
@@ -99,11 +94,11 @@ trait EditsModel
 
 	/**
 	 * Return the view for an edit request
-	 * @param  FormModel      $form
+	 * @param  ModelForm $form
 	 * @param  BaseModel $model 
 	 * @return view
 	 */
-	protected function getEditView(FormModel $form, BaseModel $model)
+	protected function getEditView(ModelForm $form, BaseModel $model)
 	{
 		$with = [
 			'form' => $form,
@@ -137,10 +132,9 @@ trait EditsModel
 	protected function getEditForm(BaseModel $model)
 	{
 		$url = $this->getUpdateUrl($model);
-		$attrs = ['method' => 'PUT', 'url' => $url];
-		$form = new FormModel($attrs, [],  $model);
+		$form = new ModelForm(['url' => $url], 'PUT', $model);
+		$form->addSubmit('Submit');
 		$this->modifyEditForm($form, $model);
-		$form->end();
 		return $form;
 	}
 
@@ -183,19 +177,13 @@ trait EditsModel
 	 * @param  BaseModel $model
 	 * @param  ModelNotSaved $exception 
 	 */
-	protected function onUpdateFailure(BaseModel $model, ModelNotSaved $exception)
+	protected function onUpdateFailure(BaseModel $model, \Exception $exception)
 	{
-		Notify::error('Error while saving '.$model::friendlyName());
-	}
-
-	/**
-	 * Callback when model's relationships can't be saved
-	 * @param  BaseModel $model
-	 * @param  ModelRelationsNotSaved $exception 
-	 */
-	protected function onUpdateRelationshipsFailure(BaseModel $model, ModelRelationsNotSaved $exception)
-	{
-		Notify::error($model::friendlyName().' was partially saved, check manually');
+		if(env('APP_ENV') == 'local'){
+			throw $exception;
+		}
+		Notify::danger('Error : '.$exception->getMessage());
+		return back();
 	}
 
 	/**
@@ -207,8 +195,9 @@ trait EditsModel
 	{
 		$validator = $this->getUpdateValidator($model);
 		$this->modifyUpdateValidator($validator, $model);
-		$validator->validate();
-		return $validator->validated();
+		$validated = $validator->validate();
+		$validated = $this->_uploadFiles($validated, $model);
+		return $validated;
 	}
 
 	/**
@@ -219,7 +208,7 @@ trait EditsModel
 	protected function getUpdateValidator(BaseModel $model)
 	{
 		$fields = $this->getEditFields($model);
-		return $model->makeValidator($this->request->post(), $fields);
+		return $model->makeValidator($this->request->all(), $fields, true);
 	}
 
 	/**
@@ -254,6 +243,23 @@ trait EditsModel
 	protected function onModelUpdatedWithChanges(BaseModel $model)
 	{
 		Notify::success($model::friendlyName().' has been saved');
+	}
+
+	/**
+	 * Uploads file submitted in post and populate validated array with a Media object
+	 * 
+	 * @param  array     $validated
+	 * @param  BaseModel $model
+	 * @return array
+	 */
+	protected function _uploadFiles(array $validated, BaseModel $model)
+	{
+		$toUpload = array_intersect($validated, $this->request->allFiles());
+		foreach($toUpload as $name => $file){
+			$media = $model->uploadFormFile($file, $name);
+			$validated[$name] = $media;
+		}
+		return $validated;
 	}
 
 }

@@ -54,11 +54,21 @@ trait HasAdminRoutes {
 	}
 
 	/**
-	 * @inheritDoc
+	 * route for delete requests
+	 * 
+	 * @return string
 	 */
 	public static function adminDeleteUri()
 	{
 		return self::routeSlug().'/{'.self::routeSlug().'}';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function adminConfirmDeleteUri()
+	{
+		return self::routeSlug().'/{'.self::routeSlug().'}/delete';
 	}
 
 	/**
@@ -82,8 +92,9 @@ trait HasAdminRoutes {
 	 * @param  boolean $prefixed
 	 * @return ?string
 	 */
-	public static function transformAdminUri(string $action, array $replacements, $prefixed = false)
+	public static function transformAdminUri(string $action, $replacements, $prefixed = false)
 	{
+		$replacements = (is_array($replacements) ? $replacements : [$replacements]);
 		$method = 'admin'.ucfirst($action).'Uri';
 		if(method_exists(__CLASS__, $method)){
 			$uri = ($prefixed ? config('core.adminPrefix') : '').static::$method();

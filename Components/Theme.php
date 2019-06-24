@@ -4,6 +4,7 @@ namespace Pingu\Core\Components;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Pingu\Core\Exceptions\themeException;
 
 class Theme
 {
@@ -74,14 +75,16 @@ class Theme
         // Seperate url from url queries
         if (($position = strpos($url, '?')) !== false) {
             $baseUrl = substr($url, 0, $position);
-            $params = substr($url, $position);
+            $params = substr($url, $position); 
         } else {
             $baseUrl = $url;
             $params = '';
         }
 
         // Lookup asset in current's theme asset path
-        $fullUrl = (empty($this->assetPath) ? '' : '/') . $this->assetPath . '/' . $baseUrl;
+        $fullUrl = '/themes/' . $this->name . '/' . $baseUrl;
+
+        // dump($fullUrl);
 
         if (file_exists($fullPath = public_path($fullUrl))) {
             return $fullUrl . $params;
@@ -99,10 +102,10 @@ class Theme
         }
 
         // Asset not found at all. Error handling
-        $action = Config::get('themes.asset_not_found', 'LOG_ERROR');
+        $action = Config::get('core.themes.asset_not_found', 'LOG_ERROR');
 
         if ($action == 'THROW_EXCEPTION') {
-            throw new Exceptions\themeException("Asset not found [$url]");
+            throw new themeException("Asset not found [$url]");
         } elseif ($action == 'LOG_ERROR') {
             Log::warning("Asset not found [$url] in Theme [" . $this->themes->current()->name . "]");
         } else {
@@ -130,7 +133,6 @@ class Theme
     {
         $viewsPath = $this->getPath($this->viewsPath);
         $assetPath = $this->getPath($this->assetPath);
-        $imagesPath = $this->getPath($this->imagesPath);
 
         if ($clearPaths) {
             if (File::exists($viewsPath)) {
@@ -139,21 +141,16 @@ class Theme
             if (File::exists($assetPath)) {
                 File::deleteDirectory($assetPath);
             }
-            if (File::exists($imagesPath)) {
-                File::deleteDirectory($imagesPath);
-            }
         }
 
         File::makeDirectory($viewsPath);
         File::makeDirectory($assetPath);
-        File::makeDirectory($imagesPath);
 
         $themeJson = new \Pingu\Core\Components\themeManifest(array_merge($this->settings, [
             'name' => $this->name,
             'extends' => $this->parent ? $this->parent->name : null,
             'asset-path' => $this->assetPath,
-            'asset-path' => $this->viewsPath,
-            'asset-path' => $this->assetPath,
+            'view-path' => $this->viewsPath,
         ]));
         $themeJson->saveToFile($this->getPath()."/theme.json");
 
@@ -186,8 +183,7 @@ class Theme
             'name',
             'extends',
             'views-path',
-            'asset-path',
-            'images-path',
+            'asset-path'
         ]));
 
     }

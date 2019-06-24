@@ -81,8 +81,9 @@ trait HasAjaxRoutes {
 	 * @param  boolean $prefixed
 	 * @return ?string
 	 */
-	public static function transformAjaxUri(string $action, array $replacements, $prefixed = false)
+	public static function transformAjaxUri(string $action, $replacements, $prefixed = false)
 	{
+		$replacements = is_array($replacements) ? $replacements : [$replacements];
 		$method = 'ajax'.ucfirst($action).'Uri';
 		if(method_exists(__CLASS__, $method)){
 			$uri = ($prefixed ? config('core.ajaxPrefix') : '').static::$method();
