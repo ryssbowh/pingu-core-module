@@ -50,8 +50,7 @@ class CoreServiceProvider extends ModuleServiceProvider
     protected $groupMiddlewares = [
         'web' => [
             CheckForMaintenanceMode::class,
-            ActivateDebugBar::class,
-            SetThemeMiddleware::class
+            ActivateDebugBar::class
         ],
         'ajax' => [
             \App\Http\Middleware\EncryptCookies::class,

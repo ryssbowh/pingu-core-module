@@ -44,10 +44,12 @@ class ModuleLink extends Command
             $publicLink = $publicDirectory.'/'.$module->getName();
             if($deleting){
                 $this->deleteLink($publicLink);
+                $this->info("Deleted link ".$publicLink);
             }
             else{
                 $publicModuleFolder = $module->getPath().'/public';
                 $this->createLink($publicModuleFolder, $publicDirectory, $publicLink);
+                $this->info("Created link ".$publicLink.' -> '.$publicModuleFolder);
             }
         }
     }
@@ -60,11 +62,8 @@ class ModuleLink extends Command
         if(!file_exists($publicDirectory)){
             \File::makeDirectory($publicDirectory);
         }
-        if(file_exists($publicLink)){
-            \File::delete($publicLink);
-        }
+        $this->deleteLink($publicLink);
         \File::link($publicModuleFolder, $publicLink);
-        $this->info("Created link ".$publicLink.' -> '.$publicModuleFolder);
     }
 
     public function deleteLink($publicLink)
@@ -72,7 +71,6 @@ class ModuleLink extends Command
         if(file_exists($publicLink)){
             \File::delete($publicLink);
         }
-        $this->info("Deleted link ".$publicLink);
     }
 
     /**

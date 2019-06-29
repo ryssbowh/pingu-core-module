@@ -94,8 +94,10 @@ class Themes
      * @param string $themeName
      * @return Theme
      */
-    public function setByName(string $themeName, $setAssets = true)
+    public function setByName(?string $themeName, $setAssets = true)
     {
+        if(is_null($themeName)) return;
+
         if ($this->exists($themeName)) {
             $theme = $this->find($themeName);
         } else {
@@ -105,7 +107,7 @@ class Themes
         $this->activeTheme = $theme;
 
         // set theme view paths
-        $paths = $theme->getViewPaths();
+        $paths = array_merge(config('view.paths'),$theme->getViewPaths());
         config(['view.paths' => $paths]);
         app('view.finder')->setPaths($paths);
 

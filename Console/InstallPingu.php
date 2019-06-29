@@ -29,38 +29,179 @@ class InstallPingu extends Command
      */
     public function handle()
     {
-        if(file_exists(".env")){
-            // return $this->error('the file .env already exists, remove it if you want to force the install');
+        $installed = storage_path('installed');
+        if(file_exists($installed)){
+            return $this->error("the file $installed already exists, remove it if you want to force the install");
         }
 
         $this->info("Let's install Pingu !");
-        if(!$local = $this->option('local')){
-            $this->info("Running in production mode, node dependencies will not be installed (-l for local mode)");
+
+        if($errors = $this->checkRequirements()){
+            return $this->showErrors($errors);
+        }
+        if($errors = $this->checkPermissions()){
+            return $this->showErrors($errors);
+        }
+        if($errors = $this->checkCommands()){
+            return $this->showErrors($errors);
         }
 
-        $url = $this->ask("Enter the site url");
-        if(substr($url, 0, 7) != 'http://'){
-            $url = 'http://'.$url;
-        }
+        $env = $this->askEnv();
+        
+        $this->writeEnvFile($env);
 
-        $connection = false;
-        while(!$connection){
-            list($dbdriver, $dbhost, $dbname, $dbuser, $dbpassword) = $this->askDbDetails();
+        // $this->performInstall();
+    }
 
-            $this->info("Testing connection...");
-
-            try{
-                $con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
-                $connection = true;
+    protected function askEnv()
+    {
+        $out = [];
+        foreach(config('installer.env') as $name => $details){
+            if($details['type'] == 'open'){
+                $out[$name] = $this->askOpen($details);
             }
-            catch(\ErrorException $e){
-                $this->warn("Can't connect to database (".$e->getMessage()."), let's try again");
+            elseif($details['type'] == 'choice'){
+                $out[$name] = $this->askChoice($details);
             }
         }
+        $out = array_merge($out, $this->askDbDetails());
+        return $out;
+    }
 
-        $this->info("Connection working, creating .env file...");
-        $this->createEnvFile($url, $dbdriver, $dbhost, $dbname, $dbuser, $dbpassword);
+    protected function askChoice(array $details)
+    {
+        return $this->choice($details['name'] ?? '', $details['values'] ?? []);
+    }
 
+    protected function asOpen(array $details)
+    {
+        $out = false;
+        while(!$out){
+            $out = $this->ask($details['name'] ?? '');
+            if(isset($details['filter'])){
+                $out = filter_var($out, $details['filter']);
+            }
+        }
+        return $out;
+    }
+
+    protected function writeEnvFile(array $env)
+    {
+        $this->info("Creating .env file...");
+        $content = '';
+        foreach($env as $name => $value){
+            $content .= $name.'='.$value."\n";
+        }
+        file_put_contents('.env2', $content);
+    }
+
+    protected function checkPermissions()
+    {
+        $errors = [];
+        foreach(config('installer.permissions') as $folder => $perm){
+            $permission = substr(sprintf('%o', fileperms(base_path($folder))), -4);
+            if($permission < $perm){
+                $errors[] = "Not enough permissions for folder $folder, found $permission, needed $perm";
+            }
+        }
+        return $errors;
+    }
+
+    protected function checkCommands()
+    {
+        $errors = [];
+        foreach(config('installer.requirements.commands') as $command => $version){
+            $str = exec($command, $output, $return);
+            if($return != 0){
+                $errors[] = "'$command' could not be found";
+            }
+            else{
+                $v = trim($str, 'v');
+                if(version_compare($v, $version) < 0){
+                    $errors[] = "'command' should at least be of version $version, found $v";
+                }
+            }
+        }
+        return $errors;
+    }
+
+    protected function checkRequirements()
+    {
+        $errors = [];
+        $version = phpversion();
+        if(version_compare(phpversion(), config('installer.phpMinVersion')) < 0){
+            $errors[] = "Php version (".phpversion().") is below the minimum required (".config('installer.phpMinVersion').")";
+        }
+        foreach(config('installer.requirements.php') as $extension){
+            if(!phpversion($extension)){
+                $errors[] = "Php extension $extension is not installed";
+            }
+        }
+        $modules = apache_get_modules();
+        foreach(config('installer.requirements.apache') as $module){
+            if(!in_array($module, $modules)){
+                $errors[] = "Apache module $module is not installed";
+            }
+        }
+        return $errors;
+    }
+
+    protected function showErrors(array $errors)
+    {
+        $this->error("Some errors were encountered:");
+        foreach($errors as $error){
+            $this->error('- '.$error);
+        }
+    }
+
+    public function askDbDetails()
+    {
+        $this->info("Enter your database details:");
+
+        $dbdriver = 'mysql';
+
+        $dbhost = '';
+        while($dbhost == ''){
+            $dbhost = $this->ask('Host');
+        }
+
+        $dbname = '';
+        while($dbname == ''){
+            $dbname = $this->ask("Database name");
+        }
+
+        $dbuser = '';
+        while($dbuser == ''){
+            $dbuser = $this->ask('User');
+        }
+
+        $dbpassword = '';
+        while($dbpassword == ''){
+            $dbpassword = $this->ask('Password');
+        }
+
+        $this->info("Testing connection...");
+
+        try{
+            $con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
+            $connection = true;
+        }
+        catch(\ErrorException $e){
+            $this->warn("Can't connect to database (".$e->getMessage()."), let's try again");
+            return $this->askDbDetails();
+        }
+
+        return [
+            'DB_CONNECTION' => $dbdriver, 
+            'DB_HOST' => $dbhost, 
+            'DB_DATABASE' => $dbname, 
+            'DB_USERNAME' => $dbuser, 
+            'DB_PASSWORD' => $dbpassword
+        ];
+    }
+
+    public function performInstall()
+    {
         $output = [];
 
         try{
@@ -114,69 +255,5 @@ class InstallPingu extends Command
         }
 
         $this->info("Installation complete !");
-    }
-
-    public function createEnvFile($url, $dbdriver, $dbhost, $dbname, $dbuser, $dbpassword)
-    {
-        $env = file_get_contents('.env.example');
-        $env = explode("\n", $env);
-        $env = array_map(function($item) use ($url, $dbdriver, $dbhost, $dbname, $dbuser, $dbpassword){
-            if(substr($item, 0, 7) == "APP_URL"){
-                return "APP_URL=".$url;
-            }
-            elseif(substr($item, 0, 13) == "DB_CONNECTION"){
-                return "DB_CONNECTION=".$dbdriver;
-            }
-            elseif(substr($item, 0, 7) == "DB_HOST"){
-                return "DB_HOST=".$dbhost;
-            }
-            elseif(substr($item, 0, 11) == "DB_DATABASE"){
-                return "DB_DATABASE=".$dbname;
-            }
-            elseif(substr($item, 0, 11) == "DB_USERNAME"){
-                return "DB_USERNAME=".$dbuser;
-            }
-            elseif(substr($item, 0, 11) == "DB_PASSWORD"){
-                return "DB_PASSWORD=".$dbuser;
-            }
-            return $item;
-        }, $env);
-        
-        // file_put_contents('.env', implode("\n", $env));
-    }
-
-    public function askDbDetails()
-    {
-        $this->info("Enter your database details:");
-
-        $dbdriver = 'mysql';
-
-        $dbhost = '';
-        while($dbhost == ''){
-            $dbhost = $this->ask('Host');
-        }
-
-        $dbname = '';
-        while($dbname == ''){
-            $dbname = $this->ask("Database name");
-        }
-
-        $dbuser = '';
-        while($dbuser == ''){
-            $dbuser = $this->ask('User');
-        }
-
-        $dbpassword = '';
-        while($dbpassword == ''){
-            $dbpassword = $this->ask('Password');
-        }
-        return [$dbdriver, $dbhost, $dbname, $dbuser, $dbpassword];
-    }
-
-    protected function getOptions()
-    {
-        return [
-            ['local', 'l', InputArgument::OPTIONAL, 'Local installation, will install node dependencies and compile them', false]
-        ];
     }
 }
