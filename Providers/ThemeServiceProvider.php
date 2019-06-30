@@ -15,7 +15,6 @@ class ThemeServiceProvider extends ServiceProvider
         /*--------------------------------------------------------------------------
         | Bind in IOC
         |--------------------------------------------------------------------------*/
-
         $this->app->singleton('core.themes', function () {
             return new \Pingu\Core\Components\Themes();
         });
@@ -23,13 +22,14 @@ class ThemeServiceProvider extends ServiceProvider
         /*--------------------------------------------------------------------------
         | Replace FileViewFinder
         |--------------------------------------------------------------------------*/
-
         $this->app->singleton('view.finder', function ($app) {
-            return new ThemeViewFinder(
+            $finder = new ThemeViewFinder(
                 $app['files'],
                 $app['config']['view.paths'],
                 null
             );
+            \View::setFinder($finder);
+            return $finder;
         });
 
     }

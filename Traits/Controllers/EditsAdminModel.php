@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 use Pingu\Core\Contracts\Models\HasContextualLinksContract;
 use Pingu\Core\Entities\BaseModel;
+use Pingu\Forms\Support\Form;
 use Pingu\Forms\Support\ModelForm;
 
 trait EditsAdminModel
@@ -78,9 +79,9 @@ trait EditsAdminModel
 
 	/**
 	 * Modify the edit form
-	 * @param  ModelForm $form
+	 * @param  Form $form
 	 */
-	protected function modifyEditForm(ModelForm $form, BaseModel $model){}
+	protected function modifyEditForm(Form $form, BaseModel $model){}
 
 	/**
 	 * Gets the model being edited
@@ -94,11 +95,11 @@ trait EditsAdminModel
 
 	/**
 	 * Return the view for an edit request
-	 * @param  ModelForm $form
+	 * @param  Form $form
 	 * @param  BaseModel $model 
 	 * @return view
 	 */
-	protected function getEditView(ModelForm $form, BaseModel $model)
+	protected function getEditView(Form $form, BaseModel $model)
 	{
 		$with = [
 			'form' => $form,

@@ -89,6 +89,14 @@ class Themes
         return $this->setByName(config($setting), !$request->wantsJson());
     }
 
+    public function setDefault()
+    {
+        $default = config('core.frontTheme', false);
+        if($default){
+            $this->setByName($default);
+        }
+    }
+
     /**
      * Set theme by its name
      * @param string $themeName
@@ -164,7 +172,7 @@ class Themes
 
         }
 
-        throw new themeNotFound($themeName);
+        throw new themeNotFound("Theme $themeName not found");
     }
 
     /**
@@ -327,7 +335,7 @@ class Themes
         if (($theme = $this->current())) {
             return call_user_func_array([$theme, $method], $args);
         } else {
-            throw new \Exception("No theme is set. Can not execute method [$method] in [" . self::class . "]", 1);
+            throw new themeNotFound("No theme is set. Can not execute method [$method] in [" . self::class . "]", 1);
         }
     }
 

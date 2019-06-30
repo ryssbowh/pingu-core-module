@@ -3,6 +3,7 @@
 namespace Pingu\Core\Traits\Controllers;
 
 use Pingu\Core\Entities\BaseModel;
+use Pingu\Forms\Support\Form;
 use Pingu\Forms\Support\ModelForm;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -59,7 +60,7 @@ trait EditsAjaxModel
 	 */
 	protected function getUpdateUri(BaseModel $model)
 	{
-		return $model::transformAdminUri('update', $model, true);
+		return $model::transformAjaxUri('update', $model, true);
 	}
 
 	/**

@@ -18,7 +18,7 @@ class DeletableModel
      */
     public function handle(Request $request, Closure $next, string $slug)
     {
-        $model = $request->route()->parameters[$slug];
+        $model = $request->route()->parameters[$slug] ?? null;
         if($model and !$model->deletable){
             throw ProtectedModel::forDeletion($model);
         }

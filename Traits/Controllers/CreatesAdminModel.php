@@ -4,6 +4,7 @@ namespace Pingu\Core\Traits\Controllers;
 
 use Illuminate\Validation\Validator;
 use Pingu\Core\Entities\BaseModel;
+use Pingu\Forms\Support\Form;
 use Pingu\Forms\Support\ModelForm;
 
 trait CreatesAdminModel
@@ -81,11 +82,11 @@ trait CreatesAdminModel
 	/**
 	 * Get the view for a create request
 	 * 
-	 * @param  ModelForm $form
+	 * @param  Form $form
 	 * @param  string $model
 	 * @return view
 	 */
-	protected function getCreateView(ModelForm $form)
+	protected function getCreateView(Form $form)
 	{
 		$with = [
 			'form' => $form,
@@ -137,9 +138,9 @@ trait CreatesAdminModel
 
 	/**
 	 * Modify the create form
-	 * @param  ModelForm $form
+	 * @param  Form $form
 	 */
-	protected function modifyCreateForm(ModelForm $form){}
+	protected function modifyCreateForm(Form $form){}
 
 	/**
 	 * Get the url for a store request

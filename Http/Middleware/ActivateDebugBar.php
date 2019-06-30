@@ -17,7 +17,7 @@ class ActivateDebugBar
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
-        if($user and $user->hasPermissionTo('view debug bar')){
+        if(env('APP_ENV') == 'local' or $user and $user->hasPermissionTo('view debug bar')){
             Debugbar::enable();
         }
         else{

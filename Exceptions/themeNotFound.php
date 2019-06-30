@@ -3,8 +3,8 @@ namespace Pingu\Core\Exceptions;
 
 class themeNotFound extends \Exception{
 
-	public function __construct($themeName) {
-		parent::__construct("Theme $themeName not Found", 1);
+	public function __construct($message) {
+		parent::__construct($message);
 	}
 
 }
