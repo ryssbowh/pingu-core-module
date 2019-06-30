@@ -1,7 +1,7 @@
 {
     "name": "Core",
     "alias": "core",
-    "description": "",
+    "description": "Pingu core",
     "keywords": [],
     "active": 1,
     "order": 0,
@@ -10,12 +10,12 @@
         "Pingu\\Core\\Providers\\CoreServiceProvider"
     ],
     "aliases": {
-        "Theme" : "Pingu\\Core\\Facades\\Theme",
-        "ContextualLinks":"Pingu\\Core\\Facades\\ContextualLinks",
-        "ModelRoutes":"Pingu\\Core\\Facades\\ModelRoutes",
-        "Notify":"Pingu\\Core\\Facades\\Notify",
-        "ThemeConfig":"Pingu\\Core\\Facades\\ThemeConfig",
-        "DebugBar":"Barryvdh\\Debugbar\\Facade"
+        "Theme": "Pingu\\Core\\Facades\\Theme",
+        "ContextualLinks": "Pingu\\Core\\Facades\\ContextualLinks",
+        "ModelRoutes": "Pingu\\Core\\Facades\\ModelRoutes",
+        "Notify": "Pingu\\Core\\Facades\\Notify",
+        "ThemeConfig": "Pingu\\Core\\Facades\\ThemeConfig",
+        "DebugBar": "Barryvdh\\Debugbar\\Facade"
     },
     "files": [
         "functions.php"

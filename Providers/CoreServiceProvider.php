@@ -23,7 +23,6 @@ use Pingu\Core\Http\Middleware\HomepageMiddleware;
 use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Core\ModelRoutes;
-use Pingu\Core\Providers\ThemeServiceProvider;
 use Pingu\Core\Support\ModuleServiceProvider;
 use Pingu\Forms\Fields\Number;
 use Pingu\Forms\Fields\Text;
@@ -50,7 +49,8 @@ class CoreServiceProvider extends ModuleServiceProvider
     protected $groupMiddlewares = [
         'web' => [
             CheckForMaintenanceMode::class,
-            ActivateDebugBar::class
+            ActivateDebugBar::class,
+            SetThemeMiddleware::class
         ],
         'ajax' => [
             \App\Http\Middleware\EncryptCookies::class,
@@ -76,6 +76,7 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->app->singleton('core.themeConfig', \Pingu\Core\Components\ThemeConfig::class);
         $this->app->singleton('core.modelRoutes', ModelRoutes::class);
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(ThemeServiceProvider::class);
     }
 
     /**
