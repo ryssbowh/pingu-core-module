@@ -12,7 +12,6 @@ use Pingu\Core\Components\Notify;
 use Pingu\Core\Components\ThemeConfig;
 use Pingu\Core\Console\BuildAssets;
 use Pingu\Core\Console\GenerateDoc;
-use Pingu\Core\Console\InstallPingu;
 use Pingu\Core\Console\MakeComposer;
 use Pingu\Core\Console\MakeException;
 use Pingu\Core\Console\MakeModule;
@@ -137,7 +136,6 @@ class CoreServiceProvider extends ModuleServiceProvider
             MakeComposer::class,
             MakeException::class,
             GenerateDoc::class,
-            InstallPingu::class,
             ModuleLink::class,
             ThemeLink::class,
             MakeModule::class,

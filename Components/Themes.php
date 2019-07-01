@@ -189,6 +189,14 @@ class Themes
         return $theme;
     }
 
+    public function getViewPaths()
+    {
+        if($theme = $this->current()){
+            return $theme->getViewPaths();
+        }
+        return [];
+    }
+
     // Original view paths defined in config.view.php
     public function getLaravelViewPaths()
     {
