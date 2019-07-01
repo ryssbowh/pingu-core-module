@@ -6,6 +6,10 @@ use Asset, View, Theme, Blade, Settings;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
+use Pingu\Core\Components\ContextualLinks;
+use Pingu\Core\Components\JsConfig;
+use Pingu\Core\Components\Notify;
+use Pingu\Core\Components\ThemeConfig;
 use Pingu\Core\Console\BuildAssets;
 use Pingu\Core\Console\GenerateDoc;
 use Pingu\Core\Console\InstallPingu;
@@ -71,10 +75,11 @@ class CoreServiceProvider extends ModuleServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('core.contextualLinks', \Pingu\Core\Components\ContextualLinks::class);
-        $this->app->singleton('core.notify', \Pingu\Core\Components\Notify::class);
-        $this->app->singleton('core.themeConfig', \Pingu\Core\Components\ThemeConfig::class);
+        $this->app->singleton('core.contextualLinks', ContextualLinks::class);
+        $this->app->singleton('core.notify', Notify::class);
+        $this->app->singleton('core.themeConfig', ThemeConfig::class);
         $this->app->singleton('core.modelRoutes', ModelRoutes::class);
+        $this->app->singleton('core.jsconfig', JsConfig::class);
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(ThemeServiceProvider::class);
     }
@@ -166,10 +171,10 @@ class CoreServiceProvider extends ModuleServiceProvider
     public function registerAssets()
     {
         Asset::addVersioning();
-        Asset::container('vendor')->add('js-manifest', 'manifest.js');
-        Asset::container('vendor')->add('js-vendor', 'vendor.js');
-        Asset::container('modules')->add('core-js', 'module-assets/Core.js');
-        Asset::container('modules')->add('core-css', 'module-assets/Core.css');
+        Asset::container('vendor')->add('js-manifest', 'manifest.js')
+            ->add('js-vendor', 'vendor.js');
+        Asset::container('modules')->add('core-js', 'module-assets/Core.js')
+            ->add('core-css', 'module-assets/Core.css');
     }
 
     /**

@@ -40,6 +40,8 @@
         "pingu/content-module": "dev-master",
         "pingu/media-module": "dev-master",
         "pingu/honeypot-module": "dev-master",
-        "pingu/jsgrid-module": "dev-master"
+        "pingu/jsgrid-module": "dev-master",
+        "pingu/devel-module": "dev-master",
+        "pingu/taxonomy-module": "dev-master"
     }
 }

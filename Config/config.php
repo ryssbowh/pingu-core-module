@@ -15,7 +15,7 @@ return [
      * Maintenance mode config
      */
     'maintenance' => [
-        'view' => 'core:maintenance-mode',
+        'view' => 'core::maintenance-mode',
         'retryAfter' => '1800',
         'message' => 'This site is in maintenance, please try again later'
     ],

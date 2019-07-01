@@ -11,6 +11,7 @@
     ],
     "aliases": {
         "Theme": "Pingu\\Core\\Facades\\Theme",
+        "JsConfig": "Pingu\\Core\\Facades\\JsConfig",
         "ContextualLinks": "Pingu\\Core\\Facades\\ContextualLinks",
         "ModelRoutes": "Pingu\\Core\\Facades\\ModelRoutes",
         "Notify": "Pingu\\Core\\Facades\\Notify",

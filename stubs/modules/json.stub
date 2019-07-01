@@ -3,7 +3,7 @@
     "alias": "$LOWER_NAME$",
     "description": "",
     "keywords": [],
-    "active": 1,
+    "active": 0,
     "order": 10,
     "providers": [
         "$MODULE_NAMESPACE$\\$STUDLY_NAME$\\Providers\\$STUDLY_NAME$ServiceProvider"

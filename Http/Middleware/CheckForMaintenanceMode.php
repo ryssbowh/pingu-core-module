@@ -39,8 +39,8 @@ class CheckForMaintenanceMode
             }
             $data = json_decode(file_get_contents($this->app->storagePath().'/framework/down'), true);
 
-            \Theme::set(config('core.frontTheme'));
-            throw new MaintenanceModeException($data['time'], config('core.maintenance.retryAfter'), config('core.maintenance.message'));
+            \Theme::setByName(config('core.frontTheme'));
+            throw new MaintenanceModeException($data['time'], $data['retry'], $data['message']);
         }
 
         return $next($request);

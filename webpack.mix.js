@@ -11,7 +11,8 @@ var publicPath = 'module-assets/';
 mix.webpackConfig({
   resolve: {
     alias: {
-      'pingu-helpers': path.resolve(assetPath + '/js/components', './helpers')
+      'PinguHelpers': path.resolve(assetPath + '/js/components', './helpers'),
+      'PinguConfig': path.resolve(assetPath + '/js/components', './config')
     }
   }
 });

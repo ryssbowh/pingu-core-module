@@ -1,3 +1,5 @@
+import Config from './config';
+
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -10,6 +12,20 @@ String.prototype.trimLeft = function(charlist) {
 
   return this.replace(new RegExp("^[" + charlist + "]+"), "");
 };
+
+export function config(key){
+    return Config.get(key);
+}
+
+export function log(message){
+    if(Config.get('app.env') != 'production'){
+        console.log(message);
+    }
+}
+
+export function logError(message){
+    console.log("%c"+message, "color:red");
+}
 
 export function ajax(url, data, type = 'POST'){
     $('body').css('cursor', 'wait');
@@ -28,7 +44,7 @@ export function ajax(url, data, type = 'POST'){
         if(data.responseJSON.exception){
             message += "\nException : " + data.responseJSON.exception;
         }
-        console.log(message,"color:red");
+        error(message);
         $('body').trigger('ajax.failed', data);
 	}).done(function(){
         $('body').trigger('ajax.success', data);
@@ -57,10 +73,6 @@ export function post(url, data = {}){
 
 export function get(url, data = {}){
     return ajax(url, data, 'GET');
-}
-
-export function logError(message){
-    console.log("%c"+message, "color:red");
 }
 
 export function replaceUriSlugs(uri, replacements){
