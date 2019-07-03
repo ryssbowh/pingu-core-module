@@ -136,6 +136,7 @@ class CoreDatabaseSeeder extends Seeder
                 'weight' => 1,
                 'active' => 1,
                 'url' => 'admin',
+                'deletable' => false,
                 'permission_id' => $perm1->id
             ], $main);
         }
