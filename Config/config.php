@@ -27,14 +27,6 @@ return [
      * Prefix for admin routes
      */
     'adminPrefix' => '/admin/',
-    'generator' => [
-        /**
-         * Paths for class generation commands
-         */
-        'paths' => [
-            'exceptions' => 'Exceptions'
-        ]
-    ],
     'themes' => [
         'views_path' => 'views',
         'asset_path' => 'assets',

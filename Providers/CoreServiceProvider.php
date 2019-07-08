@@ -3,18 +3,18 @@
 namespace Pingu\Core\Providers;
 
 use Asset, View, Theme, Blade, Settings;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
 use Pingu\Core\Components\ContextualLinks;
 use Pingu\Core\Components\JsConfig;
 use Pingu\Core\Components\Notify;
+use Pingu\Core\Components\PinguExceptionHandler;
 use Pingu\Core\Components\ThemeConfig;
 use Pingu\Core\Console\BuildAssets;
 use Pingu\Core\Console\GenerateDoc;
 use Pingu\Core\Console\MakeComposer;
-use Pingu\Core\Console\MakeException;
-use Pingu\Core\Console\MakeModule;
 use Pingu\Core\Console\MergePackages;
 use Pingu\Core\Console\ModuleLink;
 use Pingu\Core\Console\ThemeLink;
@@ -79,6 +79,7 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->app->singleton('core.themeConfig', ThemeConfig::class);
         $this->app->singleton('core.modelRoutes', ModelRoutes::class);
         $this->app->singleton('core.jsconfig', JsConfig::class);
+        $this->app->singleton(ExceptionHandler::class, PinguExceptionHandler::class);
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(ThemeServiceProvider::class);
     }
@@ -134,11 +135,9 @@ class CoreServiceProvider extends ModuleServiceProvider
     public function registerCommands(){
         $this->commands([
             MakeComposer::class,
-            MakeException::class,
             GenerateDoc::class,
             ModuleLink::class,
             ThemeLink::class,
-            MakeModule::class,
             BuildAssets::class
         ]);
     }
