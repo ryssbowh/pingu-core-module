@@ -122,6 +122,9 @@ class CoreDatabaseSeeder extends Seeder
         Permission::findOrCreate(['name' => 'view site in maintenance mode', 'section' => 'Core', 'helper' => 'Login will always be available in maintenance mode']);
         Permission::findOrCreate(['name' => 'put site in maintenance mode', 'section' => 'Core']);
 
+        $perm4 = Permission::findOrCreate(['name' => 'view modules', 'section' => 'Core']);
+        Permission::findOrCreate(['name' => 'activate modules', 'section' => 'Core']);
+
         $main = Menu::where(['machineName' => 'main-menu'])->first();
 
         if(!$main){
@@ -178,6 +181,14 @@ class CoreDatabaseSeeder extends Seeder
                 'active' => 1,
                 'deletable' => 0,
                 'permission_id' => null
+            ], $admin);
+            MenuItem::create([
+                'name' => 'Modules',
+                'weight' => 3,
+                'active' => 1,
+                'deletable' => 0,
+                'url' => 'core.admin.modules',
+                'permission_id' => $perm4->id
             ], $admin);
         }
     }

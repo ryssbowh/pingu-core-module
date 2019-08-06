@@ -3,6 +3,7 @@
 namespace Pingu\Core\Traits\Controllers;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Validation\ValidationException;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Forms\Exceptions\ModelRelationsNotSaved;
 use Pingu\Forms\Support\Form;
@@ -38,6 +39,9 @@ trait CreatesAjaxModel
 			$validated = $this->validateStoreRequest($this->model);
 			$this->model->saveWithRelations($validated);
 			$this->afterSuccessfullStore($this->model);
+		}
+		catch(ValidationException $e){
+			throw $e;
 		}
 		catch(ModelNotSaved $e){
 			$this->onStoreFailure($this->model, $e);

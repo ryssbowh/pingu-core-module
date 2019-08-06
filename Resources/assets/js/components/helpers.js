@@ -44,7 +44,7 @@ export function ajax(url, data, type = 'POST'){
         if(data.responseJSON.exception){
             message += "\nException : " + data.responseJSON.exception;
         }
-        error(message);
+        logError(message);
         $('body').trigger('ajax.failed', data);
 	}).done(function(){
         $('body').trigger('ajax.success', data);

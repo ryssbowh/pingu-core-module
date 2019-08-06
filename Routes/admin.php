@@ -35,3 +35,10 @@ Route::post('/settings/general/edit', ['uses' => 'CoreSettingsController@update'
 	->middleware('can:edit general settings');
 Route::post('/settings/mailing/edit', ['uses' => 'CoreSettingsController@update'])
 	->middleware('can:edit mailing settings');
+
+/**
+ * Modules
+ */
+Route::get('/modules', ['uses' => 'ModuleController@index'])
+	->middleware('can:view modules')
+	->name('core.admin.modules');
