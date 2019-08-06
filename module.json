@@ -4,6 +4,7 @@
     "description": "Pingu core",
     "keywords": [],
     "active": 1,
+    "core": 1,
     "providers": [
         "Barryvdh\\Debugbar\\ServiceProvider",
         "Pingu\\Core\\Providers\\CoreServiceProvider"
