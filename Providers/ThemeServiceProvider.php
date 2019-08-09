@@ -4,6 +4,7 @@ namespace Pingu\Core\Providers;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Pingu\Core\Components\ThemeConfig;
 use Pingu\Core\Components\ThemeViewFinder;
 use Pingu\Core\Console\{createTheme, refreshThemeCache, listThemes};
 
@@ -31,6 +32,8 @@ class ThemeServiceProvider extends ServiceProvider
             \View::setFinder($finder);
             return $finder;
         });
+
+        $this->app->singleton('core.themeConfig', ThemeConfig::class);
 
     }
 
@@ -117,6 +120,15 @@ class ThemeServiceProvider extends ServiceProvider
                 }
 
             }, $value);
+        });
+
+        /**
+         * Add dump function to blade
+         */
+        Blade::directive('d', function ($data) {
+            return sprintf("<?php dump(%s); ?>",
+                'all' !== $data ? "get_defined_vars()['__data']" : $data
+            );
         });
     }
 

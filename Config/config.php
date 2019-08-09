@@ -66,5 +66,10 @@ return [
         */
 
         'cache' => false,
+    ],
+    'seeders' => [
+        'table' => 'seedings',
+        'dir' => 'seeds',
+        'namespace' => 'App\database\seeds'
     ]
 ];

@@ -7,7 +7,12 @@
     "core": 1,
     "providers": [
         "Barryvdh\\Debugbar\\ServiceProvider",
-        "Pingu\\Core\\Providers\\CoreServiceProvider"
+        "Pingu\\Core\\Providers\\CoreServiceProvider",
+        "Pingu\\Core\\Providers\\CommandServiceProvider",
+        "Pingu\\Core\\Providers\\SeederServiceProvider",
+        "Pingu\\Core\\Providers\\ThemeServiceProvider",
+        "Pingu\\Core\\Providers\\RouteServiceProvider",
+        "Ryssbowh\\UniqueMigrations\\MigrationServiceProvider"
     ],
     "aliases": {
         "Theme": "Pingu\\Core\\Facades\\Theme",

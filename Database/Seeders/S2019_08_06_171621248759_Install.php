@@ -2,8 +2,8 @@
 
 namespace Pingu\Core\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Pingu\Forms\Fields\Number;
+use Pingu\Core\Seeding\DisableForeignKeysTrait;
+use Pingu\Core\Seeding\MigratableSeeder;
 use Pingu\Forms\Support\Fields\Email;
 use Pingu\Forms\Support\Fields\NumberInput;
 use Pingu\Forms\Support\Fields\Password;
@@ -13,18 +13,17 @@ use Pingu\Menu\Entities\MenuItem;
 use Pingu\Permissions\Entities\Permission;
 use Pingu\Settings\Forms\Types\Integer;
 use Pingu\Settings\Forms\Types\Text;
-use Settings;
 
-class CoreDatabaseSeeder extends Seeder
+class S2019_08_06_171621248759_Install extends MigratableSeeder
 {
+    use DisableForeignKeysTrait;
+
     /**
-     * Run the database seeds.
-     *
-     * @return void
+     * Run the database seeder.
      */
-    public function run()
+    public function run(): void
     {
-        Settings::registerMany([
+        \Settings::registerMany([
             'app.name' => [
                 'Title' => 'Site name',
                 'Section' => 'general',
@@ -191,5 +190,13 @@ class CoreDatabaseSeeder extends Seeder
                 'permission_id' => $perm4->id
             ], $admin);
         }
+    }
+
+    /**
+     * Reverts the database seeder.
+     */
+    public function down(): void
+    {
+        // Remove your data
     }
 }

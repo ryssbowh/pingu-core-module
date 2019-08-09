@@ -1,11 +1,9 @@
 <?php
 
-namespace $NAMESPACE$;
-
 use Pingu\Core\Seeding\MigratableSeeder;
 use Pingu\Core\Seeding\DisableForeignKeysTrait;
 
-class $NAME$ extends MigratableSeeder
+class $CLASS$ extends MigratableSeeder
 {
     use DisableForeignKeysTrait;
 

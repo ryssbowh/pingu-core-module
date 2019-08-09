@@ -11,13 +11,6 @@ use Pingu\Core\Components\ContextualLinks;
 use Pingu\Core\Components\JsConfig;
 use Pingu\Core\Components\Notify;
 use Pingu\Core\Components\PinguExceptionHandler;
-use Pingu\Core\Components\ThemeConfig;
-use Pingu\Core\Console\BuildAssets;
-use Pingu\Core\Console\GenerateDoc;
-use Pingu\Core\Console\MakeComposer;
-use Pingu\Core\Console\MergePackages;
-use Pingu\Core\Console\ModuleLink;
-use Pingu\Core\Console\ThemeLink;
 use Pingu\Core\Http\Middleware\ActivateDebugBar;
 use Pingu\Core\Http\Middleware\CheckForMaintenanceMode;
 use Pingu\Core\Http\Middleware\DeletableModel;
@@ -76,12 +69,9 @@ class CoreServiceProvider extends ModuleServiceProvider
     {
         $this->app->singleton('core.contextualLinks', ContextualLinks::class);
         $this->app->singleton('core.notify', Notify::class);
-        $this->app->singleton('core.themeConfig', ThemeConfig::class);
         $this->app->singleton('core.modelRoutes', ModelRoutes::class);
         $this->app->singleton('core.jsconfig', JsConfig::class);
         $this->app->singleton(ExceptionHandler::class, PinguExceptionHandler::class);
-        $this->app->register(RouteServiceProvider::class);
-        $this->app->register(ThemeServiceProvider::class);
     }
 
     /**
@@ -99,17 +89,12 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->registerConfig();
         $this->registerFactories();
         $this->registerAssets();
-        $this->registerCommands();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'core');
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
         /**
-         * Generates modules links when created/disabled/enabled
+         * Generates modules links when disabled/enabled
          */
-        \Event::listen('modules.created', function ($name) {
-            \Artisan::call('module:link', ['module' => $name]);
-        });
-
         \Event::listen('modules.*.enabled', function ($name, $modules){
             \Artisan::call('module:link', ['module' => $modules[0]->getName()]);
         });
@@ -117,29 +102,6 @@ class CoreServiceProvider extends ModuleServiceProvider
         \Event::listen('modules.*.disabled', function ($name, $modules){
             \Artisan::call('module:link', ['module' => $modules[0]->getName(), '--delete' => true]);
         });
-
-        /**
-         * Add dump function to blade
-         */
-        Blade::directive('d', function ($data) {
-            return sprintf("<?php dump(%s); ?>",
-                'all' !== $data ? "get_defined_vars()['__data']" : $data
-            );
-        });
-    }
-
-    /**
-     * Registers commands for this module
-     * @return void
-     */
-    public function registerCommands(){
-        $this->commands([
-            MakeComposer::class,
-            GenerateDoc::class,
-            ModuleLink::class,
-            ThemeLink::class,
-            BuildAssets::class
-        ]);
     }
 
     public function registerRouteMiddlewares(Router $router)

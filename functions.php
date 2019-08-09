@@ -130,3 +130,11 @@ function temp_path($file = null){
     }
     return $path;
 }
+
+function namespace_from_file($file){
+    $src = file_get_contents($file);
+    if (preg_match('#^namespace\s+(.+?);$#sm', $src, $m)) {
+        return $m[1];
+    }
+    return null;
+}
