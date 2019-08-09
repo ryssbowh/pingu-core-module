@@ -164,6 +164,40 @@ class SeederMigrator extends Migrator
     }
 
     /**
+     * Rolls all of the currently applied migrations back.
+     *
+     * @param  array|string $paths
+     * @param  bool  $pretend
+     * @return array
+     */
+    public function reset($paths = [], $pretend = false)
+    {
+        $this->notes = [];
+
+        // Next, we will reverse the migration list so we can run them back in the
+        // correct order for resetting this database. This will allow us to get
+        // the database back into its "empty" state ready for the migrations.
+        $migrations = array_reverse($this->repository->getRan());
+
+        //Making sure that the migrations set for rolling back are in the given folders
+        $allMigrationsInPaths = [];
+        foreach($paths as $path){
+            foreach(glob($path.'/*.php') as $file){
+                $allMigrationsInPaths[] = str_replace('.php', '', basename($file));
+            }
+        }
+        $migrations = array_intersect($migrations, $allMigrationsInPaths);
+
+        if (count($migrations) === 0) {
+            $this->note('<info>Nothing to rollback.</info>');
+
+            return [];
+        }
+
+        return $this->resetMigrations($migrations, $paths, $pretend);
+    }
+
+    /**
      * Run "down" a seeder instance.
      *
      * @param string $file

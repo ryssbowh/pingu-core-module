@@ -42,7 +42,7 @@ Route::post('/settings/mailing/edit', ['uses' => 'CoreSettingsController@update'
 Route::get('/modules', ['uses' => 'ModuleController@index'])
 	->middleware('can:view modules')
 	->name('core.admin.modules');
-Route::post('/modules/enable/{module}', ['uses' => 'ModuleController@enable'])
+Route::post('/modules/install/{module}', ['uses' => 'ModuleController@install'])
 	->middleware('can:activate modules');
-Route::post('/modules/disable/{module}', ['uses' => 'ModuleController@disable'])
+Route::post('/modules/uninstall/{module}', ['uses' => 'ModuleController@uninstall'])
 	->middleware('can:activate modules');

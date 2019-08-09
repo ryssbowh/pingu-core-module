@@ -1,7 +1,5 @@
 <?php
 
-namespace Pingu\Core\Database\Seeders;
-
 use Pingu\Core\Seeding\DisableForeignKeysTrait;
 use Pingu\Core\Seeding\MigratableSeeder;
 use Pingu\Forms\Support\Fields\Email;
