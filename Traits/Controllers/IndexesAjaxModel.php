@@ -13,16 +13,16 @@ trait IndexesAjaxModel
 	 * @param  Request $request [description]
 	 * @return array
 	 */
-	public function index(Request $request): array
+	public function index(): array
 	{
 		$this->beforeIndex();
 
-		$filters = $request->input('filters', []);
-		$options = $request->input('options', []);
-		$pageIndex = $request->input('pageIndex', 1);
-		$pageSize = $request->input('pageSize', $this->model->getPerPage());
-		$sortField = $request->input('sortField', $this->model->getKeyName());
-		$sortOrder = $request->input('sortOrder', 'asc');
+		$filters = $this->request->input('filters', []);
+		$options = $this->request->input('options', []);
+		$pageIndex = $this->request->input('pageIndex', 1);
+		$pageSize = $this->request->input('pageSize', $this->model->getPerPage());
+		$sortField = $this->request->input('sortField', $this->model->getKeyName());
+		$sortOrder = $this->request->input('sortOrder', 'asc');
 
 		$fieldsDef = $this->model->getFieldDefinitions();
 		$query = $this->model->newQuery();

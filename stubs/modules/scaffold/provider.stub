@@ -32,7 +32,6 @@ class $CLASS$ extends ModuleServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', '$LOWER_NAME$');
         $this->registerFactories();
         //$this->registerAssets();
-        $this->loadMigrationsFrom(__DIR__ . '/../$MIGRATIONS_PATH$');
     }
 
     /**

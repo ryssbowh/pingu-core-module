@@ -60,7 +60,7 @@ trait EditsAjaxModel
 	 */
 	protected function getUpdateUri(BaseModel $model)
 	{
-		return $model::transformAjaxUri('update', $model, true);
+		return $model::transformUri('update', $model, config('core.ajaxPrefix'));
 	}
 
 	/**

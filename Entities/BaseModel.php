@@ -53,6 +53,7 @@ class BaseModel extends Model
 
     /**
      * Static accessible getKeyName
+     * 
      * @return  string
      */
     protected static function keyName() {
@@ -61,6 +62,7 @@ class BaseModel extends Model
 
     /**
      * Static accessible getRouteKeyName
+     * 
      * @return  string
      */
     protected static function routeKeyName() {

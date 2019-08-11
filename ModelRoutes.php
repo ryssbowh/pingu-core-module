@@ -12,20 +12,27 @@ class ModelRoutes
 {
 	protected $modelSlugs = [];
 
-	public function registerSlug(string $name, string $class)
+	/**
+	 * Registers one slug for one model class in the laravel Route system
+	 * 
+	 * @param  string $class
+	 */
+	public function registerModel(string $class)
 	{
-		if(isset($this->modelSlugs[$name])){
-			throw new ModelSlugAlreadyRegistered("slug for $class is already registered by ".$this->modelSlugs[$name]);
+		$slug = $class::routeSlug();
+		if(isset($this->modelSlugs[$slug])){
+			throw new ModelSlugAlreadyRegistered("slug for $class is already registered by ".$this->modelSlugs[$slug]);
 		}
-		$this->modelSlugs[$name] = $class;
-		Route::model($class::routeSlug(), $class);
+		$this->modelSlugs[$slug] = $class;
+		Route::model($slug, $class);
 	}
 
 	/**
 	 * Reads all classes in a folder and register their route slug
+	 * 
 	 * @param  string $path
 	 */
-	public function registerSlugsFromPath(string $path)
+	public function registerModelsFromPath(string $path)
 	{
 		if(!$path) return;
 		$finder = new Finder;
@@ -33,7 +40,7 @@ class ModelRoutes
 		foreach ($iter->getClassMap() as $classname => $fileObject) {
 			$reflector = new \ReflectionClass($classname);
 			if($reflector->implementsInterface(HasRouteSlugContract::class)){
-				$this->registerSlug($classname::routeSlug(), $classname);
+				$this->registerModel($classname);
 			}
 		}
 	}

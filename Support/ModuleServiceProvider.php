@@ -7,6 +7,11 @@ use Illuminate\Support\ServiceProvider;
 class ModuleServiceProvider extends ServiceProvider
 {
 
+	/*
+     * Where are the models located
+     */
+    protected $modelFolder = 'Entities';
+    
 	/**
 	 * Will merge (and replace) recursively config arrays. To be used to replace a vendor
 	 * config without having to publish it
@@ -26,7 +31,7 @@ class ModuleServiceProvider extends ServiceProvider
      */
     public function registerModelSlugs(string $path)
     {
-        \ModelRoutes::registerSlugsFromPath(realpath($path));
+        \ModelRoutes::registerModelsFromPath(realpath($path));
     }
 
 }

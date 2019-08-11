@@ -1,7 +1,7 @@
 <?php
 
 use Pingu\Core\Exceptions\RouteNameDoesNotExistsException;
-use Pingu\Core\Exceptions\UriReplacementsSize;
+use Pingu\Core\Exceptions\UriException;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,11 +106,16 @@ function theme_config($value, $default = null)
  */
 function replaceUriSlugs(string $uri, array $replacements){
     preg_match('/^.*(\{[a-zA-Z0-9_\-]+\}).*$/', $uri, $matches);
-    if(sizeof($matches)-1 != sizeof($replacements)){
-        throw new UriReplacementsSize("Size of replacements (".sizeof($replacements).") doesn't match the size of replaceable entities (".(sizeof($matches)).") in $uri");
+
+    $sizeMatches = sizeof($matches) ? sizeof($matches) - 1 : 0;
+    if($sizeMatches != sizeof($replacements)){
+        throw UriException::replacements(sizeof($replacements), $sizeMatches, $uri);
     }
     foreach($replacements as $i => $replacement){
-        $uri = str_replace($matches[$i+1], $replacement->getRouteKey(), $uri);
+        if(is_object($replacement)){
+            $replacement = $replacement->getRouteKey();
+        }
+        $uri = str_replace($matches[$i+1], $replacement, $uri);
     }
     return '/'.ltrim($uri, '/');
 }

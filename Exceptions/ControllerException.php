@@ -11,9 +11,4 @@ class ControllerException extends \Exception{
 		return new static(get_class($controller)." must implement getModel():string method");
 	}
 
-	public static function modelMissingInterface(BaseModel $model, string $interface)
-	{
-		return new static(get_class($model)." must implement ".$interface);
-	}
-
 }

@@ -146,7 +146,7 @@ trait EditsAdminModel
 	 */
 	protected function getUpdateUrl(BaseModel $model)
 	{
-		return $model::transformAdminUri('update', [$model], true);
+		return $model::transformUri('update', [$model], config('core.adminPrefix'));
 	}
 
 	/**

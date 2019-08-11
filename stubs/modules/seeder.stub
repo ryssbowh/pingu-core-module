@@ -1,7 +1,5 @@
 <?php
 
-namespace $NAMESPACE$;
-
 use Pingu\Core\Seeding\MigratableSeeder;
 use Pingu\Core\Seeding\DisableForeignKeysTrait;
 

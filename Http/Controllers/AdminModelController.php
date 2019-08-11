@@ -3,8 +3,8 @@
 namespace Pingu\Core\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Pingu\Core\Contracts\Models\HasAdminRoutesContract;
-use Pingu\Core\Exceptions\ControllerException;
+use Pingu\Core\Contracts\Models\HasCrudUrisContract;
+use Pingu\Core\Exceptions\ClassException;
 use Pingu\Core\Traits\Controllers\CreatesAdminModel;
 use Pingu\Core\Traits\Controllers\DeletesAdminModel;
 use Pingu\Core\Traits\Controllers\EditsAdminModel;
@@ -16,13 +16,13 @@ abstract class AdminModelController extends ModelController
 
 	public function __construct(Request $request)
 	{
-		$model = $this->getModel();
-		$model = new $model;
+		$modelStr = $this->getModel();
+		$model = new $modelStr;
 		if(!($model instanceof FormableContract)){
-			throw ControllerException::modelMissingInterface($model, FormableContract::class);
+			throw ClassException::missingInterface($modelStr, FormableContract::class);
 		}
-		if(!($model instanceof HasAdminRoutesContract)){
-			throw ControllerException::modelMissingInterface($model, HasAdminRoutesContract::class);
+		if(!($model instanceof HasCrudUrisContract)){
+			throw ClassException::missingInterface($modelStr, HasCrudUrisContract::class);
 		}
 		parent::__construct($request);
 	}

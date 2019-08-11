@@ -52,6 +52,7 @@ class CoreServiceProvider extends ModuleServiceProvider
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             SetThemeMiddleware::class
@@ -90,7 +91,6 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->registerFactories();
         $this->registerAssets();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'core');
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
         /**
          * Generates modules links when disabled/enabled

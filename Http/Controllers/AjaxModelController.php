@@ -3,8 +3,8 @@
 namespace Pingu\Core\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Pingu\Core\Contracts\Models\HasAjaxRoutesContract;
-use Pingu\Core\Exceptions\ControllerException;
+use Pingu\Core\Contracts\Models\HasCrudUrisContract;
+use Pingu\Core\Exceptions\ClassException;
 use Pingu\Core\Traits\Controllers\CreatesAjaxModel;
 use Pingu\Core\Traits\Controllers\DeletesAjaxModel;
 use Pingu\Core\Traits\Controllers\EditsAjaxModel;
@@ -18,13 +18,13 @@ abstract class AjaxModelController extends ModelController
 
 	public function __construct(Request $request)
 	{
-		$model = $this->getModel();
-		$model = new $model;
+		$modelStr = $this->getModel();
+		$model = new $modelStr;
 		if(!($model instanceof FormableContract)){
-			throw ControllerException::modelMissingInterface($model, FormableContract::class);
+			throw ClassException::missingInterface($modelStr, FormableContract::class);
 		}
-		if(!($model instanceof HasAjaxRoutesContract)){
-			throw ControllerException::modelMissingInterface($model, HasAjaxRoutesContract::class);
+		if(!($model instanceof HasCrudUrisContract)){
+			throw ClassException::missingInterface($modelStr, HasCrudUrisContract::class);
 		}
 		parent::__construct($request);
 	}

@@ -21,7 +21,8 @@
         "ModelRoutes": "Pingu\\Core\\Facades\\ModelRoutes",
         "Notify": "Pingu\\Core\\Facades\\Notify",
         "ThemeConfig": "Pingu\\Core\\Facades\\ThemeConfig",
-        "DebugBar": "Barryvdh\\Debugbar\\Facade"
+        "DebugBar": "Barryvdh\\Debugbar\\Facade",
+        "Str": "Illuminate\\Support\\Str"
     },
     "files": [
         "functions.php"
