@@ -30,26 +30,25 @@ Contextual links are used to display links when viewing a model. The idea is to 
 Will probably need rewritten as not the most intuitive way to use it.
 
 ### Routing
-The contract `HasRouteSlugContract` and trait `hasRouteSlug` provides with a method to define a route slug for a model. If you want your model to be referenced in routes, you must extend this contract.
+The models contract `HasCrudUrisContract` and trait `HasBasicCrudUris` provides with a method to define CRUD routes for a model.
 
-Every module at booting will register the slugs for all its models, duplicates will be checked.
+Every module at booting will register the slugs for all its models that implements `HasRouteSlugContract` (which `HasCrudUrisContract` extends). duplicates will be checked.
 
-### Admin routes
-Provides a `HasAdminRoutes` interface and trait for models to define admin routes within the model. The trait provides with methods to replace variables in each route.
+Trait `HasCrudUris` (which `HasBasicCrudUris` uses) provides with methods to get and uri (getUri) and transform an uri (transformUri), when uris has slugs that need replaced.
 
-So you could define a `adminListItemsUri` in a model that define the route `content/{parent}/{item}/list`, retrieve it with `getAdminUri('listItems, true)`, and transform the uri with `transformAdminUri('listItems', [$parent, $item], true)`. The variables will be replaced by the route key name of each model. The boolean argument will prefix the route with the admin prefix (defined in config).
+So you could define a `listItemsUri` in a model that define the route `content/{parent}/{item}/list`, retrieve it with `getUri('listItems')`, and transform the uri with `transformUri('listItems', [$parent, $item])`. The variables will be replaced by the route key name of each model. Both these methods takes a last argument `prefix` which would prefix the uri.
+
+This way you can define a single uri for an action and get the admin version of it by calling `getUri('listItems', 'admin')` for example.
  
 ### Ajax
-Provides a `HasAjaxRoutes` interface and trait for models to define ajax routes within the model. The trait provides with methods to replace variables in each route, works the exact same way as the admn routes, just the prefix changes.
- 
 Visible fields for an ajax request are set by the models $visible variable.
 
 Helpers are available for ajax calls (get, post, put, \_delete, patch), each of those will throw 2 events on the body, `ajax.failed` and `ajax.success`.
  
 ### Controllers
 Provides with 2 controllers to perform basic oprations on models :
-- AdminModelController : add/edit/delete models. The controllers extending this controller must define `getModel()`. This model must implements the following contracts : `HasAdminRoutesContract` and `FormableContract`
-- AjaxModelController : Same as above but for ajax calls. model must implement `HasAjaxRoutesContract` and `FormableContract`
+- AdminModelController : add/edit/delete models. The controllers extending this controller must define `getModel()`. This model must implements the following contracts : `HasCrudUrisContract` and `FormableContract`
+- AjaxModelController : Same as above but for ajax calls.
  
 ### Middlewares
 the `HomepageMiddleware` sets the homepage when the uri is /.
@@ -92,6 +91,12 @@ Includes commands provided by [igaster/laravel-theme](https://github.com/igaster
 - make-composer will create a composer for a theme
 - module:link will rebuild the sym links for the modules, if you run your site in a vagrant this **must** be called from within the box
 - theme:link same as above but for themes
+- db:seed : Has been rewritten to account for migratable seedings
+- make:seed : Has been rewritten to account for migratable seedings
+- db:seed-rollback : Rolls back seedings in a folder (default database/seeds)
+
+### Migratable seedings
+[https://github.com/eighty8/laravel-seeder](https://github.com/eighty8/laravel-seeder) has been ported over (not all the environment part of it) to provide with migratable seedings that can be rolled back.
  
 ### stubs
 Stubs are used to generate files when creating modules or themes.
