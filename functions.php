@@ -117,7 +117,7 @@ function replaceUriSlugs(string $uri, array $replacements){
         }
         $uri = str_replace($matches[$i+1], $replacement, $uri);
     }
-    return '/'.ltrim($uri, '/');
+    return '/'.trim($uri, '/');
 }
     
 /**

@@ -84,7 +84,7 @@ trait DeletesAdminModel
 	protected function onSuccessfullDeletion(BaseModel $model)
 	{
 		\Notify::success($model::friendlyName().' has been deleted');
-		return redirect($model::getAdminUri('index', true));
+		return redirect($model::getUri('index', config('core.adminPrefix')));
 	}
 
 }

@@ -125,10 +125,8 @@ class ThemeServiceProvider extends ServiceProvider
         /**
          * Add dump function to blade
          */
-        Blade::directive('d', function ($data) {
-            return sprintf("<?php dump(%s); ?>",
-                'all' !== $data ? "get_defined_vars()['__data']" : $data
-            );
+        Blade::directive('dump', function($param) {
+            return "<pre><?php (new \BeyondCode\DumpServer\Dumper)->dump({$param}); ?></pre>";
         });
     }
 

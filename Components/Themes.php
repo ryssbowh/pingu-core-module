@@ -89,11 +89,11 @@ class Themes
         return $this->setByName(config($setting), !$request->wantsJson());
     }
 
-    public function setDefault()
+    public function setFront()
     {
-        $default = config('core.frontTheme', false);
-        if($default){
-            $this->setByName($default);
+        $front = config('core.frontTheme', false);
+        if($front){
+            $this->setByName($front);
         }
     }
 
@@ -135,6 +135,11 @@ class Themes
 
         Event::dispatch('core.theme.change', $theme);
         return $theme;
+    }
+
+    public function front()
+    {
+        return $this->find(config('core.frontTheme'));
     }
 
     /**

@@ -46,7 +46,7 @@ class PinguExceptionHandler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        \Theme::setDefault();
+        \Theme::setFront();
         return parent::render($request, $exception);
     }
 }

@@ -19,9 +19,9 @@ trait HasCrudUris {
 	public static function getUri(string $action, ?string $prefix = null)
 	{	
 		$method = $action.'Uri';
-		$prefix = $prefix ?? $prefix.'/';
+		$prefix = $prefix ? trim($prefix, '/').'/' : '';
 		if(method_exists(__CLASS__, $method)){
-			return $prefix.trim(static::$method(), '/');
+			return '/'.$prefix.trim(static::$method(), '/');
 		}
 		throw UriException::undefined($action, get_called_class());
 	}

@@ -250,7 +250,7 @@ trait CreatesAdminModel
 	 */
 	protected function uploadFiles(array $validated, BaseModel $model)
 	{
-		$toUpload = array_intersect($validated, $this->request->allFiles());
+		$toUpload = array_intersect_key($validated, $this->request->allFiles());
 		foreach($toUpload as $name => $file){
 			$media = $model->uploadFormFile($file, $name);
 			$validated[$name] = $media;

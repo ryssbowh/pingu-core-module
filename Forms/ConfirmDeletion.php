@@ -64,7 +64,7 @@ class ConfirmDeletion extends Form
 	 */
 	public function url()
 	{
-		return ['url' => $this->model::transformAdminUri('delete', $this->model, true)];
+		return ['url' => $this->model::transformUri('delete', $this->model, config('core.adminPrefix'))];
 	}
 
 	/**

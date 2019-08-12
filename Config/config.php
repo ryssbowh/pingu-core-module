@@ -22,11 +22,11 @@ return [
     /**
      * Prefix for ajax routes
      */
-    'ajaxPrefix' => '/ajax/',
+    'ajaxPrefix' => 'ajax',
     /**
      * Prefix for admin routes
      */
-    'adminPrefix' => '/admin/',
+    'adminPrefix' => 'admin',
     'themes' => [
         'views_path' => 'views',
         'asset_path' => 'assets',
