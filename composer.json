@@ -42,6 +42,8 @@
         "pingu/honeypot-module": "dev-master",
         "pingu/jsgrid-module": "dev-master",
         "pingu/devel-module": "dev-master",
-        "pingu/taxonomy-module": "dev-master"
+        "pingu/taxonomy-module": "dev-master",
+        "pingu/block-module": "dev-master",
+        "pingu/info-module": "dev-master"
     }
 }
