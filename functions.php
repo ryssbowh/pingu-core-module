@@ -1,16 +1,14 @@
 <?php
 
 use Pingu\Core\Exceptions\RouteNameDoesNotExistsException;
-use Pingu\Core\Exceptions\UriException;
 
 /*
 |--------------------------------------------------------------------------
-| Register Namespaces and Routes
+| Register Functions
 |--------------------------------------------------------------------------
 |
-| When your module starts, this file is executed automatically. By default
-| it will only load the module's route file. However, you can expand on
-| it to load anything else from the module, such as a class or view.
+| When your module starts, this file is executed automatically.
+| This is a good place to register functions
 |
 */
 
@@ -109,7 +107,7 @@ function replaceUriSlugs(string $uri, array $replacements){
 
     $sizeMatches = sizeof($matches) ? sizeof($matches) - 1 : 0;
     if($sizeMatches != sizeof($replacements)){
-        throw UriException::replacements(sizeof($replacements), $sizeMatches, $uri);
+        return $uri;
     }
     foreach($replacements as $i => $replacement){
         if(is_object($replacement)){
@@ -127,7 +125,13 @@ function upload_max_filesize()
 {
     return rtrim(ini_get('upload_max_filesize'),'M')*1000;
 }
-
+    
+/**
+ * Temporary disk file path helper
+ * 
+ * @param  ?string $file
+ * @return string
+ */
 function temp_path($file = null){
     $path = config('filesystems.disks.tmp.root');
     if($file){
@@ -136,6 +140,12 @@ function temp_path($file = null){
     return $path;
 }
 
+/**
+ * Extract namespace from a filename
+ * 
+ * @param  string $file
+ * @return ?string
+ */
 function namespace_from_file($file){
     $src = file_get_contents($file);
     if (preg_match('#^namespace\s+(.+?);$#sm', $src, $m)) {
@@ -143,3 +153,24 @@ function namespace_from_file($file){
     }
     return null;
 }
+
+/**
+ * Admin prefix config shortcut
+ * 
+ * @return string
+ */
+function adminPrefix()
+{
+    return config('core.adminPrefix');
+}
+
+/**
+ * Ajax prefix config shortcut
+ * 
+ * @return string
+ */
+function ajaxPrefix()
+{
+    return config('core.ajaxPrefix');
+}
+

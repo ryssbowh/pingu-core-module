@@ -24,6 +24,7 @@ export function log(message){
 }
 
 export function logError(message){
+    message = '['+config('app.name')+'] '+message;
     console.log("%c"+message, "color:red");
 }
 
@@ -45,7 +46,7 @@ export function ajax(url, data, type = 'POST'){
             message += "\nException : " + data.responseJSON.exception;
         }
         logError(message);
-        $('body').trigger('ajax.failed', data);
+        $('body').trigger('ajax.failure', data);
 	}).done(function(){
         $('body').trigger('ajax.success', data);
         $('body').css('cursor', 'initial');
@@ -76,6 +77,9 @@ export function get(url, data = {}){
 }
 
 export function replaceUriSlugs(uri, replacements){
+    if(!Array.isArray(replacements)){
+        replacements = [replacements];
+    }
     let match = uri.match(/^.*\{([a-zA-Z_]+)\}.*$/);
     $.each(replacements, function(i, replacement){
         uri = uri.replace('{'+match[i+1]+'}', replacement);

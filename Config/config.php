@@ -4,11 +4,11 @@ return [
     'name' => 'Core',
     'homepage' => '/',
     /**
-     * Default back end theme
+     * Back end theme
      */
     'adminTheme' => 'Admin',
     /**
-     * Default front theme
+     * Front end theme
      */
     'frontTheme' => 'Front',
     /**
@@ -23,6 +23,10 @@ return [
      * Prefix for ajax routes
      */
     'ajaxPrefix' => 'ajax',
+    /**
+     * Config to be loaded in javascript
+     */
+    'ajaxConfig' => [],
     /**
      * Prefix for admin routes
      */

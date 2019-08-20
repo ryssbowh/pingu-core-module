@@ -7,9 +7,4 @@ class UriException extends \Exception{
 	{
 		return new static("Uri '$uri' isn't defined in ".$class);
 	}
-
-	public static function replacements(int $replacements, int $matches, string $uri)
-	{
-		return new static("Size of replacements (".$replacements.") doesn't match the size of replaceable entities (".$matches.") in $uri");
-	}
 }

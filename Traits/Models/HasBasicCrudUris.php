@@ -39,11 +39,7 @@ trait HasBasicCrudUris {
 
 	public static function deleteUri()
 	{
-		return self::routeSlug().'/{'.self::routeSlug().'}';
-	}
-
-	public static function confirmDeleteUri()
-	{
 		return self::routeSlug().'/{'.self::routeSlug().'}/delete';
 	}
+
 }

@@ -34,7 +34,7 @@ trait HasCrudUris {
 	 * @param  ?string $prefix
 	 * @return string
 	 */
-	public static function transformUri(string $action, $replacements = [], ?string $prefix = null)
+	public static function makeUri(string $action, $replacements = [], ?string $prefix = null)
 	{
 		$replacements = (is_array($replacements) ? $replacements : [$replacements]);
 		$uri = static::getUri($action, $prefix);

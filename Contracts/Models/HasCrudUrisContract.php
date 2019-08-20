@@ -46,12 +46,6 @@ interface HasCrudUrisContract extends HasRouteSlugContract
 	public static function deleteUri();
 
 	/**
-	 * route for delete requests
-	 * @return string
-	 */
-	public static function confirmDeleteUri();
-
-	/**
 	 * Gets an Uri
 	 * 
 	 * @param  string      $action
@@ -68,6 +62,6 @@ interface HasCrudUrisContract extends HasRouteSlugContract
 	 * @param  string|null $prefix
 	 * @return string
 	 */
-	public static function transformUri(string $action, $replacements = [], ?string $prefix = null);
+	public static function makeUri(string $action, $replacements = [], ?string $prefix = null);
 
 }

@@ -35,11 +35,11 @@ class S2019_08_06_171621248759_Install extends MigratableSeeder
                 'Title' => 'Session Lifetime',
                 'helper' => 'Controls how long before users have to login again',
                 'Section' => 'general',
-                'unit' => 'seconds',
+                'unit' => 'Minutes',
                 'field' => NumberInput::class,
                 'type' => Integer::class,
-                'validation' => 'required|integer|min:36000',
-                'attributes' => ['required' => true, 'min' => 3600],
+                'validation' => 'required|integer|min:0',
+                'attributes' => ['required' => true, 'min' => 0],
                 'weight' => 1
             ],
             'core.maintenance.message' => [

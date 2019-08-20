@@ -8,22 +8,28 @@ class JsConfig
 
 	public function __construct()
 	{
-		$this->addFromConfig('app.name');
-		$this->addFromConfig('app.env');
-		$this->addFromConfig('app.debug');
-		$this->addFromConfig('app.url');
-	}
-
-	public function addFromConfig(string $key)
-	{
-		if(!is_null(config($key))){
-			array_set($this->config, $key, config($key));
+		foreach(config('core.ajaxConfig', []) as $key){
+			$this->setFromConfig($key);
 		}
 	}
 
-	public function add(string $key, $value)
+	public function setFromConfig(string $key)
 	{
-		$this->config[$key] = $value;
+		if(!is_null(config($key))){
+			$this->set($key, config($key));
+		}
+	}
+
+	public function setManyFromConfig(array $configs)
+	{
+		foreach($configs as $config){
+			$this->setFromConfig($config);
+		}
+	}
+
+	public function set(string $key, $value)
+	{
+		data_set($this->config, $key, $value);
 	}
 
 	public function get($key = null)

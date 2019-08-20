@@ -38,6 +38,9 @@ class ConfirmDeletion extends Form
 				'options' => [
 					'label' => 'Back',
 					'url' => url()->previous()
+				],
+				'attributes' => [
+					'class' => 'back'
 				]
 			]
 		];
@@ -64,7 +67,7 @@ class ConfirmDeletion extends Form
 	 */
 	public function url()
 	{
-		return ['url' => $this->model::transformUri('delete', $this->model, config('core.adminPrefix'))];
+		return ['url' => $this->model::makeUri('delete', $this->model, adminPrefix())];
 	}
 
 	/**

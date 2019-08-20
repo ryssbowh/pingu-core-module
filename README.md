@@ -34,9 +34,9 @@ The models contract `HasCrudUrisContract` and trait `HasBasicCrudUris` provides 
 
 Every module at booting will register the slugs for all its models that implements `HasRouteSlugContract` (which `HasCrudUrisContract` extends). duplicates will be checked.
 
-Trait `HasCrudUris` (which `HasBasicCrudUris` uses) provides with methods to get and uri (getUri) and transform an uri (transformUri), when uris has slugs that need replaced.
+Trait `HasCrudUris` (which `HasBasicCrudUris` uses) provides with methods to get and uri (getUri) and transform an uri (makeUri), when uris has slugs that need replaced.
 
-So you could define a `listItemsUri` in a model that define the route `content/{parent}/{item}/list`, retrieve it with `getUri('listItems')`, and transform the uri with `transformUri('listItems', [$parent, $item])`. The variables will be replaced by the route key name of each model. Both these methods takes a last argument `prefix` which would prefix the uri.
+So you could define a `listItemsUri` in a model that define the route `content/{parent}/{item}/list`, retrieve it with `getUri('listItems')`, and transform the uri with `makeUri('listItems', [$parent, $item])`. The variables will be replaced by the route key name of each model. Both these methods takes a last argument `prefix` which would prefix the uri.
 
 This way you can define a single uri for an action and get the admin version of it by calling `getUri('listItems', 'admin')` for example.
  

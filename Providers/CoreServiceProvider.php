@@ -82,6 +82,9 @@ class CoreServiceProvider extends ModuleServiceProvider
      */
     public function boot(Router $router, Kernel $kernel)
     {
+        config('core.adminPrefix', trim(adminPrefix(), '/'));
+        config('core.ajaxPrefix', trim(ajaxPrefix(), '/'));
+        
         $this->registerModelSlugs(__DIR__.'/../'.$this->modelFolder);
         $this->registerGroupMiddlewares($router);
         $this->registerRouteMiddlewares($router);
@@ -90,6 +93,7 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->registerConfig();
         $this->registerFactories();
         $this->registerAssets();
+        $this->registerJsConfig();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'core');
 
         /**
@@ -102,6 +106,18 @@ class CoreServiceProvider extends ModuleServiceProvider
         \Event::listen('modules.*.disabled', function ($name, $modules){
             \Artisan::call('module:link', ['module' => $modules[0]->getName(), '--delete' => true]);
         });
+    }
+
+    public function registerJsConfig()
+    {
+        \JsConfig::setManyFromConfig([
+            'app.name',
+            'app.env',
+            'app.debug',
+            'app.url',
+            'core.ajaxPrefix',
+            'core.adminPrefix'
+        ]);
     }
 
     public function registerRouteMiddlewares(Router $router)

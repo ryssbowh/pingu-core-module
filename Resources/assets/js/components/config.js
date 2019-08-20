@@ -4,6 +4,7 @@ const Config = (() => {
 
 	function init()
 	{
+		console.log('Config initialized');
 		config = PinguJsConfig;
 	}
 
@@ -11,7 +12,7 @@ const Config = (() => {
 	{
 		if(!key){
 			return config;
-;		}
+		}
 		let elems = key.split('.');
 		let config2 = config;
 		elems.forEach(function(elem){

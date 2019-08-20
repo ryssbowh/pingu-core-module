@@ -1,5 +1,5 @@
 import Config from './components/config';
 
 $(() => {
-	Config.init();
+	Config.init()
 });

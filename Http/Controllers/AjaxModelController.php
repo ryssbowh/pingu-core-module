@@ -10,11 +10,13 @@ use Pingu\Core\Traits\Controllers\DeletesAjaxModel;
 use Pingu\Core\Traits\Controllers\EditsAjaxModel;
 use Pingu\Core\Traits\Controllers\IndexesAjaxModel;
 use Pingu\Core\Traits\Controllers\PatchesAjaxModel;
+use Pingu\Core\Traits\Controllers\StoresAjaxModel;
+use Pingu\Core\Traits\Controllers\UpdatesAjaxModel;
 use Pingu\Forms\Contracts\Models\FormableContract;
 
 abstract class AjaxModelController extends ModelController
 {	
-	use CreatesAjaxModel, EditsAjaxModel, DeletesAjaxModel, PatchesAjaxModel, IndexesAjaxModel;
+	use CreatesAjaxModel, StoresAjaxModel, EditsAjaxModel, UpdatesAjaxModel, DeletesAjaxModel, PatchesAjaxModel, IndexesAjaxModel;
 
 	public function __construct(Request $request)
 	{
