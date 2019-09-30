@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Pingu\Core\Exceptions\FieldNotFillable;
 use Pingu\Core\Traits\Models\ThrowsEvents;
+use Pingu\Field\Contracts\FieldCollection;
+use Pingu\Field\Contracts\HasFields;
 
-class BaseModel extends Model
+abstract class BaseModel extends Model implements HasFields
 {
 	use EloquentTentacle, ThrowsEvents;
 
@@ -17,6 +19,9 @@ class BaseModel extends Model
     public static $friendlyName;
 
     protected static $recordEvents = ['created','updated','deleted'];
+
+    public function fields(): FieldCollection
+    {}
 
     /**
      * Model's machine name
