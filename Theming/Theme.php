@@ -1,5 +1,5 @@
 <?php 
-namespace Pingu\Core\Components;
+namespace Pingu\Core\Theming;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
@@ -17,7 +17,7 @@ class Theme
     /** @var Theme  */
     public $parent;
 
-    /** @var \Pingu\Core\Components\Themes */
+    /** @var Themes */
     private $themes;
 
     public function __construct($themeName, $assetPath = null, $viewsPath = null, $imagesPath = null, Theme $parent = null)

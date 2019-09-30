@@ -1,6 +1,6 @@
 <?php 
 
-namespace Pingu\Core\Components;
+namespace Pingu\Core\Theming;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;

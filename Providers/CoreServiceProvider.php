@@ -11,6 +11,9 @@ use Pingu\Core\Components\ContextualLinks;
 use Pingu\Core\Components\JsConfig;
 use Pingu\Core\Components\Notify;
 use Pingu\Core\Components\PinguExceptionHandler;
+use Pingu\Core\Entities\BundleField;
+use Pingu\Core\Entity;
+use Pingu\Core\EntityField;
 use Pingu\Core\Http\Middleware\ActivateDebugBar;
 use Pingu\Core\Http\Middleware\CheckForMaintenanceMode;
 use Pingu\Core\Http\Middleware\DeletableModel;
@@ -26,15 +29,6 @@ use Spatie\TranslationLoader\LanguageLine;
 
 class CoreServiceProvider extends ModuleServiceProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
-    protected $modelFolder = 'Entities';
-
     protected $routeMiddlewares = [
         'home' => HomepageMiddleware::class,
         'guest' => RedirectIfAuthenticated::class,
@@ -85,7 +79,6 @@ class CoreServiceProvider extends ModuleServiceProvider
         config('core.adminPrefix', trim(adminPrefix(), '/'));
         config('core.ajaxPrefix', trim(ajaxPrefix(), '/'));
         
-        $this->registerModelSlugs(__DIR__.'/../'.$this->modelFolder);
         $this->registerGroupMiddlewares($router);
         $this->registerRouteMiddlewares($router);
         $this->registerGlobalMiddlewares($kernel);

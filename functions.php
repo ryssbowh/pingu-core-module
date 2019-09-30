@@ -14,6 +14,7 @@ use Pingu\Core\Exceptions\RouteNameDoesNotExistsException;
 
 /**
  * Explodes a string by camel case
+ * 
  * @param  strign $str
  * @return string
  */
@@ -23,6 +24,7 @@ function explodeCamelCase($str){
 
 /**
  * Takes a fully namespaced class and returns its name, exploded by camel case
+ * 
  * @param  string $str
  * @return string
  */
@@ -32,6 +34,7 @@ function friendlyClassname($str){
 
 /**
  * Returns the path of a given file for the current theme
+ * 
  * @param  string $filename
  * @return string|null
  */
@@ -42,6 +45,7 @@ function themes_path($filename = null)
 
 /**
  * Returns the url of a given resource for the current theme
+ * 
  * @param  string $url
  * @return string|null
  */
@@ -70,14 +74,33 @@ function route_exists($uri)
 
 /**
  * Search a route by its name
+ * 
  * @param  string $name 
  * @return Route
+ * 
+ * @throws RouteNameDoesNotExistsException
  */
 function route_by_name(string $name){
     if(!$route = Route::getRoutes()->getByName($name)){
         throw new RouteNameDoesNotExistsException("Route ".$name." doesn't exists");
     }
     return $route;
+}
+
+/**
+ * Returns all routes that have a friendly name.
+ * Routes that have no names will be excluded
+ * 
+ * @return array
+ */
+function routes_with_friendly_name(){
+    $routes = [];
+    foreach(app('router')->getRoutes()->getIterator() as $route){
+        if($friendly = $route->getAction('friendly') and $route->getName()){
+            $routes[$route->getName()] = $friendly;
+        }
+    }
+    return $routes;
 }
 
 /**
@@ -98,22 +121,20 @@ function theme_config($value, $default = null)
 /**
  * Takes an uri ex /admin/{menu}/{item} and an array of object for replacements.
  * Will replace the slugs by the route key name for each object in the array, by order of appearance.
- * @param  string $uri          [description]
- * @param  array  $replacements [description]
+ * 
+ * @param  string $uri
+ * @param  array  $replacements
  * @return string
  */
 function replaceUriSlugs(string $uri, array $replacements){
-    preg_match('/^.*(\{[a-zA-Z0-9_\-]+\}).*$/', $uri, $matches);
-
-    $sizeMatches = sizeof($matches) ? sizeof($matches) - 1 : 0;
-    if($sizeMatches != sizeof($replacements)){
-        return $uri;
-    }
-    foreach($replacements as $i => $replacement){
+    preg_match_all("/(?:\G(?!^)|)(\{[\w\-]+\})/", $uri, $matches);
+    $matches = $matches[0];
+    foreach($matches as $i => $match){
+        $replacement = $replacements[$i] ?? $match;
         if(is_object($replacement)){
             $replacement = $replacement->getRouteKey();
         }
-        $uri = str_replace($matches[$i+1], $replacement, $uri);
+        $uri = str_replace($match, $replacement, $uri);
     }
     return '/'.trim($uri, '/');
 }
@@ -174,3 +195,7 @@ function ajaxPrefix()
     return config('core.ajaxPrefix');
 }
 
+function modules_path()
+{
+    return base_path().'/Modules';
+}

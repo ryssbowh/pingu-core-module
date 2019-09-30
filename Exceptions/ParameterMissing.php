@@ -1,6 +1,6 @@
 <?php
 
-namespace Pingu\Content\Exceptions;
+namespace Pingu\Core\Exceptions;
 
 class ParameterMissing extends \Exception{
 

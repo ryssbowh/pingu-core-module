@@ -20,7 +20,7 @@ trait HasCrudUris {
 	{	
 		$method = $action.'Uri';
 		$prefix = $prefix ? trim($prefix, '/').'/' : '';
-		if(method_exists(__CLASS__, $method)){
+		if(method_exists(get_called_class(), $method)){
 			return '/'.$prefix.trim(static::$method(), '/');
 		}
 		throw UriException::undefined($action, get_called_class());

@@ -1,5 +1,5 @@
 <?php 
-namespace Pingu\Core\Components;
+namespace Pingu\Core\Theming;
 
 class themeManifest
 {

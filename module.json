@@ -3,8 +3,8 @@
     "alias": "core",
     "description": "Pingu core",
     "keywords": [],
-    "active": 1,
     "core": 1,
+    "order": 0,
     "providers": [
         "Barryvdh\\Debugbar\\ServiceProvider",
         "Pingu\\Core\\Providers\\CoreServiceProvider",
@@ -16,6 +16,8 @@
     ],
     "aliases": {
         "Theme": "Pingu\\Core\\Facades\\Theme",
+        "Entity": "Pingu\\Core\\Facades\\Entity",
+        "EntityField": "Pingu\\Core\\Facades\\EntityField",
         "JsConfig": "Pingu\\Core\\Facades\\JsConfig",
         "ContextualLinks": "Pingu\\Core\\Facades\\ContextualLinks",
         "ModelRoutes": "Pingu\\Core\\Facades\\ModelRoutes",

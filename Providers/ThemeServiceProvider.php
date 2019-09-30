@@ -4,9 +4,10 @@ namespace Pingu\Core\Providers;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Pingu\Core\Components\ThemeConfig;
-use Pingu\Core\Components\ThemeViewFinder;
 use Pingu\Core\Console\{createTheme, refreshThemeCache, listThemes};
+use Pingu\Core\Theming\ThemeConfig;
+use Pingu\Core\Theming\ThemeViewFinder;
+use Pingu\Core\Theming\Themes;
 
 class ThemeServiceProvider extends ServiceProvider
 {
@@ -17,7 +18,7 @@ class ThemeServiceProvider extends ServiceProvider
         | Bind in IOC
         |--------------------------------------------------------------------------*/
         $this->app->singleton('core.themes', function () {
-            return new \Pingu\Core\Components\Themes();
+            return new Themes();
         });
 
         /*--------------------------------------------------------------------------

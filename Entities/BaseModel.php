@@ -19,10 +19,28 @@ class BaseModel extends Model
     protected static $recordEvents = ['created','updated','deleted'];
 
     /**
+     * Model's machine name
+     * @return string
+     */
+    public static function machineName():string
+    {
+        return Str::studly(class_basename(static::class));
+    }
+
+    /**
+     * Model's machine name
+     * @return string
+     */
+    public static function machineNames():string
+    {
+        return Str::plural(static::machineName());
+    }
+
+    /**
      * Model's friendly name
      * @return string
      */
-    public static function friendlyName()
+    public static function friendlyName(): string
     {
     	return static::$friendlyName ?? friendlyClassname(static::class);
     }
@@ -31,7 +49,7 @@ class BaseModel extends Model
      * Model's friendly names
      * @return string
      */
-    public static function friendlyNames()
+    public static function friendlyNames(): string
     {
         return str_plural(static::friendlyName());
     }

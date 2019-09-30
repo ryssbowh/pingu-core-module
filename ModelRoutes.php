@@ -2,7 +2,6 @@
 
 namespace Pingu\Core;
 
-use Illuminate\Support\Facades\Route;
 use Pingu\Core\Contracts\Models\HasRouteSlugContract;
 use Pingu\Core\Exceptions\ModelSlugAlreadyRegistered;
 use Symfony\Component\Finder\Finder;
@@ -17,31 +16,24 @@ class ModelRoutes
 	 * 
 	 * @param  string $class
 	 */
-	public function registerModel(string $class)
+	public function registerSlugFromObject(HasRouteSlugContract $object)
 	{
-		$slug = $class::routeSlug();
+		$slug = $object::routeSlug();
+		$slugs = $object::routeSlugs();
+		$class = get_class($object);
 		if(isset($this->modelSlugs[$slug])){
-			throw new ModelSlugAlreadyRegistered("slug for $class is already registered by ".$this->modelSlugs[$slug]);
+			throw new ModelSlugAlreadyRegistered("slug '$slug' for $class is already registered by ".$this->modelSlugs[$slug]);
 		}
-		$this->modelSlugs[$slug] = $class;
-		Route::model($slug, $class);
+		if(isset($this->modelSlugs[$slugs])){
+			throw new ModelSlugAlreadyRegistered("slug '$slugs' for $class is already registered by ".$this->modelSlugs[$slugs]);
+		}
+		$this->modelSlugs[$slug] = $object;
+		$this->modelSlugs[$slugs] = $object;
+		\Route::model($slug, $class);
 	}
 
-	/**
-	 * Reads all classes in a folder and register their route slug
-	 * 
-	 * @param  string $path
-	 */
-	public function registerModelsFromPath(string $path)
+	public function getModel(string $slug)
 	{
-		if(!$path) return;
-		$finder = new Finder;
-		$iter = new ClassIterator($finder->in($path));
-		foreach ($iter->getClassMap() as $classname => $fileObject) {
-			$reflector = new \ReflectionClass($classname);
-			if($reflector->implementsInterface(HasRouteSlugContract::class)){
-				$this->registerModel($classname);
-			}
-		}
+		return $this->modelSlugs[$slug] ?? null;
 	}
 }

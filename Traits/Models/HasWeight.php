@@ -34,7 +34,7 @@ trait HasWeight {
 	public static function getLastWeight(array $parameters = [])
 	{
 		$field = static::$weightField;
-		$model = static::where($parameters)->orderBy($field,'DESC')->first();
+		$model = static::where($parameters)->orderBy($field, 'DESC')->first();
 		if(!$model){
 			return null;
 		}

@@ -1,7 +1,8 @@
 <?php
 namespace Pingu\Core\Components;
 
-use Pingu\Core\Contracts\Models\HasContextualLinksContract;
+use Pingu\Entity\Contracts\HasActionsContract;
+use Pingu\Entity\Entities\BaseEntity;
 use Request;
 
 class ContextualLinks
@@ -42,8 +43,15 @@ class ContextualLinks
 		return $this->activeLink;
 	}
 
-	public function addModelLinks(HasContextualLinksContract $model)
+	public function addFromEntity(BaseEntity $entity)
 	{
-		$this->addLinks($model->getContextualLinks());
+		$links = $entity->actions()->get();
+		$this->addLinks($links);
+	}
+
+	public function addFromObject(HasActionsContract $object)
+	{
+		$links = $object->actions()->get();
+		$this->addLinks($links);
 	}
 }

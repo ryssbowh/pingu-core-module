@@ -7,7 +7,8 @@ use Illuminate\Support\Str;
 trait HasRouteSlug
 {
 	/**
-     * Route slugs (plural)
+     * Route slug (plural)
+     * 
      * @return string
      */
     public static function routeSlugs()
@@ -17,6 +18,7 @@ trait HasRouteSlug
 
     /**
      * Route slug (singular)
+     * 
      * @return string
      */
     public static function routeSlug()

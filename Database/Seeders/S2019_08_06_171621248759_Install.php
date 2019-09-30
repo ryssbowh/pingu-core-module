@@ -121,6 +121,7 @@ class S2019_08_06_171621248759_Install extends MigratableSeeder
 
         $perm4 = Permission::findOrCreate(['name' => 'view modules', 'section' => 'Core']);
         Permission::findOrCreate(['name' => 'activate modules', 'section' => 'Core']);
+        Permission::findOrCreate(['name' => 'manage bundles', 'section' => 'Core']);
 
         $main = Menu::where(['machineName' => 'main-menu'])->first();
 
@@ -172,13 +173,20 @@ class S2019_08_06_171621248759_Install extends MigratableSeeder
                 'deletable' => 0,
                 'permission_id' => $perm3->id
             ], $admin, $settings);
-            MenuItem::create([
+            $structure = MenuItem::create([
                 'name' => 'Structure',
                 'weight' => 2,
                 'active' => 1,
                 'deletable' => 0,
                 'permission_id' => null
             ], $admin);
+            MenuItem::create([
+                'name' => 'Bundles',
+                'weight' => 0,
+                'active' => 1,
+                'deletable' => 0,
+                'permission_id' => 'manage bundles'
+            ], $admin, $structure);
             MenuItem::create([
                 'name' => 'Modules',
                 'weight' => 3,

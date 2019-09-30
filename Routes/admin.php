@@ -1,5 +1,7 @@
 <?php
 
+use Pingu\Core\Entities\BundleField;
+
 /*
 |--------------------------------------------------------------------------
 | Admin Web Routes
