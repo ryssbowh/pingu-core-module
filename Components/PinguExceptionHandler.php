@@ -4,6 +4,7 @@ namespace Pingu\Core\Components;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Pingu\Core\Exceptions\themeNotFound;
 
 class PinguExceptionHandler extends ExceptionHandler
 {
@@ -46,7 +47,17 @@ class PinguExceptionHandler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        \Theme::setFront();
+        $this->setTheme();
         return parent::render($request, $exception);
+    }
+
+    public function setTheme()
+    {
+        try {
+            \Theme::setFront();
+        } catch (themeNotFound $e) {
+            return false;
+        }
+        return true;
     }
 }

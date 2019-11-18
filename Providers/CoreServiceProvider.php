@@ -6,22 +6,28 @@ use Asset, View, Theme, Blade, Settings;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Routing\Router;
+use Pingu\Core\Components\Accessors;
+use Pingu\Core\Components\Actions;
 use Pingu\Core\Components\ContextualLinks;
 use Pingu\Core\Components\JsConfig;
 use Pingu\Core\Components\Notify;
 use Pingu\Core\Components\PinguExceptionHandler;
+use Pingu\Core\Components\Policies;
+use Pingu\Core\Components\Routes;
+use Pingu\Core\Components\Uris;
 use Pingu\Core\Entities\BundleField;
 use Pingu\Core\Entity;
 use Pingu\Core\EntityField;
 use Pingu\Core\Http\Middleware\ActivateDebugBar;
-use Pingu\Core\Http\Middleware\CheckForMaintenanceMode;
 use Pingu\Core\Http\Middleware\DeletableModel;
 use Pingu\Core\Http\Middleware\EditableModel;
 use Pingu\Core\Http\Middleware\HomepageMiddleware;
 use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Core\ModelRoutes;
+use Pingu\Core\Support\ArrayCache;
 use Pingu\Core\Support\ModuleServiceProvider;
 use Pingu\Forms\Fields\Number;
 use Pingu\Forms\Fields\Text;
@@ -38,7 +44,6 @@ class CoreServiceProvider extends ModuleServiceProvider
 
     protected $groupMiddlewares = [
         'web' => [
-            CheckForMaintenanceMode::class,
             ActivateDebugBar::class,
             SetThemeMiddleware::class
         ],
@@ -66,6 +71,11 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->app->singleton('core.notify', Notify::class);
         $this->app->singleton('core.modelRoutes', ModelRoutes::class);
         $this->app->singleton('core.jsconfig', JsConfig::class);
+        $this->app->singleton('core.uris', Uris::class);
+        $this->app->singleton('core.routes', Routes::class);
+        $this->app->singleton('core.actions', Actions::class);
+        $this->app->singleton('core.policies', Policies::class);
+        $this->app->singleton('core.arrayCache', ArrayCache::class);
         $this->app->singleton(ExceptionHandler::class, PinguExceptionHandler::class);
     }
 
@@ -88,49 +98,75 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->registerAssets();
         $this->registerJsConfig();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'core');
+        $this->registerDatabaseMacros();
+
+        \Policies::registerInGate();
+        \Routes::registerAll();
 
         /**
          * Generates modules links when disabled/enabled
          */
-        \Event::listen('modules.*.enabled', function ($name, $modules){
-            \Artisan::call('module:link', ['module' => $modules[0]->getName()]);
-        });
+        \Event::listen(
+            'modules.*.enabled', function ($name, $modules) {
+                \Artisan::call('module:link', ['module' => $modules[0]->getName()]);
+            }
+        );
 
-        \Event::listen('modules.*.disabled', function ($name, $modules){
-            \Artisan::call('module:link', ['module' => $modules[0]->getName(), '--delete' => true]);
+        \Event::listen(
+            'modules.*.disabled', function ($name, $modules) {
+                \Artisan::call('module:link', ['module' => $modules[0]->getName(), '--delete' => true]);
+            }
+        );
+    }
+
+    public function registerDatabaseMacros()
+    {
+        Blueprint::macro('createdBy', function ($table = 'users', $column = 'id') {
+            $this->unsignedInteger('created_by')->nullable()->index();
+            $this->foreign('created_by')->references($column)->on($table)->onDelete('set null');
+        });
+        Blueprint::macro('updatedBy', function ($table = 'users', $column = 'id') {
+            $this->unsignedInteger('updated_by')->nullable()->index();
+            $this->foreign('updated_by')->references($column)->on($table)->onDelete('set null');
+        });
+        Blueprint::macro('deletedBy', function ($table = 'users', $column = 'id') {
+            $this->unsignedInteger('deleted_by')->nullable()->index();
+            $this->foreign('deleted_by')->references($column)->on($table)->onDelete('set null');
         });
     }
 
     public function registerJsConfig()
     {
-        \JsConfig::setManyFromConfig([
-            'app.name',
-            'app.env',
-            'app.debug',
-            'app.url',
-            'core.ajaxPrefix',
-            'core.adminPrefix'
-        ]);
+        \JsConfig::setManyFromConfig(
+            [
+                'app.name',
+                'app.env',
+                'app.debug',
+                'app.url',
+                'core.ajaxPrefix',
+                'core.adminPrefix'
+            ]
+        );
     }
 
     public function registerRouteMiddlewares(Router $router)
     {
-        foreach($this->routeMiddlewares as $name => $middleware){
+        foreach ($this->routeMiddlewares as $name => $middleware) {
             $router->aliasMiddleware($name, $middleware);
         }
     }
 
     public function registerGlobalMiddlewares(Kernel $kernel)
     {
-        foreach($this->globalMiddlewares as $middleware){
+        foreach ($this->globalMiddlewares as $middleware) {
             $kernel->pushMiddleware($middleware);
         }
     }
 
     public function registerGroupMiddlewares(Router $router)
     {
-        foreach($this->groupMiddlewares as $group => $middlewares){
-            foreach($middlewares as $middleware){
+        foreach ($this->groupMiddlewares as $group => $middlewares) {
+            foreach ($middlewares as $middleware) {
                 $router->pushMiddlewareToGroup($group, $middleware);
             }
         }

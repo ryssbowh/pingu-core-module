@@ -8,7 +8,7 @@
 - [ ] Fix modules views publishing
 - [x] Maintenance mode switcher in back end
 - [ ] Check theme extends
-- [ ] Remake contextual links
+- [x] Remake contextual links
 
 ### Facades available
 - ContextualLinks
@@ -17,6 +17,27 @@
 - Theme
 - ThemeConfig
 - JsConfig
+- ArrayCache
+- Actions
+- Policies
+- Routes
+- Uris
+
+### Uris
+
+Facade to register Uris class for objects
+
+### Routes
+
+Facade to register Routes class for objects and register them in LAravel Route system
+
+### Actions
+
+Facade to register Actions class for objects
+
+### Policies
+
+Facade to register Policy class for objects and to register them in Laravel Gate system
  
 ### Notify
 Notify is a facade used to display messages to the user. it uses session to store them. see Components/Notify.php.
@@ -54,8 +75,6 @@ Provides with 2 controllers to perform basic oprations on models :
 the `HomepageMiddleware` sets the homepage when the uri is /.
  
 the `setThemeMiddleware` sets the current theme (if it's an ajax call, \_theme must be set in the call).
-
-the `CheckFormaintenanceMode` does what its name says. /login will always be available. Users can use the site if they have the permission use site in maintenance mode'.
 
 the `ActivateDebugBar` activates the debug bar if the right permission is set.
 
@@ -131,10 +150,31 @@ Config can be sent to the front end by registering it through the facade JsConfi
 ### Schema less attributes
 You'll find occurences of schema less attributes package, used to add attributes to models without changing the code of the model. This is promising but is not in use now.
 
-### Maintenance mode
-maintenance mode can be enabled by a command. Or by the front end if your have the Devel module installed.
-default laravel middleware has been overwritten to allow /login to be accessible and to allow users with permissions 'use site in maintenance mode' to use the site normally.
-Message, retry after and view defined in config.
-
 ### Debug bar
 Debug bar from [https://github.com/barryvdh/laravel-debugbar](https://github.com/barryvdh/laravel-debugbar) is accessible if you have the permission `view debug bar`
+
+### Database Blueprint
+The Blueprint class has been extended to include `updatedBy`, `createdBy` and `deletedBy` methods that adds a field to a table : `updated_by`, `created_by` and `deleted_by` which are all a foreign key to the table users.
+
+if using `deletedBy`, you must also use laravel `softDeletes` or it won't work.
+
+### ArrayCache
+
+This is a helper to save cache looking at keys as dotted arrays. So we are able to clear any sub-array we want. example :
+I have a cache `fields.object1.fields` and `fields.object1.validator`, Array Cache will empty all cache for object1 if you call `ArrayCache::forget('fields.object1')` and will empty all cache for fields if you call `ArrayCache::forget('fields')` 
+
+### Core Modules boot order
+Core modules :
+- Core : -100
+- User : -99
+- Field : -98
+- Entity : -98
+- Permissions : -97
+- Block : -96
+- Settings : -96
+- Menu : -95
+- Forms : -60
+- Content: -50
+- Media : -40
+- Page : -30
+- Taxonomy : -20

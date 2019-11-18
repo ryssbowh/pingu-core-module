@@ -12,7 +12,7 @@ use Pingu\Permissions\Entities\Permission;
 use Pingu\Settings\Forms\Types\Integer;
 use Pingu\Settings\Forms\Types\Text;
 
-class S2019_08_06_171621248759_Install extends MigratableSeeder
+class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
 {
     use DisableForeignKeysTrait;
 
@@ -121,7 +121,6 @@ class S2019_08_06_171621248759_Install extends MigratableSeeder
 
         $perm4 = Permission::findOrCreate(['name' => 'view modules', 'section' => 'Core']);
         Permission::findOrCreate(['name' => 'activate modules', 'section' => 'Core']);
-        Permission::findOrCreate(['name' => 'manage bundles', 'section' => 'Core']);
 
         $main = Menu::where(['machineName' => 'main-menu'])->first();
 
@@ -180,13 +179,6 @@ class S2019_08_06_171621248759_Install extends MigratableSeeder
                 'deletable' => 0,
                 'permission_id' => null
             ], $admin);
-            MenuItem::create([
-                'name' => 'Bundles',
-                'weight' => 0,
-                'active' => 1,
-                'deletable' => 0,
-                'permission_id' => 'manage bundles'
-            ], $admin, $structure);
             MenuItem::create([
                 'name' => 'Modules',
                 'weight' => 3,

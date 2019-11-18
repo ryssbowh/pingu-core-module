@@ -4,7 +4,7 @@
     "description": "Pingu core",
     "keywords": [],
     "core": 1,
-    "order": 0,
+    "order": -100,
     "providers": [
         "Barryvdh\\Debugbar\\ServiceProvider",
         "Pingu\\Core\\Providers\\CoreServiceProvider",
@@ -24,6 +24,11 @@
         "Notify": "Pingu\\Core\\Facades\\Notify",
         "ThemeConfig": "Pingu\\Core\\Facades\\ThemeConfig",
         "DebugBar": "Barryvdh\\Debugbar\\Facade",
+        "ArrayCache": "Pingu\\Core\\Facades\\ArrayCache",
+        "Uris": "Pingu\\Core\\Facades\\Uris",
+        "Routes": "Pingu\\Core\\Facades\\Routes",
+        "Actions": "Pingu\\Core\\Facades\\Actions",
+        "Policies": "Pingu\\Core\\Facades\\Policies",
         "Str": "Illuminate\\Support\\Str"
     },
     "files": [

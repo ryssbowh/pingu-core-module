@@ -1,6 +1,6 @@
 <?php
 
-namespace Pingu\Core\Contracts\Models;
+namespace Pingu\Core\Contracts;
 
 interface HasRouteSlugContract
 {
@@ -9,13 +9,13 @@ interface HasRouteSlugContract
      * 
      * @return string
      */
-    public static function routeSlug();
+    public static function routeSlug(): string;
 
     /**
-     * Route slug (plural)
+     * Route slugs
      * 
      * @return string
      */
-    public static function routeSlugs();
+    public static function routeSlugs(): string;
 
 }

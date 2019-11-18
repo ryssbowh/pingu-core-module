@@ -4,15 +4,24 @@ namespace Pingu\Core\Entities;
 
 use Greabock\Tentacles\EloquentTentacle;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Pingu\Core\Exceptions\FieldNotFillable;
+use Pingu\Core\Traits\Models\HasRouteSlug;
 use Pingu\Core\Traits\Models\ThrowsEvents;
-use Pingu\Field\Contracts\FieldCollection;
+use Pingu\Field\Contracts\FieldRepository;
+use Pingu\Field\Contracts\FieldsValidator;
 use Pingu\Field\Contracts\HasFields;
+use Pingu\Field\Traits\HasBaseFields;
+use Pingu\Forms\Support\Field;
+use Pingu\Forms\Traits\Models\HasForms;
 
 abstract class BaseModel extends Model implements HasFields
 {
-	use EloquentTentacle, ThrowsEvents;
+    use ThrowsEvents,
+        HasBaseFields,
+        HasForms,
+        HasRouteSlug;
 
     protected $fillable = [];
 
@@ -20,38 +29,19 @@ abstract class BaseModel extends Model implements HasFields
 
     protected static $recordEvents = ['created','updated','deleted'];
 
-    public function fields(): FieldCollection
-    {}
-
-    /**
-     * Model's machine name
-     * @return string
-     */
-    public static function machineName():string
-    {
-        return Str::studly(class_basename(static::class));
-    }
-
-    /**
-     * Model's machine name
-     * @return string
-     */
-    public static function machineNames():string
-    {
-        return Str::plural(static::machineName());
-    }
-
     /**
      * Model's friendly name
+     * 
      * @return string
      */
     public static function friendlyName(): string
     {
-    	return static::$friendlyName ?? friendlyClassname(static::class);
+        return static::$friendlyName ?? friendlyClassname(static::class);
     }
 
     /**
      * Model's friendly names
+     * 
      * @return string
      */
     public static function friendlyNames(): string
@@ -62,13 +52,14 @@ abstract class BaseModel extends Model implements HasFields
     /**
      * Determine if the given attribute may be mass assigned.
      *
-     * @param  string  $key
+     * @param string $key
+     * 
      * @return bool
      */
     public function isFillable($key)
     {
         $isFillable = parent::isFillable($key);
-        if(!$isFillable){
+        if (!$isFillable) {
             throw new FieldNotFillable("Field $key of ".get_class($this)." is not fillable");
         }
         return $isFillable;
@@ -77,26 +68,48 @@ abstract class BaseModel extends Model implements HasFields
     /**
      * Static accessible getKeyName
      * 
-     * @return  string
+     * @return string
      */
-    protected static function keyName() {
+    protected static function keyName() 
+    {
         return (new static)->getKeyName();
     }
 
     /**
      * Static accessible getRouteKeyName
      * 
-     * @return  string
+     * @return string
      */
-    protected static function routeKeyName() {
+    protected static function routeKeyName() 
+    {
         return (new static)->getRouteKeyName();
     }
 
     /**
      * Static acessible table name
+     * 
      * @return string
      */
-    protected static function tableName() {
+    protected static function tableName() 
+    {
         return (new static)->getTable();
+    }
+
+    public function fieldFriendlyValue($name)
+    {
+        $method = 'get'.ucFirst($name).'FriendlyValue';
+        if (method_exists($this, $method)) {
+            return $this->$method();
+        }
+        return $this->$name;
+    }
+
+    public static function fieldFriendlyName($name)
+    {
+        $method = 'get'.ucFirst($name).'FriendlyName';
+        if (method_exists(static::class, $method)) {
+            return static::$method();
+        }
+        return friendly_field_name($name);
     }
 }

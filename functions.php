@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Str;
 use Pingu\Core\Exceptions\RouteNameDoesNotExistsException;
 
 /*
@@ -12,14 +13,20 @@ use Pingu\Core\Exceptions\RouteNameDoesNotExistsException;
 |
 */
 
+function friendly_field_name($name)
+{
+    return Str::title(str_replace('_', ' ',$name));
+}
+
 /**
  * Explodes a string by camel case
  * 
  * @param  strign $str
  * @return string
  */
-function explodeCamelCase($str){
-	return trim(implode(' ',preg_split('/(?=[A-Z])/', $str)));
+function explodeCamelCase($str)
+{
+    return trim(implode(' ',preg_split('/(?=[A-Z])/', $str)));
 }
 
 /**
@@ -29,7 +36,7 @@ function explodeCamelCase($str){
  * @return string
  */
 function friendlyClassname($str){
-	return explodeCamelCase(class_basename($str));
+    return explodeCamelCase(class_basename($str));
 }
 
 /**
@@ -198,4 +205,40 @@ function ajaxPrefix()
 function modules_path()
 {
     return base_path().'/Modules';
+}
+
+function class_machine_name($class)
+{
+    if (is_object($class)) {
+        $class = get_class($class);
+    }
+    return strtolower(Str::studly(class_basename($class)));
+}
+
+function base_namespace($class)
+{
+    if (is_object($class)) {
+        $class = get_class($class);
+    }
+    $name = class_basename($class);
+    return substr($class, 0, strlen($class) - strlen($name) - 1);
+}
+
+function object_to_class($class)
+{
+    if (is_object($class)) {
+        return get_class($class);
+    }
+    return $class;
+}
+
+function friendly_size($size, $unit = '')
+{
+    if ((!$unit && $size >= 1000*1000*1000) || $unit == "GB")
+        return number_format($size/(1000*1000*1000), 2)."GB";
+    if ((!$unit && $size >= 1000*1000) || $unit == "MB")
+        return number_format($size/(1000*1000), 2)."MB";
+    if ((!$unit && $size >= 1000) || $unit == "KB")
+        return number_format($size/(1000), 2)."KB";
+    return number_format($size)." bytes";
 }

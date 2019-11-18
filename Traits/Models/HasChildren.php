@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait HasChildren
 {
-	/**
+    /**
      * A model can have children
      * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function children(): HasMany
     {
-    	return $this->hasMany(static::class, 'parent_id')->orderBy('weight');
+        return $this->hasMany(static::class, 'parent_id')->orderBy('weight');
     }
 
     /**
@@ -22,7 +22,7 @@ trait HasChildren
      */
     public function parent(): BelongsTo
     {
-    	return $this->belongsTo(static::class, 'parent_id');
+        return $this->belongsTo(static::class, 'parent_id');
     }
 
     public function hasChildren(): bool
