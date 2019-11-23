@@ -3,7 +3,7 @@
 return [
 	'stubs' => [
         'enabled' => true,
-        'path' => base_path('Modules/Core/stubs/modules'),
+        'path' => base_path('Modules/Core/Console/stubs/modules'),
         'files' => [
             'routes/web' => 'Routes/web.php',
             'routes/api' => 'Routes/api.php',
@@ -45,5 +45,17 @@ return [
             'name' => 'Boris Blondin',
             'email' => 'blondin.boris@gmail.com',
         ]
-    ]
+    ],
+    'paths' => [
+        /*
+        |--------------------------------------------------------------------------
+        | Generator path
+        |--------------------------------------------------------------------------
+        | Customise the paths where the folders will be generated.
+        | Set the generate key to false to not generate that folder
+        */
+        'generator' => [
+            'settings' => ['path' => 'Config', 'generate' => false],
+        ] 
+    ],
 ];

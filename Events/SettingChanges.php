@@ -2,25 +2,24 @@
 
 namespace Pingu\Core\Events;
 
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Pingu\Core\Entities\TextSnippet;
 
-class TextSnippetTextRetrieved
+class SettingChanges
 {
-    use SerializesModels;
-
-    private $textSnippet;
-    private $replacements;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(TextSnippet $textSnippet, array &$replacements)
+    public function __construct( $name, $value, $details )
     {
-        $this->textSnippet = $textSnippet;
-        $this->replacements = $replacements;
+        $this->name = $name;
+        $this->value = $value;
+        $this->details = $details;
     }
 
     /**

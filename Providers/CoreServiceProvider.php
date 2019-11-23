@@ -17,6 +17,8 @@ use Pingu\Core\Components\PinguExceptionHandler;
 use Pingu\Core\Components\Policies;
 use Pingu\Core\Components\Routes;
 use Pingu\Core\Components\Uris;
+use Pingu\Core\Config\CoreSettings;
+use Pingu\Core\Config\MailingSettings;
 use Pingu\Core\Entities\BundleField;
 use Pingu\Core\Entity;
 use Pingu\Core\EntityField;
@@ -77,6 +79,9 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->app->singleton('core.policies', Policies::class);
         $this->app->singleton('core.arrayCache', ArrayCache::class);
         $this->app->singleton(ExceptionHandler::class, PinguExceptionHandler::class);
+        $this->app->register(SettingsServiceProvider::class);
+        \Settings::register(new CoreSettings, $this->app);
+        \Settings::register(new MailingSettings, $this->app);
     }
 
     /**

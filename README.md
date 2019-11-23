@@ -22,6 +22,7 @@
 - Policies
 - Routes
 - Uris
+- Settings
 
 ### Uris
 
@@ -41,25 +42,25 @@ Facade to register Policy class for objects and to register them in Laravel Gate
  
 ### Notify
 Notify is a facade used to display messages to the user. it uses session to store them. see Components/Notify.php.
- 
-### Text Snippets
-Removed
+
+### Settings
+Settings is used to save config variables in database so they can be edited through the back end.
+Settings are defined in the application through repositories.
+
+Repositories must extend `SettingsRepository`, they define permissions, fields, titles etc and must be registered in the `Settings` facade in the register method of a service provider
+
+Settings uses cache which is emptied every time a setting is saved.
+
+A setting can be encrypted in database.
+
+Settings throw events before a setting is changed and after it's saved.
+
+Seeder may use the create method of repositories to create the values in database : `\Settings::get('general')->create()`
  
 ### Contextual Links
 Contextual links are used to display links when viewing a model. The idea is to make it so that any page can have contextual links but at the moment is defined at model only. Your model must implements `HasContextualLinks`.
  
 Will probably need rewritten as not the most intuitive way to use it.
-
-### Routing
-The models contract `HasCrudUrisContract` and trait `HasBasicCrudUris` provides with a method to define CRUD routes for a model.
-
-Every module at booting will register the slugs for all its models that implements `HasRouteSlugContract` (which `HasCrudUrisContract` extends). duplicates will be checked.
-
-Trait `HasCrudUris` (which `HasBasicCrudUris` uses) provides with methods to get and uri (getUri) and transform an uri (makeUri), when uris has slugs that need replaced.
-
-So you could define a `listItemsUri` in a model that define the route `content/{parent}/{item}/list`, retrieve it with `getUri('listItems')`, and transform the uri with `makeUri('listItems', [$parent, $item])`. The variables will be replaced by the route key name of each model. Both these methods takes a last argument `prefix` which would prefix the uri.
-
-This way you can define a single uri for an action and get the admin version of it by calling `getUri('listItems', 'admin')` for example.
  
 ### Ajax
 Visible fields for an ajax request are set by the models $visible variable.
@@ -67,9 +68,7 @@ Visible fields for an ajax request are set by the models $visible variable.
 Helpers are available for ajax calls (get, post, put, \_delete, patch), each of those will throw 2 events on the body, `ajax.failed` and `ajax.success`.
  
 ### Controllers
-Provides with 2 controllers to perform basic oprations on models :
-- AdminModelController : add/edit/delete models. The controllers extending this controller must define `getModel()`. This model must implements the following contracts : `HasCrudUrisContract` and `FormableContract`
-- AjaxModelController : Same as above but for ajax calls.
+Provide with a `BaseController` that has helper method to access route actions and route parameters
  
 ### Middlewares
 the `HomepageMiddleware` sets the homepage when the uri is /.
@@ -165,13 +164,13 @@ I have a cache `fields.object1.fields` and `fields.object1.validator`, Array Cac
 
 ### Core Modules boot order
 Core modules :
+- Settings : -101
 - Core : -100
-- User : -99
-- Field : -98
-- Entity : -98
+- Field : -99
+- Entity : -99
+- User : -98
 - Permissions : -97
 - Block : -96
-- Settings : -96
 - Menu : -95
 - Forms : -60
 - Content: -50

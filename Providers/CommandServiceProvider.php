@@ -9,6 +9,7 @@ use Pingu\Core\Console\GenerateDoc;
 use Pingu\Core\Console\MakeComposer;
 use Pingu\Core\Console\MergePackages;
 use Pingu\Core\Console\ModuleLink;
+use Pingu\Core\Console\ModuleMakeSettings;
 use Pingu\Core\Console\SeedInstall;
 use Pingu\Core\Console\SeedMake;
 use Pingu\Core\Console\SeedRollback;
@@ -26,6 +27,19 @@ class CommandServiceProvider extends ServiceProvider
      * @var bool
      */
     protected $defer = true;
+
+    protected $commands = [
+        'command.themeComposer',
+        'command.doc',
+        'command.moduleLink',
+        'command.themeLink',
+        'command.assets',
+        'command.seed',
+        'command.seeder.rollback',
+        'command.seeder.install',
+        'command.seeder.make',
+        'command.makeSettings'
+    ];
     /**
      * Register the service provider.
      *
@@ -65,21 +79,14 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind('command.seeder.make', function ($app) {
             return new SeedMake($app[SeederMigrationCreator::class], $app[Composer::class]);
         });
+        $this->app->bind('command.makeSettings', function ($app) {
+            return new ModuleMakeSettings($app['files']);
+        });
         //Replaces laravel seed command :
         $this->app->bind('command.seed', function ($app) {
             return new SeedRun($app[SeederMigrator::class]);
         });
-        $this->commands([
-        	'command.themeComposer',
-        	'command.doc',
-         	'command.moduleLink',
-        	'command.themeLink',
-        	'command.assets',
-        	'command.seed',
-        	'command.seeder.rollback',
-        	'command.seeder.install',
-            'command.seeder.make'
-        ]);
+        $this->commands($this->commands);
     }
     /**
      * Get the services provided by the provider.
@@ -88,16 +95,6 @@ class CommandServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [
-            'command.themeComposer',
-            'command.doc',
-            'command.moduleLink',
-            'command.themeLink',
-            'command.assets',
-            'command.seed',
-            'command.seeder.rollback',
-            'command.seeder.install',
-            'command.seeder.make'
-        ];
+        return $this->commands;
     }
 }

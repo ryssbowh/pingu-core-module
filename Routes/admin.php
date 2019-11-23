@@ -1,7 +1,4 @@
 <?php
-
-use Pingu\Core\Entities\BundleField;
-
 /*
 |--------------------------------------------------------------------------
 | Admin Web Routes
@@ -17,34 +14,22 @@ use Pingu\Core\Entities\BundleField;
 Route::get('/','CoreController@home');
 
 /**
- * Settings
- */
-Route::get('/settings/general', ['uses' => 'CoreSettingsController@index'])
-	->middleware('can:view general settings')
-	->name('settings.admin.general');
-Route::get('/settings/mailing', ['uses' => 'CoreSettingsController@index'])
-	->middleware('can:view mailing settings')
-	->name('settings.admin.mailing');
-
-Route::get('/settings/general/edit', ['uses' => 'CoreSettingsController@edit'])
-	->middleware('can:edit general settings')
-	->name('settings.admin.general.edit');
-Route::get('/settings/mailing/edit', ['uses' => 'CoreSettingsController@edit'])
-	->middleware('can:edit mailing settings')
-	->name('settings.admin.mailing.edit');
-
-Route::post('/settings/general/edit', ['uses' => 'CoreSettingsController@update'])
-	->middleware('can:edit general settings');
-Route::post('/settings/mailing/edit', ['uses' => 'CoreSettingsController@update'])
-	->middleware('can:edit mailing settings');
-
-/**
  * Modules
  */
 Route::get('/modules', ['uses' => 'ModuleController@index'])
-	->middleware('can:view modules')
-	->name('core.admin.modules');
+    ->middleware('can:view modules')
+    ->name('core.admin.modules');
 Route::post('/modules/install/{module}', ['uses' => 'ModuleController@install'])
-	->middleware('can:activate modules');
+    ->middleware('can:activate modules');
 Route::post('/modules/uninstall/{module}', ['uses' => 'ModuleController@uninstall'])
-	->middleware('can:activate modules');
+    ->middleware('can:activate modules');
+
+/**
+ * Settings
+ */
+Route::get('/settings/{setting_section}', ['uses' => 'SettingsController@index'])
+    ->middleware('indexSettings:setting_section');
+Route::get('/settings/{setting_section}/edit', ['uses' => 'SettingsController@edit'])
+    ->middleware('editSettings:setting_section');
+Route::put('/settings/{setting_section}', ['uses' => 'SettingsController@update'])
+    ->middleware('editSettings:setting_section');

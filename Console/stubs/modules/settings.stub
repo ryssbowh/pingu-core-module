@@ -1,0 +1,102 @@
+<?php 
+
+namespace $NAMESPACE$;
+
+use Pingu\Core\Settings\SettingsRepository;
+
+class $CLASS$ extends SettingsRepository
+{
+    /**
+     * @inheritDoc
+     */
+    public function section(): string
+    {
+        return '$SECTION$';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function name(): string
+    {
+        return '$NAME$';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function accessPermissions(): array 
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function editPermissions(): array 
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function titles(): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function keys(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function validations(): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function units(): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function helpers(): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function fields(): array
+    {
+        return [
+        ];
+    }
+}

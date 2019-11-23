@@ -1,5 +1,6 @@
 <?php
 
+use Pingu\Core\Config\CoreSettings;
 use Pingu\Core\Seeding\DisableForeignKeysTrait;
 use Pingu\Core\Seeding\MigratableSeeder;
 use Pingu\Forms\Support\Fields\Email;
@@ -21,92 +22,8 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
      */
     public function run(): void
     {
-        \Settings::registerMany([
-            'app.name' => [
-                'Title' => 'Site name',
-                'Section' => 'general',
-                'field' => TextInput::class, 
-                'type' => Text::class,
-                'validation' => 'required|string',
-                'attributes' => ['required' => true],
-                'weight' => 0
-            ],
-            'session.lifetime' => [
-                'Title' => 'Session Lifetime',
-                'helper' => 'Controls how long before users have to login again',
-                'Section' => 'general',
-                'unit' => 'Minutes',
-                'field' => NumberInput::class,
-                'type' => Integer::class,
-                'validation' => 'required|integer|min:0',
-                'attributes' => ['required' => true, 'min' => 0],
-                'weight' => 1
-            ],
-            'core.maintenance.message' => [
-                'Title' => 'Maintenance mode message',
-                'Section' => 'general',
-                'field' => TextInput::class,
-                'type' => Text::class,
-                'validation' => 'required|string',
-                'attributes' => ['required' => true],
-                'weight' => 2
-            ],
-            'mail.host' => [
-                'Title' => 'Mail host',
-                'Section' => 'mailing',
-                'field' => TextInput::class,
-                'type' => Text::class,
-                'validation' => 'required|string',
-                'attributes' => ['required' => true],
-                'weight' => 0
-            ],
-            'mail.port' => [
-                'Title' => 'Mail port',
-                'Section' => 'mailing',
-                'field' => NumberInput::class,
-                'type' => Integer::class,
-                'validation' => 'required|integer',
-                'attributes' => ['required' => true],
-                'weight' => 1
-            ],
-            'mail.username' => [
-                'Title' => 'Mail username',
-                'Section' => 'mailing',
-                'field' => TextInput::class,
-                'type' => Text::class,
-                'validation' => 'required|string',
-                'attributes' => ['required' => true],
-                'weight' => 2
-            ],
-            'mail.password' => [
-                'Title' => 'Mail password',
-                'Section' => 'mailing',
-                'field' => Password::class,
-                'type' => Text::class,
-                'validation' => 'required|string',
-                'encrypted' => true,
-                'attributes' => ['required' => true],
-                'weight' => 3
-            ],
-            'mail.from.address' => [
-                'Title' => 'Email address from',
-                'Section' => 'mailing',
-                'field' => Email::class,
-                'type' => Text::class,
-                'validation' => 'required|email',
-                'attributes' => ['required' => true],
-                'weight' => 4
-            ],
-            'mail.from.name' => [
-                'Title' => 'Email name from',
-                'Section' => 'mailing',
-                'field' => TextInput::class,
-                'type' => Text::class,
-                'validation' => 'required|string',
-                'attributes' => ['required' => true],
-                'weight' => 5
-            ]
-        ]);
+        \Settings::repository('general')->create();
+        \Settings::repository('mailing')->create();
 
         Permission::findOrCreate(['name' => 'browse site', 'section' => 'Core']);
         $perm1 = Permission::findOrCreate(['name' => 'access admin area', 'section' => 'Core']);

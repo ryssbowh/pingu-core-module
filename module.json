@@ -15,9 +15,8 @@
         "Ryssbowh\\UniqueMigrations\\MigrationServiceProvider"
     ],
     "aliases": {
+        "Settings": "Pingu\\Core\\Facades\\Settings",
         "Theme": "Pingu\\Core\\Facades\\Theme",
-        "Entity": "Pingu\\Core\\Facades\\Entity",
-        "EntityField": "Pingu\\Core\\Facades\\EntityField",
         "JsConfig": "Pingu\\Core\\Facades\\JsConfig",
         "ContextualLinks": "Pingu\\Core\\Facades\\ContextualLinks",
         "ModelRoutes": "Pingu\\Core\\Facades\\ModelRoutes",

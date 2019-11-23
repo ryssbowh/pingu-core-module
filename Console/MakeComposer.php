@@ -49,7 +49,7 @@ class MakeComposer extends baseThemeCommand
             return;
         }
 
-        $content = file_get_contents(module_path('Core').'/stubs/themes/composer_composer.stub');
+        $content = file_get_contents(module_path('Core').'/Console/stubs/themes/composer_composer.stub');
         $content = str_replace('$THEME$', $themeName, $content);
         $content = str_replace('$NAME$', $composerName, $content);
         $this->files->put($path, $content);

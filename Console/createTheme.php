@@ -83,7 +83,7 @@ class createTheme extends baseThemeCommand
 
     public function createComposerFile($name)
     {
-        $content = file_get_contents(module_path('Core').'/stubs/themes/composer.stub');
+        $content = file_get_contents(module_path('Core').'/Console/stubs/themes/composer.stub');
         $search = ['$NAME', '$LOWERNAME'];
         $replace = [$name, strtolower($name)];
         $content = str_replace($search, $replace, $content);
@@ -92,7 +92,7 @@ class createTheme extends baseThemeCommand
 
     public function createWebpackFile($themeName, $assetFolder)
     {
-        $content = file_get_contents(module_path('Core').'/stubs/themes/mix.stub');
+        $content = file_get_contents(module_path('Core').'/Console/stubs/themes/mix.stub');
         $search = ['$NAME$', '$ASSETFOLDER$'];
         $replace = [$themeName, $assetFolder];
         $content = str_replace($search, $replace, $content);
@@ -106,19 +106,19 @@ class createTheme extends baseThemeCommand
 
     public function createConfigFile($themeName)
     {
-        $content = file_get_contents(module_path('Core').'/stubs/themes/config.stub');
+        $content = file_get_contents(module_path('Core').'/Console/stubs/themes/config.stub');
         $this->files->put(themes_path($themeName).'/config.php', $content);
     }
 
     public function createPackageFile($themeName)
     {
-        $content = file_get_contents(module_path('Core').'/stubs/themes/package.stub');
+        $content = file_get_contents(module_path('Core').'/Console/stubs/themes/package.stub');
         $this->files->put(themes_path($themeName).'/package.json', $content);
     }
 
     public function createComposeFile($themeName)
     {
-        $content = file_get_contents(module_path('Core').'/stubs/themes/composer_composers.stub');
+        $content = file_get_contents(module_path('Core').'/Console/stubs/themes/composer_composers.stub');
         $content = str_replace('$NAME$', $themeName, $content);
         $this->files->put(themes_path($themeName).'/Composer.php', $content);
     }

@@ -43,6 +43,7 @@ class PinguExceptionHandler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Exception  $exception
+     * 
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
@@ -55,7 +56,7 @@ class PinguExceptionHandler extends ExceptionHandler
     {
         try {
             \Theme::setFront();
-        } catch (themeNotFound $e) {
+        } catch (\Exception $e) {
             return false;
         }
         return true;
