@@ -13,7 +13,6 @@ use Pingu\Core\Components\Actions;
 use Pingu\Core\Components\ContextualLinks;
 use Pingu\Core\Components\JsConfig;
 use Pingu\Core\Components\Notify;
-use Pingu\Core\Components\PinguExceptionHandler;
 use Pingu\Core\Components\Policies;
 use Pingu\Core\Components\Routes;
 use Pingu\Core\Components\Uris;
@@ -24,11 +23,15 @@ use Pingu\Core\Entity;
 use Pingu\Core\EntityField;
 use Pingu\Core\Http\Middleware\ActivateDebugBar;
 use Pingu\Core\Http\Middleware\DeletableModel;
+use Pingu\Core\Http\Middleware\EditSettings;
 use Pingu\Core\Http\Middleware\EditableModel;
 use Pingu\Core\Http\Middleware\HomepageMiddleware;
+use Pingu\Core\Http\Middleware\IndexSettings;
 use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Core\ModelRoutes;
+use Pingu\Core\Settings\ConfigRepository;
+use Pingu\Core\Settings\Settings as SettingsRepo;
 use Pingu\Core\Support\ArrayCache;
 use Pingu\Core\Support\ModuleServiceProvider;
 use Pingu\Forms\Fields\Number;
@@ -41,7 +44,9 @@ class CoreServiceProvider extends ModuleServiceProvider
         'home' => HomepageMiddleware::class,
         'guest' => RedirectIfAuthenticated::class,
         'deletableModel' => DeletableModel::class,
-        'editableModel' => EditableModel::class
+        'editableModel' => EditableModel::class,
+        'indexSettings' => IndexSettings::class,
+        'editSettings' => EditSettings::class
     ];
 
     protected $groupMiddlewares = [
@@ -69,6 +74,18 @@ class CoreServiceProvider extends ModuleServiceProvider
      */
     public function register()
     {
+        $this->app->singleton('core.arrayCache', ArrayCache::class);
+
+        $settings = new SettingsRepo;
+        $config = $this->app['config']->all();
+        $this->app->singleton('settings', function () use ($settings) {
+            return $settings;
+        });
+        //Replace Laravel Config repository
+        $this->app->singleton('config', function ($app) use ($config, $settings) {
+            return new ConfigRepository($config, $settings);
+        });
+
         $this->app->singleton('core.contextualLinks', ContextualLinks::class);
         $this->app->singleton('core.notify', Notify::class);
         $this->app->singleton('core.modelRoutes', ModelRoutes::class);
@@ -77,11 +94,14 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->app->singleton('core.routes', Routes::class);
         $this->app->singleton('core.actions', Actions::class);
         $this->app->singleton('core.policies', Policies::class);
-        $this->app->singleton('core.arrayCache', ArrayCache::class);
-        $this->app->singleton(ExceptionHandler::class, PinguExceptionHandler::class);
-        $this->app->register(SettingsServiceProvider::class);
+
         \Settings::register(new CoreSettings, $this->app);
         \Settings::register(new MailingSettings, $this->app);
+        //Binds settings section slug in Route system
+        $app = $this->app;
+        \Route::bind('setting_section', function ($value, $route) use ($app) {
+            return $app->make('settings.'.$value);
+        });
     }
 
     /**
@@ -97,6 +117,7 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->registerGroupMiddlewares($router);
         $this->registerRouteMiddlewares($router);
         $this->registerGlobalMiddlewares($kernel);
+        \Config::loadSettings(\Settings::all());
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerFactories();

@@ -20,8 +20,8 @@ class EditSettings
         $repository = $request->route()->parameter('setting_section');
         $model = \Permissions::getPermissionableModel();
 
-        $permissions = $repository->editPermissions();
+        $permission = $repository->editPermission();
         
-        return app(PermissionMiddleware::class)->handle($request, $next, $permissions);
+        return app(PermissionMiddleware::class)->handle($request, $next, $permission);
     }
 }

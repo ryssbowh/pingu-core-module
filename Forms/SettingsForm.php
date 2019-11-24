@@ -30,11 +30,13 @@ class SettingsForm extends Form
     public function elements(): array
     {
         $fields = $this->repository->getFields();
+        $elems = [];
         foreach ($fields as $field) {
-            $field->setValue($this->repository->value($field->getName()));
+            $field->option('default', config($field->machineName()));
+            $elems[] = $field->toFormElement();
         }
-        $fields[] = new Submit();
-        return $fields;
+        $elems[] = new Submit();
+        return $elems;
     }
 
     /**

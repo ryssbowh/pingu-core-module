@@ -9,4 +9,9 @@ class SettingsException extends \Exception
     {
         return new static("Settings repository $name doesn't exist");
     }
+
+    public static function alreadyDefined(string $name)
+    {
+        return new static("Can't create setting $name; it already exist");
+    }
 }

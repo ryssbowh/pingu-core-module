@@ -35,7 +35,8 @@ function explodeCamelCase($str)
  * @param  string $str
  * @return string
  */
-function friendlyClassname($str){
+function friendlyClassname($class){
+    $str = object_to_class($class);
     return explodeCamelCase(class_basename($str));
 }
 

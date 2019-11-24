@@ -22,17 +22,9 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
      */
     public function run(): void
     {
-        \Settings::repository('general')->create();
-        \Settings::repository('mailing')->create();
-
         Permission::findOrCreate(['name' => 'browse site', 'section' => 'Core']);
         $perm1 = Permission::findOrCreate(['name' => 'access admin area', 'section' => 'Core']);
         Permission::findOrCreate(['name' => 'view debug bar', 'section' => 'Core', 'helper' => 'This should only be for developers']);
-        $perm2 = Permission::findOrCreate(['name' => 'view general settings', 'section' => 'Core']);
-        Permission::findOrCreate(['name' => 'edit general settings', 'section' => 'Core']);
-        $perm3 = Permission::findOrCreate(['name' => 'view mailing settings', 'section' => 'Core']);
-        Permission::findOrCreate(['name' => 'edit mailing settings', 'section' => 'Core']);
-        
         Permission::findOrCreate(['name' => 'view site in maintenance mode', 'section' => 'Core', 'helper' => 'Login will always be available in maintenance mode']);
         Permission::findOrCreate(['name' => 'put site in maintenance mode', 'section' => 'Core']);
 
@@ -73,22 +65,6 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
                 'deletable' => 0,
                 'permission_id' => null
             ], $admin);
-            MenuItem::create([
-                'name' => 'General',
-                'weight' => 1,
-                'active' => 1,
-                'url' => 'settings.admin.general',
-                'deletable' => 0,
-                'permission_id' => $perm2->id
-            ], $admin, $settings);
-            MenuItem::create([
-                'name' => 'Mailing',
-                'weight' => 1,
-                'active' => 1,
-                'url' => 'settings.admin.mailing',
-                'deletable' => 0,
-                'permission_id' => $perm3->id
-            ], $admin, $settings);
             $structure = MenuItem::create([
                 'name' => 'Structure',
                 'weight' => 2,
@@ -105,6 +81,9 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
                 'permission_id' => $perm4->id
             ], $admin);
         }
+
+        \Settings::repository('general')->create();
+        \Settings::repository('mailing')->create();
     }
 
     /**

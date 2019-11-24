@@ -20,8 +20,8 @@ class IndexSettings
         $repository = $request->route()->parameter('setting_section');
         $model = \Permissions::getPermissionableModel();
 
-        $permissions = $repository->accessPermissions();
+        $permission = $repository->accessPermission();
         
-        return app(PermissionMiddleware::class)->handle($request, $next, $permissions);
+        return app(PermissionMiddleware::class)->handle($request, $next, $permission);
     }
 }

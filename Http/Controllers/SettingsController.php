@@ -35,7 +35,7 @@ class SettingsController extends BaseController
         $settings = collect();
         foreach ($validated as $key => $value) {
             $key = str_replace('_', '.', $key);
-            $settings[] = \Settings::set($key, ['value' => $value]);
+            $settings[] = \Settings::set($key, $value);
         }
         Notify::put('success', "Settings have been updated");
         return redirect(adminPrefix().'/settings/'.$repository->name());
@@ -66,7 +66,7 @@ class SettingsController extends BaseController
     {
         return view('core::settings.list')->with([
             'repository' => $repository, 
-            'canEdit' => \Auth::user()->hasPermissionTo($repository->editPermissions()),
+            'canEdit' => \Auth::user()->hasPermissionTo($repository->editPermission()),
             'editUri' => $this->getEditUrl($repository)
         ]);
     }

@@ -14,13 +14,10 @@ class ConfigRepository extends \Illuminate\Config\Repository
      * @param  Settings $settings
      * @return void
      */
-    public function __construct(array $config, Settings $settings)
+    public function loadSettings(array $settings)
     {
-        $this->items = $config;
-        if ($array = $settings->all()) {
-            foreach ($array as $object) {
-                Arr::set($this->items, $object->name, $object->value);
-            }
+        foreach ($settings as $name => $value) {
+            Arr::set($this->items, $name, $value);
         }
     }
 }

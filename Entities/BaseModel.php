@@ -29,6 +29,13 @@ abstract class BaseModel extends Model implements HasFields
 
     protected static $recordEvents = ['created','updated','deleted'];
 
+    protected $descriptiveField = 'id';
+
+    public function getDescription()
+    {
+        return $this->{$this->descriptiveField};
+    }
+
     /**
      * Model's friendly name
      * 

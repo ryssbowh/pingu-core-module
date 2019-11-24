@@ -3,33 +3,75 @@
 namespace Pingu\Core\Settings;
 
 use Illuminate\Foundation\Application;
+use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Forms\SettingsForm;
 use Pingu\Forms\Support\FormElement;
+use Pingu\Menu\Entities\MenuItem;
+use Pingu\Permissions\Entities\Permission;
 
 abstract class SettingsRepository
 {
-    protected $validations;
-    protected $units;
-    protected $fields;
-    protected $helpers;
-    protected $keys;
-    protected $messages;
-    protected $titles;
-    protected $encrypteds;
-
     /**
-     * Boots this repository
+     * Config keys defined in this repository
+     * @var array
      */
-    public function boot()
+    protected $keys = [];
+    /**
+     * Validation rules
+     * @var array
+     */
+    protected $validations = [];
+    /**
+     * Units for keys
+     * @var array
+     */
+    protected $units = [];
+    /**
+     * Helpers for keys
+     * @var array
+     */
+    protected $helpers = [];
+    /**
+     * Validation messages
+     * @var array
+     */
+    protected $messages = [];
+    /**
+     * Titles for keys
+     * @var array
+     */
+    protected $titles = [];
+    /**
+     * List of encrypted keys
+     * @var array
+     */
+    protected $encrypteds = [];
+    /**
+     * Castings for keys
+     * @var array
+     */
+    protected $casts = [];
+    /**
+     * Edit permission
+     * @var string
+     */
+    protected $editPermission = '';
+    /**
+     * Access permission
+     * @var string
+     */
+    protected $accessPermission = '';
+    /**
+     * List of fields
+     * @var array
+     */
+    protected $fields;
+
+    public function __construct()
     {
-        $this->validations = $this->validations();
-        $this->units = $this->units();
-        $this->helpers = $this->helpers();
-        $this->messages = $this->messages();
-        $this->keys = $this->keys();
-        $this->titles = $this->titles();
-        $this->encrypteds = $this->encrypteds();
-        $this->fields = $this->fields();
+        if ($validations = $this->validations()) {
+            $this->validations = $validations;
+        }
     }
 
     /**
@@ -47,99 +89,91 @@ abstract class SettingsRepository
     public abstract function section(): string;
 
     /**
-     * Permission(s) to view this repository settings
-     * 
-     * @return array
-     */
-    public abstract function accessPermissions(): array;
-
-    /**
-     * Permission(s) to edit this repository settings
-     * 
-     * @return array
-     */
-    public abstract function editPermissions(): array;
-
-    /**
-     * Config keys handled by this repository
-     * 
-     * @return array
-     */
-    protected abstract function keys(): array;
-
-    /**
      * Fields for this repository
      * 
      * @return array
      */
     protected abstract function fields(): array;
 
-    /**
-     * Titles for this repository keys
-     * 
-     * @return array
-     */
-    protected function titles(): array
-    {
-        return [];
-    }
-
-    /**
-     * Validation rules for this repository keys.
-     * Dots in keys must be replaced with underscores here
-     * 
-     * @return array
-     */
     protected function validations(): array
     {
         return [];
     }
 
     /**
-     * Units for this repository keys
+     * Permission to view this repository settings
      * 
      * @return array
      */
-    protected function units(): array
+    public function accessPermission(): string
     {
-        return [];
+        return $this->accessPermission;
     }
 
     /**
-     * Helpers for this repository keys
+     * Permission to edit this repository settings
      * 
      * @return array
      */
-    protected function helpers(): array
+    public function editPermission(): string
     {
-        return [];
+        return $this->editPermission;
     }
 
     /**
-     * Validation messages for this repository keys.
-     * Dots in keys must be replaced with underscores here
+     * Permission setter
      * 
-     * @return array
+     * @param string $permission
+     *
+     * @return SettingsRepository
      */
-    protected function messages(): array
+    public function setAccessPermission(string $permission)
     {
-        return [];
+        $this->accessPermission = $permission;
+        return $this;
     }
 
     /**
-     * Keys that are encrypted
+     * Permission setter
+     * 
+     * @param string $permission
+     *
+     * @return SettingsRepository
+     */
+    public function setEditPermission(string $permission)
+    {
+        $this->editPermission = $permission;
+        return $this;
+    }
+
+    /**
+     * Fields getter
      * 
      * @return array
      */
-    protected function encrypteds(): array
+    public function getFields()
     {
-        return [];
+        return $this->resolveFields();
+    }
+
+    /**
+     * Add a field to this repository
+     * 
+     * @param BaseField $field
+     *
+     * @return SettingsRepository
+     */
+    public function addField(BaseField $field)
+    {
+        $this->resolveFields();
+        $this->fields[] = $field;
+        return $this;
     }
 
     /**
      * Edit form for this repository keys
      * 
-     * @param  array  $action
+     * @param array  $action
      * 
      * @return SettingsForm
      */
@@ -150,25 +184,51 @@ abstract class SettingsRepository
 
     /**
      * Creates this repository keys in database.
+     * Will create the permissions if $perm is true.
+     * Will create a menu item if $item is true
      * Typically to be used in a seeder
+     *
+     * @param bool $perm
+     * @param bool $item
      */
-    public function create()
+    public function create($perm = true, $item = true)
     {
         foreach ($this->getKeys() as $key) {
             \Settings::create($key, $this->name(), $this->encrypted($key));
         }
+
+        if ($perm) {
+            $permission = Permission::findOrCreate(['name' => $this->accessPermission(), 'section' => 'Settings']);
+            Permission::findOrCreate(['name' => $this->editPermission(), 'section' => 'Settings']);
+        }
+
+        if ($item) {
+            MenuItem::create([
+                'name' => $this->section(),
+                'active' => 1,
+                'url' => '/'.adminPrefix().'/settings/'.$this->name(),
+                'deletable' => 0,
+                'permission_id' => $permission ? $permission->id : null
+            ], 'admin-menu', 'admin-menu.settings');
+        }
     }
 
     /**
-     * Value for a key
+     * Friendly value for a key
      * 
      * @param string $name
      * 
      * @return mixed
      */
-    public function value(string $name)
+    public function friendlyValue(string $name)
     {
-        return config($name);
+        $value = config($name);
+        if (is_bool($value)) {
+            return $value ? 'Yes' : 'No';
+        } elseif ($value instanceof BaseModel) {
+            return $value->getDescription();
+        }
+        return $value;
     }
 
     /**
@@ -176,9 +236,20 @@ abstract class SettingsRepository
      * 
      * @return array
      */
-    public function getKeys()
+    public function keys()
     {
-        return $this->keys();
+        return $this->keys;
+    }
+
+    /**
+     * Add a cast to this repository
+     * 
+     * @param string $name
+     */
+    public function addCast(string $name, string $cast)
+    {
+        $this->casts[$name] = $cast;
+        return $this;
     }
 
     /**
@@ -217,34 +288,6 @@ abstract class SettingsRepository
     public function addUnit(string $name, string $unit)
     {
         $this->units[$name] = $unit;
-        return $this;
-    }
-
-    /**
-     * Field(s) getter
-     * 
-     * @param  string|null $name
-     * @return array|FormElement|null
-     */
-    public function getFields(?string $name = null)
-    {
-        if (is_null($name)) {
-            return $this->fields;
-        }
-        return $this->fields[$name] ?? null;
-    }
-
-    /**
-     * Add a field to this repository
-     * 
-     * @param string $name
-     * @param FormElement $field
-     *
-     * @return SettingsRepository
-     */
-    public function addField(string $name, FormElement $field)
-    {
-        $this->fields[$name] = $field;
         return $this;
     }
 
@@ -288,7 +331,7 @@ abstract class SettingsRepository
         if (is_null($name)) {
             return $this->encrypteds;
         }
-        return isset($this->encrypteds[$name]);
+        return in_array($name, $this->encrypteds);
     }
 
     /**
@@ -389,5 +432,130 @@ abstract class SettingsRepository
             $title .= ' ('.$unit.')';
         }
         return $title;
+    }
+
+    public function cast($name, $value)
+    {
+        if (!isset($this->casts[$name])) {
+            return $value;
+        }
+        return $this->performCast($this->casts[$name], $value);
+    }
+
+    /**
+     * Returns the fields for that repository
+     * 
+     * @return array
+     */
+    protected function resolveFields()
+    {
+        if (is_null($this->fields)) {
+            $this->fields = $this->fields();
+        }
+        return $this->fields;
+    }
+
+    /**
+     * Cast a value to a native PHP type.
+     *
+     * @param string $key
+     * @param mixed  $value
+     * 
+     * @return mixed
+     */
+    protected function performCast($cast, $value)
+    {
+        $elems = explode(':', $cast);
+        $cast = $elems[0];
+        $args = $elems[1] ?? null;
+        switch ($cast) {
+            case 'int':
+            case 'integer':
+                return (int) $value;
+            case 'real':
+            case 'float':
+            case 'double':
+                return (float)$value;
+            case 'decimal':
+                return $this->asDecimal($value, $args);
+            case 'bool':
+            case 'boolean':
+                return (bool) $value;
+            case 'model':
+                return $this->asModel($value, $args);
+            case 'array':
+            case 'json':
+                return json_decode($value, true);
+            case 'date':
+                return $this->asDate($value);
+            case 'datetime':
+                return $this->asDateTime($value);
+            case 'timestamp':
+                return $this->asTimestamp($value);
+            default:
+                return $value;
+        }
+    }
+
+    /**
+     * Cast a value into a BaseModel
+     * 
+     * @param int $value
+     * @param string $model
+     * 
+     * @return BaseModel
+     */
+    protected function asModel($value, $model)
+    {
+        return $model::find($value);
+    }
+
+    /**
+     * Return a decimal as string.
+     *
+     * @param float $value
+     * @param int   $decimals
+     * 
+     * @return string
+     */
+    protected function asDecimal($value, $decimals)
+    {
+        return number_format($value, $decimals, '.', '');
+    }
+
+    /**
+     * Return a timestamp as unix timestamp.
+     *
+     * @param mixed $value
+     * 
+     * @return int
+     */
+    protected function asTimestamp($value)
+    {
+        return $this->asDateTime($value)->getTimestamp();
+    }
+
+    /**
+     * Return a timestamp as DateTime object.
+     *
+     * @param mixed $value
+     * 
+     * @return \Illuminate\Support\Carbon
+     */
+    protected function asDateTime($value)
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $value)->startOfDay();
+    }
+
+    /**
+     * Return a timestamp as DateTime object with time set to 00:00:00.
+     *
+     * @param mixed  $value
+     * 
+     * @return \Illuminate\Support\Carbon
+     */
+    protected function asDate($value)
+    {
+        return $this->asDateTime($value)->startOfDay();
     }
 }
