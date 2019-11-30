@@ -104,7 +104,7 @@ abstract class BaseModel extends Model implements HasFields
 
     public function fieldFriendlyValue($name)
     {
-        $method = 'get'.ucFirst($name).'FriendlyValue';
+        $method = 'get'.Str::studly($name).'FriendlyValue';
         if (method_exists($this, $method)) {
             return $this->$method();
         }

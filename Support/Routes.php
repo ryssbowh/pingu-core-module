@@ -60,7 +60,7 @@ abstract class Routes
     public function getMethods(string $action = null)
     {
         if (!is_null($action)) {
-            return $this->methods[$action] ?? null;
+            return $this->methods[$action] ?? 'get';
         }
         return $this->methods;
     }

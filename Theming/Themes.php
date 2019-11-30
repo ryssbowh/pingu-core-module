@@ -299,7 +299,8 @@ class Themes
             $theme = new Theme(
                 $data['name'],
                 $data['asset-path'],
-                $data['views-path']
+                $data['views-path'],
+                $data['layouts']
             );
 
             // Has a parent theme? Store parent name to resolve later.
@@ -309,6 +310,7 @@ class Themes
 
             // Load the rest of the values as theme Settings
             $theme->loadSettings($data);
+            $theme->loadLayouts();
         }
 
         // All themes are loaded. Now we can assign the parents to the child-themes

@@ -16,22 +16,16 @@ class BaseController extends Controller
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
-     * global variable to access Request
+     * Global variable to access Request
      * @var Request
      */
     protected $request;
 
     /**
-     * global variable to access Request
+     * Global variable to access route
      * @var Route
      */
     protected $route;
-
-    /**
-     * Route parameters for quick access
-     * @var array
-     */
-    protected $routeParameters;
 
     public function __construct(Request $request)
     {

@@ -13,6 +13,7 @@ class Theme
     public $assetPath;
     public $imagesPath;
     public $settings = [];
+    protected $layouts = [];
 
     /** @var Theme  */
     public $parent;
@@ -20,17 +21,34 @@ class Theme
     /** @var Themes */
     private $themes;
 
-    public function __construct($themeName, $assetPath = null, $viewsPath = null, $imagesPath = null, Theme $parent = null)
+    public function __construct($themeName, $assetPath = null, $viewsPath = null, array $layouts = [], Theme $parent = null)
     {
         $this->themes = resolve('core.themes');
 
         $this->name = $themeName;
         $this->assetPath = ($assetPath === null ? config('core.themes.asset_path') : $assetPath);
         $this->viewsPath = ($viewsPath === null ? config('core.themes.views_path') : $viewsPath);
-        $this->imagesPath = ($imagesPath === null ? config('core.themes.images_path') : $imagesPath);
         $this->parent = $parent;
+        $this->layouts = $layouts;
 
         $this->themes->add($this);
+    }
+
+    public function getLayouts()
+    {
+        return $this->layouts;
+    }
+
+    public function getRegions(string $layout)
+    {
+        return $this->layouts[$layout]['regions'];
+    }
+
+    public function getLayoutsArray()
+    {
+        return array_map(function ($layout) {
+            return $layout['name'];
+        }, $this->layouts);
     }
 
     public function getViewPaths()
@@ -177,6 +195,11 @@ class Theme
         }
     }
 
+    public function loadLayouts()
+    {
+        // dump($this->layouts);
+    }
+
     public function loadSettings($settings = [])
     {
         $this->settings = array_diff_key((array) $settings, array_flip([
@@ -185,7 +208,6 @@ class Theme
             'views-path',
             'asset-path'
         ]));
-
     }
 
 }

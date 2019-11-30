@@ -193,7 +193,7 @@ abstract class SettingsRepository
      */
     public function create($perm = true, $item = true)
     {
-        foreach ($this->getKeys() as $key) {
+        foreach ($this->keys() as $key) {
             \Settings::create($key, $this->name(), $this->encrypted($key));
         }
 

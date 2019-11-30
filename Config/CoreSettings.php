@@ -20,10 +20,10 @@ class CoreSettings extends SettingsRepository
     protected $titles = [
         'app.name' => 'Site name',
         'session.lifetime' => 'Session Lifetime',
-        'core.maintenance.message' => 'Maintenance mode message',
+        'devel.maintenance.message' => 'Maintenance mode message',
         'user.guestRole' => 'Guest role'
     ];
-    protected $keys = ['app.name', 'session.lifetime', 'core.maintenance.message', 'user.guestRole'];
+    protected $keys = ['app.name', 'session.lifetime', 'devel.maintenance.message', 'user.guestRole'];
     protected $validations = [
         'app_name' => 'required|string',
         'core_maintenance_message' => 'required|string',
@@ -68,10 +68,10 @@ class CoreSettings extends SettingsRepository
                 ]
             ),
             new Text(
-                'core.maintenance.message',
+                'devel.maintenance.message',
                 [
                     'required' => true, 
-                    'label' => $this->getFieldLabel('core.maintenance.message'),
+                    'label' => $this->getFieldLabel('devel.maintenance.message'),
                 ]
             ),
             new Model(

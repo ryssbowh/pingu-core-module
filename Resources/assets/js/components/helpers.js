@@ -80,9 +80,9 @@ export function replaceUriSlugs(uri, replacements){
     if(!Array.isArray(replacements)){
         replacements = [replacements];
     }
-    let match = uri.match(/^.*\{([a-zA-Z_]+)\}.*$/);
+    let match = uri.match(/(?:\G(?!^)|)(\{[\w\-]+\})/g);
     $.each(replacements, function(i, replacement){
-        uri = uri.replace('{'+match[i+1]+'}', replacement);
+        uri = uri.replace(match[i], replacement);
     });
     return uri;
 }

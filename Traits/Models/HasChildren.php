@@ -7,6 +7,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait HasChildren
 {
+    public static function bootHasChildren()
+    {
+        static::deleting(function ($model) {
+            if($model->hasChildren()){
+                $model->children->each(function($item, $ind){
+                    $item->parent()->dissociate();
+                    $item->save();
+                });
+            }
+        });
+    }
     /**
      * A model can have children
      * @return Illuminate\Database\Eloquent\Relations\HasMany
@@ -33,16 +44,5 @@ trait HasChildren
     public function hasParent(): bool
     {
         return !is_null($this->parent);
-    }
-
-    public function delete()
-    {
-        if($this->hasChildren()){
-            $this->children->each(function($item, $ind){
-                $item->parent()->dissociate();
-                $item->save();
-            });
-        }
-        return parent::delete();
     }
 }

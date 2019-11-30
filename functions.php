@@ -137,9 +137,9 @@ function theme_config($value, $default = null)
 function replaceUriSlugs(string $uri, array $replacements){
     preg_match_all("/(?:\G(?!^)|)(\{[\w\-]+\})/", $uri, $matches);
     $matches = $matches[0];
-    foreach($matches as $i => $match){
+    foreach ($matches as $i => $match) {
         $replacement = $replacements[$i] ?? $match;
-        if(is_object($replacement)){
+        if (is_object($replacement)) {
             $replacement = $replacement->getRouteKey();
         }
         $uri = str_replace($match, $replacement, $uri);
@@ -229,6 +229,14 @@ function object_to_class($class)
 {
     if (is_object($class)) {
         return get_class($class);
+    }
+    return $class;
+}
+
+function class_to_object($class)
+{
+    if (is_string($class)) {
+        return new $class;
     }
     return $class;
 }
