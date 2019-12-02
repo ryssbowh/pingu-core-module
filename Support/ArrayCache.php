@@ -56,13 +56,13 @@ class ArrayCache
     public function forever($key, $value)
     {
         $this->addKey($key);
-        \Cache::forever($key, $value);
+        return \Cache::forever($key, $value);
     }
 
     public function put($key, $value, $seconds = null)
     {
         $this->addKey($key);
-        parent::put($key, $value);
+        return \Cache::put($key, $value);
     }
 
     public function putMany(array $values, $seconds)
@@ -70,7 +70,7 @@ class ArrayCache
         foreach (array_keys($values) as $key) {
             $this->addKey($key);
         }
-        parent::putMany($values, $seconds);
+        return \Cache::putMany($values, $seconds);
     }
 
     public function add($key, $value, $seconds)

@@ -119,4 +119,14 @@ abstract class BaseModel extends Model implements HasFields
         }
         return friendly_field_name($name);
     }
+
+    public function getAllAttributes()
+    {
+        return $this->getAttributes();
+    }
+
+    public function getAllOriginal()
+    {
+        return $this->getOriginal();
+    }
 }

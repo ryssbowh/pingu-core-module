@@ -164,7 +164,6 @@ I have a cache `fields.object1.fields` and `fields.object1.validator`, Array Cac
 
 ### Core Modules boot order
 Core modules :
-- Settings : -101
 - Core : -100
 - Field : -99
 - Entity : -99

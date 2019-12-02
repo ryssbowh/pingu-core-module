@@ -48,7 +48,7 @@ class Settings
 
     public function all(): array
     {
-        return \Cache::rememberForever('settings', function () {
+        return \Cache::rememberForever($this->cacheKey, function () {
             if (!\Schema::hasTable('settings')) {
                 return [];
             }
