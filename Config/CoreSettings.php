@@ -16,7 +16,7 @@ class CoreSettings extends SettingsRepository
         'user.guestRole' => 'model:'.Role::class
     ];
     protected $accessPermission = 'view general settings';
-    protected $editPermission = 'view general settings';
+    protected $editPermission = 'edit general settings';
     protected $titles = [
         'app.name' => 'Site name',
         'session.lifetime' => 'Session Lifetime',
@@ -26,7 +26,7 @@ class CoreSettings extends SettingsRepository
     protected $keys = ['app.name', 'session.lifetime', 'devel.maintenance.message', 'user.guestRole'];
     protected $validations = [
         'app_name' => 'required|string',
-        'core_maintenance_message' => 'required|string',
+        'devel_maintenance_message' => 'required|string',
         'session_lifetime' => 'required|integer|min:0',
         'user.guestRole' => 'required|integer'
     ];
