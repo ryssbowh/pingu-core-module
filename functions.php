@@ -15,7 +15,7 @@ use Pingu\Core\Exceptions\RouteNameDoesNotExistsException;
 
 function friendly_field_name($name)
 {
-    return Str::title(str_replace('_', ' ',$name));
+    return Str::title(str_replace('_', ' ', $name));
 }
 
 /**
@@ -26,7 +26,7 @@ function friendly_field_name($name)
  */
 function explodeCamelCase($str)
 {
-    return trim(implode(' ',preg_split('/(?=[A-Z])/', $str)));
+    return trim(implode(' ', preg_split('/(?=[A-Z])/', $str)));
 }
 
 /**
@@ -35,7 +35,8 @@ function explodeCamelCase($str)
  * @param  string $str
  * @return string
  */
-function friendlyClassname($class){
+function friendlyClassname($class)
+{
     $str = object_to_class($class);
     return explodeCamelCase(class_basename($str));
 }
@@ -64,16 +65,18 @@ function theme_url($url)
 
 /**
  * Checks if a route exists as a GET action. Checks path and name
+ *
  * @param  string $uri
  * @return bool
  */
 function route_exists($uri)
 {
-    if(!is_string($uri)) return false;
+    if(!is_string($uri)) { return false;
+    }
     $uri = trim($uri, '/');
     $routes = \Route::getRoutes()->getRoutes();
     foreach($routes as $r){
-        if(($r->uri() == $uri or $uri == $r->getName()) and in_array('GET', $r->methods())){
+        if(($r->uri() == $uri or $uri == $r->getName()) and in_array('GET', $r->methods())) {
             return true;
         }
     }
@@ -88,8 +91,9 @@ function route_exists($uri)
  * 
  * @throws RouteNameDoesNotExistsException
  */
-function route_by_name(string $name){
-    if(!$route = Route::getRoutes()->getByName($name)){
+function route_by_name(string $name)
+{
+    if(!$route = Route::getRoutes()->getByName($name)) {
         throw new RouteNameDoesNotExistsException("Route ".$name." doesn't exists");
     }
     return $route;
@@ -101,10 +105,11 @@ function route_by_name(string $name){
  * 
  * @return array
  */
-function routes_with_friendly_name(){
+function routes_with_friendly_name()
+{
     $routes = [];
     foreach(app('router')->getRoutes()->getIterator() as $route){
-        if($friendly = $route->getAction('friendly') and $route->getName()){
+        if($friendly = $route->getAction('friendly') and $route->getName()) {
             $routes[$route->getName()] = $friendly;
         }
     }
@@ -114,13 +119,14 @@ function routes_with_friendly_name(){
 /**
  * Gets a theme config. If $value is not found, will return normal config
  * or the default if not found
+ *
  * @param  mixed $value
  * @param  mixed $default
  * @return mixed
  */
 function theme_config($value, $default = null)
 {
-    if(is_array($value)){
+    if(is_array($value)) {
         return ThemeConfig::set($value);
     }
     return ThemeConfig::get($value, $default);
@@ -134,7 +140,8 @@ function theme_config($value, $default = null)
  * @param  array  $replacements
  * @return string
  */
-function replaceUriSlugs(string $uri, array $replacements){
+function replaceUriSlugs(string $uri, array $replacements)
+{
     preg_match_all("/(?:\G(?!^)|)(\{[\w\-]+\})/", $uri, $matches);
     $matches = $matches[0];
     foreach ($matches as $i => $match) {
@@ -152,7 +159,7 @@ function replaceUriSlugs(string $uri, array $replacements){
  */
 function upload_max_filesize()
 {
-    return rtrim(ini_get('upload_max_filesize'),'M')*1000;
+    return rtrim(ini_get('upload_max_filesize'), 'M')*1000;
 }
     
 /**
@@ -161,9 +168,10 @@ function upload_max_filesize()
  * @param  ?string $file
  * @return string
  */
-function temp_path($file = null){
+function temp_path($file = null)
+{
     $path = config('filesystems.disks.tmp.root');
-    if($file){
+    if($file) {
         $path .= DIRECTORY_SEPARATOR.$file;
     }
     return $path;
@@ -175,7 +183,8 @@ function temp_path($file = null){
  * @param  string $file
  * @return ?string
  */
-function namespace_from_file($file){
+function namespace_from_file($file)
+{
     $src = file_get_contents($file);
     if (preg_match('#^namespace\s+(.+?);$#sm', $src, $m)) {
         return $m[1];
@@ -243,11 +252,14 @@ function class_to_object($class)
 
 function friendly_size($size, $unit = '')
 {
-    if ((!$unit && $size >= 1000*1000*1000) || $unit == "GB")
+    if ((!$unit && $size >= 1000*1000*1000) || $unit == "GB") {
         return number_format($size/(1000*1000*1000), 2)."GB";
-    if ((!$unit && $size >= 1000*1000) || $unit == "MB")
+    }
+    if ((!$unit && $size >= 1000*1000) || $unit == "MB") {
         return number_format($size/(1000*1000), 2)."MB";
-    if ((!$unit && $size >= 1000) || $unit == "KB")
+    }
+    if ((!$unit && $size >= 1000) || $unit == "KB") {
         return number_format($size/(1000), 2)."KB";
+    }
     return number_format($size)." bytes";
 }

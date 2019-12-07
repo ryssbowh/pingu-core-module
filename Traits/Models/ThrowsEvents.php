@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Event;
  *
  *  Automatically throw Add, Update, Delete events of Model.
  */
-trait ThrowsEvents {
+trait ThrowsEvents
+{
 
     /**
      * Automatically boot with Model, and register Events handler.
@@ -17,14 +18,16 @@ trait ThrowsEvents {
     protected static function bootModelEventThrower()
     {
         foreach (static::getModelEvents() as $eventName) {
-            static::$eventName(function (Model $model) use ($eventName) {
-                try {
-                    $reflect = new \ReflectionClass($model);
-                    Event::fire(strtolower($reflect->getShortName()).'.'.$eventName, $model);
-                } catch (\Exception $e) {
-                    return true;
+            static::$eventName(
+                function (Model $model) use ($eventName) {
+                    try {
+                        $reflect = new \ReflectionClass($model);
+                        Event::fire(strtolower($reflect->getShortName()).'.'.$eventName, $model);
+                    } catch (\Exception $e) {
+                        return true;
+                    }
                 }
-            });
+            );
         }
     }
 

@@ -17,12 +17,14 @@ class BaseController extends Controller
 
     /**
      * Global variable to access Request
+     *
      * @var Request
      */
     protected $request;
 
     /**
      * Global variable to access route
+     *
      * @var Route
      */
     protected $route;
@@ -35,13 +37,13 @@ class BaseController extends Controller
 
     protected function routeParameter($key)
     {
-        if(is_int($key)){
+        if(is_int($key)) {
             $parameters = array_keys($this->route->parameters);
-            if(isset($parameters[$key])){
+            if(isset($parameters[$key])) {
                 $key = $parameters[$key];
             }
         }
-        if($key and isset($this->route->parameters[$key])){
+        if($key and isset($this->route->parameters[$key])) {
             return $this->route->parameters[$key];
         }
         throw new RouteParameterException($key);
@@ -50,7 +52,7 @@ class BaseController extends Controller
     protected function getRouteAction(string $name)
     {
         $actions = $this->route->action;
-        if(!isset($actions[$name])){
+        if(!isset($actions[$name])) {
             throw new RouteActionNotSet($this, $name);
         }
         return $actions[$name];

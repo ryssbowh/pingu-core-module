@@ -3,7 +3,8 @@
 namespace Pingu\Core\Components;
 
 class Policies
-{   
+{
+   
     protected $policies = [];
 
     public function register(string $class, string $policy)

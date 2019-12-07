@@ -11,5 +11,5 @@
 |
 */
 
-Route::get('/','CoreController@home')->middleware('home');
-Route::get('/home','CoreController@home');
+Route::get('/', 'CoreController@home')->middleware('home');
+Route::get('/home', 'CoreController@home');

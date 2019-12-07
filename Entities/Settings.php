@@ -25,12 +25,16 @@ class Settings extends BaseModel
     {
         parent::boot();
 
-        static::creating(function ($setting) {
-            $setting->weight = $setting::getNextWeight(['repository' => $setting->repository]);
-        });
-        static::saved(function () {
-            \Settings::forgetCache();
-        });
+        static::creating(
+            function ($setting) {
+                $setting->weight = $setting::getNextWeight(['repository' => $setting->repository]);
+            }
+        );
+        static::saved(
+            function () {
+                \Settings::forgetCache();
+            }
+        );
     }
 
     public function repository(): SettingsRepository

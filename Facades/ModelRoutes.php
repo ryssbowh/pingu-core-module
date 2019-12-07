@@ -3,12 +3,14 @@ namespace Pingu\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class ModelRoutes extends Facade {
+class ModelRoutes extends Facade
+{
 
-	protected static function getFacadeAccessor() {
+    protected static function getFacadeAccessor()
+    {
 
-		return 'core.modelRoutes';
+        return 'core.modelRoutes';
 
-	}
+    }
 
 }

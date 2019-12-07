@@ -101,12 +101,12 @@ class SeederMigrationCreator extends MigrationCreator
     /**
      * Get the class name of a migration name.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return string
      */
     protected function getClassName($name)
     {
-        if($this->classname == null){
+        if($this->classname == null) {
             $this->classname = 'S'.$this->getDatePrefix().'_'.Str::studly($name);
         }
         return $this->classname;

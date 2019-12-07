@@ -62,12 +62,14 @@ class ModuleMakeSettings extends GeneratorCommand
 
         Stub::setBasePath(__DIR__ . '/stubs');
 
-        return (new Stub("/modules/settings.stub", [
+        return (new Stub(
+            "/modules/settings.stub", [
             'NAMESPACE'    => $this->getClassNamespace($module),
             'CLASS'        => $this->getFileName(),
             'NAME'         => strtolower($this->getSection()),
             'SECTION'      => $this->getSection()
-        ]))->render();
+            ]
+        ))->render();
     }
 
     /**

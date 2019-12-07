@@ -1,88 +1,109 @@
 import Config from './config';
 
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+$.ajaxSetup(
+    {
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
     }
-});
+);
 
-String.prototype.trimLeft = function(charlist) {
-  if (charlist === undefined)
-    charlist = "\s";
+String.prototype.trimLeft = function (charlist) {
+    if (charlist === undefined) {
+        charlist = "\s";
+    }
 
-  return this.replace(new RegExp("^[" + charlist + "]+"), "");
+    return this.replace(new RegExp("^[" + charlist + "]+"), "");
 };
 
-export function config(key){
+export function config(key)
+{
     return Config.get(key);
 }
 
-export function log(message){
-    if(Config.get('app.env') != 'production'){
+export function log(message)
+{
+    if(Config.get('app.env') != 'production') {
         console.log(message);
     }
 }
 
-export function logError(message){
+export function logError(message)
+{
     message = '['+config('app.name')+'] '+message;
     console.log("%c"+message, "color:red");
 }
 
-export function ajax(url, data, type = 'POST'){
+export function ajax(url, data, type = 'POST')
+{
     $('body').css('cursor', 'wait');
-	return $.ajax({
-        type: type,
-        url: url,
-        data: data,
-        dataType: 'json' 
-	}).fail(function(data){
-        $('body').css('cursor', 'initial');
-        if(data.status == 200){ return; }
-        let message = "%cAjax call failed : \nStatus: " + data.status;
-        if(data.responseJSON.message){
-            message += "\nMessage : " + data.responseJSON.message;
+    return $.ajax(
+        {
+            type: type,
+            url: url,
+            data: data,
+            dataType: 'json' 
         }
-        if(data.responseJSON.exception){
-            message += "\nException : " + data.responseJSON.exception;
+    ).fail(
+        function (data) {
+            $('body').css('cursor', 'initial');
+            if(data.status == 200) { return; }
+            let message = "%cAjax call failed : \nStatus: " + data.status;
+            if(data.responseJSON.message) {
+                message += "\nMessage : " + data.responseJSON.message;
+            }
+            if(data.responseJSON.exception) {
+                message += "\nException : " + data.responseJSON.exception;
+            }
+            logError(message);
+            $('body').trigger('ajax.failure', data);
         }
-        logError(message);
-        $('body').trigger('ajax.failure', data);
-	}).done(function(){
-        $('body').trigger('ajax.success', data);
-        $('body').css('cursor', 'initial');
-    });
+    ).done(
+        function () {
+            $('body').trigger('ajax.success', data);
+            $('body').css('cursor', 'initial');
+        }
+    );
 }
 
-export function put(url, data = {}){
+export function put(url, data = {})
+{
     data._method = 'PUT';
     return ajax(url, data, 'POST');
 }
 
-export function _delete(url, data = {}){
+export function _delete(url, data = {})
+{
     data._method = 'DELETE';
     return ajax(url, data, 'POST');
 }
 
-export function patch(url, data = {}){
+export function patch(url, data = {})
+{
     data._method = 'PATCH';
     return ajax(url, data, 'POST');
 }
 
-export function post(url, data = {}){
+export function post(url, data = {})
+{
     return ajax(url, data, 'POST');
 }
 
-export function get(url, data = {}){
+export function get(url, data = {})
+{
     return ajax(url, data, 'GET');
 }
 
-export function replaceUriSlugs(uri, replacements){
-    if(!Array.isArray(replacements)){
+export function replaceUriSlugs(uri, replacements)
+{
+    if(!Array.isArray(replacements)) {
         replacements = [replacements];
     }
     let match = uri.match(/(?:\G(?!^)|)(\{[\w\-]+\})/g);
-    $.each(replacements, function(i, replacement){
-        uri = uri.replace(match[i], replacement);
-    });
+    $.each(
+        replacements, function (i, replacement) {
+            uri = uri.replace(match[i], replacement);
+        }
+    );
     return uri;
 }

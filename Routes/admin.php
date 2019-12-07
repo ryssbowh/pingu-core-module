@@ -11,7 +11,7 @@
 */
 
 
-Route::get('/','CoreController@home');
+Route::get('/', 'CoreController@home');
 
 /**
  * Modules

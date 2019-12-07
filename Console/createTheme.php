@@ -37,18 +37,22 @@ class createTheme extends baseThemeCommand
         // Ask for parent theme
         $parentTheme = "";
         if ($this->confirm('Extends an other theme?')) {
-            $themes = array_map(function ($theme) {
-                return $theme->name;
-            }, Theme::all());
+            $themes = array_map(
+                function ($theme) {
+                    return $theme->name;
+                }, Theme::all()
+            );
             $parentTheme = $this->choice('Which one', $themes);
         }
 
-        $themeJson = new themeManifest([
+        $themeJson = new themeManifest(
+            [
             "name" => $themeName,
             "extends" => $parentTheme,
             "views-path" => $viewsPath,
             "asset-path" => $assetPath
-        ]);
+            ]
+        );
 
         // Create Paths + copy theme.json
         $this->makeDirectory(themes_path($themeName));
@@ -56,8 +60,8 @@ class createTheme extends baseThemeCommand
         $this->makeDirectory($assetPathFull);
         $this->makeDirectory($assetPathFull.'/css');
         $this->makeDirectory($assetPathFull.'/js');
-        $this->files->put($assetPathFull.'/js/app.js','');
-        $this->files->put($assetPathFull.'/css/master.scss','');
+        $this->files->put($assetPathFull.'/js/app.js', '');
+        $this->files->put($assetPathFull.'/css/master.scss', '');
 
         $this->createComposerFile($themeName);
         $this->createWebpackFile($themeName, $assetPath);

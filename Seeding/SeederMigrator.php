@@ -122,9 +122,11 @@ class SeederMigrator extends Migrator
         // Since the getRan method that retrieves the migration name just gives us the
         // migration name, we will format the names into objects with the name as a
         // property on the objects so that we can pass it to the rollback method.
-        $migrations = collect($migrations)->map(function ($m) {
-            return (object) ['seed' => $m];
-        })->all();
+        $migrations = collect($migrations)->map(
+            function ($m) {
+                return (object) ['seed' => $m];
+            }
+        )->all();
 
         return $this->rollbackMigrations(
             $migrations, $paths, compact('pretend')
@@ -167,7 +169,7 @@ class SeederMigrator extends Migrator
      * Rolls all of the currently applied migrations back.
      *
      * @param  array|string $paths
-     * @param  bool  $pretend
+     * @param  bool         $pretend
      * @return array
      */
     public function reset($paths = [], $pretend = false)

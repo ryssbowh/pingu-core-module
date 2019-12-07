@@ -13,56 +13,67 @@ abstract class SettingsRepository
 {
     /**
      * Config keys defined in this repository
+     *
      * @var array
      */
     protected $keys = [];
     /**
      * Validation rules
+     *
      * @var array
      */
     protected $validations = [];
     /**
      * Units for keys
+     *
      * @var array
      */
     protected $units = [];
     /**
      * Helpers for keys
+     *
      * @var array
      */
     protected $helpers = [];
     /**
      * Validation messages
+     *
      * @var array
      */
     protected $messages = [];
     /**
      * Titles for keys
+     *
      * @var array
      */
     protected $titles = [];
     /**
      * List of encrypted keys
+     *
      * @var array
      */
     protected $encrypteds = [];
     /**
      * Castings for keys
+     *
      * @var array
      */
     protected $casts = [];
     /**
      * Edit permission
+     *
      * @var string
      */
     protected $editPermission = '';
     /**
      * Access permission
+     *
      * @var string
      */
     protected $accessPermission = '';
     /**
      * List of fields
+     *
      * @var array
      */
     protected $fields;
@@ -173,7 +184,7 @@ abstract class SettingsRepository
     /**
      * Edit form for this repository keys
      * 
-     * @param array  $action
+     * @param array $action
      * 
      * @return SettingsForm
      */
@@ -203,13 +214,15 @@ abstract class SettingsRepository
         }
 
         if ($item) {
-            MenuItem::create([
+            MenuItem::create(
+                [
                 'name' => $this->section(),
                 'active' => 1,
                 'url' => '/'.adminPrefix().'/settings/'.$this->name(),
                 'deletable' => 0,
                 'permission_id' => $permission ? $permission->id : null
-            ], 'admin-menu', 'admin-menu.settings');
+                ], 'admin-menu', 'admin-menu.settings'
+            );
         }
     }
 
@@ -469,38 +482,38 @@ abstract class SettingsRepository
         $cast = $elems[0];
         $args = $elems[1] ?? null;
         switch ($cast) {
-            case 'int':
-            case 'integer':
-                return (int) $value;
-            case 'real':
-            case 'float':
-            case 'double':
-                return (float)$value;
-            case 'decimal':
-                return $this->asDecimal($value, $args);
-            case 'bool':
-            case 'boolean':
-                return (bool) $value;
-            case 'model':
-                return $this->asModel($value, $args);
-            case 'array':
-            case 'json':
-                return json_decode($value, true);
-            case 'date':
-                return $this->asDate($value);
-            case 'datetime':
-                return $this->asDateTime($value);
-            case 'timestamp':
-                return $this->asTimestamp($value);
-            default:
-                return $value;
+        case 'int':
+        case 'integer':
+            return (int) $value;
+        case 'real':
+        case 'float':
+        case 'double':
+            return (float)$value;
+        case 'decimal':
+            return $this->asDecimal($value, $args);
+        case 'bool':
+        case 'boolean':
+            return (bool) $value;
+        case 'model':
+            return $this->asModel($value, $args);
+        case 'array':
+        case 'json':
+            return json_decode($value, true);
+        case 'date':
+            return $this->asDate($value);
+        case 'datetime':
+            return $this->asDateTime($value);
+        case 'timestamp':
+            return $this->asTimestamp($value);
+        default:
+            return $value;
         }
     }
 
     /**
      * Cast a value into a BaseModel
      * 
-     * @param int $value
+     * @param int    $value
      * @param string $model
      * 
      * @return BaseModel
@@ -550,7 +563,7 @@ abstract class SettingsRepository
     /**
      * Return a timestamp as DateTime object with time set to 00:00:00.
      *
-     * @param mixed  $value
+     * @param mixed $value
      * 
      * @return \Illuminate\Support\Carbon
      */

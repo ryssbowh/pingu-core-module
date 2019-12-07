@@ -21,9 +21,11 @@ class MigrationServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('migration.creator', function ($app) {
-            return new MigrationCreator($app['files']);
-        });
+        $this->app->singleton(
+            'migration.creator', function ($app) {
+                return new MigrationCreator($app['files']);
+            }
+        );
     }
 
     /**

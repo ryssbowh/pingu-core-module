@@ -42,7 +42,7 @@ class ModuleLink extends Command
         foreach($modules as $module){
             $publicDirectory = public_path(config('modules.public_path'));
             $publicLink = $publicDirectory.'/'.$module->getName();
-            if($deleting){
+            if($deleting) {
                 $this->deleteLink($publicLink);
                 $this->info("Deleted link ".$publicLink);
             }
@@ -56,10 +56,10 @@ class ModuleLink extends Command
 
     protected function createLink($publicModuleFolder, $publicDirectory, $publicLink)
     {
-        if(!file_exists($publicModuleFolder)){
+        if(!file_exists($publicModuleFolder)) {
             \File::makeDirectory($publicModuleFolder);
         }
-        if(!file_exists($publicDirectory)){
+        if(!file_exists($publicDirectory)) {
             \File::makeDirectory($publicDirectory);
         }
         $this->deleteLink($publicLink);
@@ -68,7 +68,7 @@ class ModuleLink extends Command
 
     public function deleteLink($publicLink)
     {
-        if(file_exists($publicLink)){
+        if(file_exists($publicLink)) {
             \File::delete($publicLink);
         }
     }

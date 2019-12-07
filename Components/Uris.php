@@ -7,7 +7,8 @@ use Pingu\Core\Contracts\RegistersUrisThroughFacade;
 use Pingu\Core\Support\Uris as UrisSupport;
 
 class Uris
-{   
+{
+   
     protected $urisInstances = [];
 
     public function register(string $class, UrisSupport $uris)

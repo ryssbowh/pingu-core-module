@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 interface HasChildrenContract
 {
-	public function parent(): BelongsTo;
+    public function parent(): BelongsTo;
 
-	public function children(): HasMany;
+    public function children(): HasMany;
 
-	public function hasChildren(): bool;
+    public function hasChildren(): bool;
 
-	public function hasParent(): bool;
+    public function hasParent(): bool;
 
 }

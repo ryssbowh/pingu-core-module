@@ -113,10 +113,12 @@ class SeederRepository implements MigrationRepositoryInterface
      */
     public function log($file, $batch): void
     {
-        $this->table()->insert([
+        $this->table()->insert(
+            [
             'seed'  => $file,
             'batch' => $batch,
-        ]);
+            ]
+        );
     }
 
     /**
@@ -150,13 +152,15 @@ class SeederRepository implements MigrationRepositoryInterface
     {
         $schema = $this->getConnection()->getSchemaBuilder();
 
-        $schema->create($this->table, function (Blueprint $table) {
-            // The migrations table is responsible for keeping track of which of the
-            // migrations have actually run for the application. We'll create the
-            // table to hold the migration file's path as well as the batch ID.
-            $table->string('seed');
-            $table->integer('batch');
-        });
+        $schema->create(
+            $this->table, function (Blueprint $table) {
+                // The migrations table is responsible for keeping track of which of the
+                // migrations have actually run for the application. We'll create the
+                // table to hold the migration file's path as well as the batch ID.
+                $table->string('seed');
+                $table->integer('batch');
+            }
+        );
     }
 
     /**
@@ -201,8 +205,8 @@ class SeederRepository implements MigrationRepositoryInterface
     public function getMigrationBatches()
     {
         return $this->table()
-                ->orderBy('batch', 'asc')
-                ->orderBy('migration', 'asc')
-                ->pluck('batch', 'migration')->all();
+            ->orderBy('batch', 'asc')
+            ->orderBy('migration', 'asc')
+            ->pluck('batch', 'migration')->all();
     }
 }

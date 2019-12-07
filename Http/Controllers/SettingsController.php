@@ -64,11 +64,13 @@ class SettingsController extends BaseController
      */
     protected function getIndexView(SettingsRepository $repository)
     {
-        return view('core::settings.list')->with([
+        return view('core::settings.list')->with(
+            [
             'repository' => $repository, 
             'canEdit' => \Auth::user()->hasPermissionTo($repository->editPermission()),
             'editUri' => $this->getEditUrl($repository)
-        ]);
+            ]
+        );
     }
 
     protected function getEditUrl(SettingsRepository $repository)

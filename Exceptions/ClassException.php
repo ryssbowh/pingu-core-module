@@ -1,7 +1,8 @@
 <?php
 namespace Pingu\Core\Exceptions;
 
-class ClassException extends \Exception{
+class ClassException extends \Exception
+{
 
     public static function missingInterface(string $class, string $interface)
     {

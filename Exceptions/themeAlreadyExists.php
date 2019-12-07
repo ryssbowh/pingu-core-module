@@ -1,10 +1,12 @@
 <?php 
 namespace Pingu\Core\Exceptions;
 
-class themeAlreadyExists extends \Exception{
+class themeAlreadyExists extends \Exception
+{
 
-	public function __construct($theme) {
-		parent::__construct("Theme {$theme->name} already exists", 1);
-	}
+    public function __construct($theme)
+    {
+        parent::__construct("Theme {$theme->name} already exists", 1);
+    }
 
 }

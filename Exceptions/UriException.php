@@ -3,7 +3,8 @@ namespace Pingu\Core\Exceptions;
 
 use Pingu\Core\Support\Uris;
 
-class UriException extends \Exception{
+class UriException extends \Exception
+{
 
     public static function undefined(string $uri, Uris $class)
     {

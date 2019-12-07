@@ -25,9 +25,11 @@ class Settings
     public function register(SettingsRepository $repository, Application $app)
     {
         $key = 'settings.'.$repository->name();
-        $app->singleton($key, function () use ($repository) {
-            return $repository;
-        });
+        $app->singleton(
+            $key, function () use ($repository) {
+                return $repository;
+            }
+        );
         $this->repositories[$repository->name()] = $repository;
     }
 
@@ -48,17 +50,19 @@ class Settings
 
     public function all(): array
     {
-        return \Cache::rememberForever($this->cacheKey, function () {
-            if (!\Schema::hasTable('settings')) {
-                return [];
+        return \Cache::rememberForever(
+            $this->cacheKey, function () {
+                if (!\Schema::hasTable('settings')) {
+                    return [];
+                }
+                $settings = SettingModel::all()->sortBy('weight')->keyBy('name');
+                $out = [];
+                foreach ($settings as $setting) {
+                    $out[$setting->name] = $setting->value;
+                }
+                return $out;
             }
-            $settings = SettingModel::all()->sortBy('weight')->keyBy('name');
-            $out = [];
-            foreach ($settings as $setting) {
-                $out[$setting->name] = $setting->value;
-            }
-            return $out;
-        });
+        );
     }
 
     /**
@@ -79,12 +83,14 @@ class Settings
         }
 
         SettingModel::unguard();
-        $setting = SettingModel::create([
+        $setting = SettingModel::create(
+            [
             'name' => $name,
             'encrypted' => $encrypted,
             'value' => $value ? $value : config($name),
             'repository' => $repository
-        ]);
+            ]
+        );
 
         $this->forgetCache();
 
@@ -100,7 +106,7 @@ class Settings
      * Set the value (and options) of a setting
      * 
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return bool
      */

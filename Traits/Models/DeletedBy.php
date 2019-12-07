@@ -15,12 +15,16 @@ trait DeletedBy
 
     public static function bootDeletedBy()
     {
-        static::deleting(function ($model) {
-            $model->deletedBy()->associate(\Auth::user());
-        });
+        static::deleting(
+            function ($model) {
+                $model->deletedBy()->associate(\Auth::user());
+            }
+        );
 
-        static::restoring(function ($model) {
-            $model->deletedBy()->dissociate();
-        });
+        static::restoring(
+            function ($model) {
+                $model->deletedBy()->dissociate();
+            }
+        );
     }
 }

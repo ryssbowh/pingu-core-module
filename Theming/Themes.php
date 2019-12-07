@@ -62,6 +62,7 @@ class Themes
 
     /**
      * set a theme given a request
+     *
      * @param  Illuminate\Http\Request $request
      * @return ?Theme
      */
@@ -69,10 +70,11 @@ class Themes
     {
         $setting = 'core.frontTheme';
 
-        if($request->ajax()){
+        if($request->ajax()) {
             $params = $request->all();
-            if(isset($params['_theme'])){
-                if($params['_theme'] == 'admin') $setting = 'core.adminTheme';
+            if(isset($params['_theme'])) {
+                if($params['_theme'] == 'admin') { $setting = 'core.adminTheme';
+                }
             }
             else{
                 //ajax call doesn't set a theme, aborting
@@ -81,7 +83,7 @@ class Themes
         }
         else{
             $segments = $request->segments();
-            if(isset($segments[0]) and $segments[0] == 'admin'){
+            if(isset($segments[0]) and $segments[0] == 'admin') {
                 $setting = 'core.adminTheme';
             }
         }
@@ -92,19 +94,21 @@ class Themes
     public function setFront()
     {
         $front = config('core.frontTheme', false);
-        if($front){
+        if($front) {
             $this->setByName($front);
         }
     }
 
     /**
      * Set theme by its name
-     * @param string $themeName
+     *
+     * @param  string $themeName
      * @return Theme
      */
     public function setByName(?string $themeName, $setAssets = true)
     {
-        if(is_null($themeName)) return;
+        if(is_null($themeName)) { return;
+        }
 
         if ($this->exists($themeName)) {
             $theme = $this->find($themeName);
@@ -115,7 +119,7 @@ class Themes
         $this->activeTheme = $theme;
 
         // set theme view paths
-        $paths = array_merge(config('view.paths'),$theme->getViewPaths());
+        $paths = array_merge(config('view.paths'), $theme->getViewPaths());
         config(['view.paths' => $paths]);
         app('view.finder')->setPaths($paths);
 
@@ -124,7 +128,7 @@ class Themes
         ThemeConfig::setConfig($config);
 
         //register the theme assets
-        if($setAssets){
+        if($setAssets) {
             \Asset::container('theme')->add('css', 'theme-assets/'.$theme->name.'.css');
             \Asset::container('theme')->add('js', 'theme-assets/'.$theme->name.'.js');
         }
@@ -196,7 +200,7 @@ class Themes
 
     public function getViewPaths()
     {
-        if($theme = $this->current()){
+        if($theme = $this->current()) {
             return $theme->getViewPaths();
         }
         return [];
@@ -386,12 +390,13 @@ class Themes
      * @param  string $src
      * @param  string $alt
      * @param  string $Class
-     * @param  array $attributes
+     * @param  array  $attributes
      * @return string
      */
     public function img($src, $alt = '', $class = '', $attributes = [])
     {
-        return sprintf('<img src="%s" alt="%s" class="%s" %s>',
+        return sprintf(
+            '<img src="%s" alt="%s" class="%s" %s>',
             $this->url($src),
             $alt,
             $class,
@@ -407,12 +412,16 @@ class Themes
      */
     private function HtmlAttributes($attributes)
     {
-        $formatted = join(' ', array_map(function ($key) use ($attributes) {
-            if (is_bool($attributes[$key])) {
-                return $attributes[$key] ? $key : '';
-            }
-            return $key . '="' . $attributes[$key] . '"';
-        }, array_keys($attributes)));
+        $formatted = join(
+            ' ', array_map(
+                function ($key) use ($attributes) {
+                    if (is_bool($attributes[$key])) {
+                        return $attributes[$key] ? $key : '';
+                    }
+                    return $key . '="' . $attributes[$key] . '"';
+                }, array_keys($attributes)
+            )
+        );
         return $formatted;
     }
 

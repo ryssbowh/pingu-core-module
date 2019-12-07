@@ -1,4 +1,6 @@
 <?php
 namespace Pingu\Core\Exceptions;
 
-class FieldNotFillable extends \Exception{}
+class FieldNotFillable extends \Exception
+{
+}

@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'stubs' => [
+    'stubs' => [
         'enabled' => true,
         'path' => base_path('Modules/Core/Console/stubs/modules'),
         'files' => [

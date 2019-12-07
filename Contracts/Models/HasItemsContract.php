@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 interface HasItemsContract
 {
-	public function items(): Relation;
+    public function items(): Relation;
 }

@@ -80,13 +80,17 @@ class CoreServiceProvider extends ModuleServiceProvider
 
         $settings = new SettingsRepo;
         $config = $this->app['config']->all();
-        $this->app->singleton('settings', function () use ($settings) {
-            return $settings;
-        });
+        $this->app->singleton(
+            'settings', function () use ($settings) {
+                return $settings;
+            }
+        );
         //Replace Laravel Config repository
-        $this->app->singleton('config', function ($app) use ($config, $settings) {
-            return new ConfigRepository($config, $settings);
-        });
+        $this->app->singleton(
+            'config', function ($app) use ($config, $settings) {
+                return new ConfigRepository($config, $settings);
+            }
+        );
 
         $this->app->singleton('core.contextualLinks', ContextualLinks::class);
         $this->app->singleton('core.notify', Notify::class);
@@ -101,9 +105,11 @@ class CoreServiceProvider extends ModuleServiceProvider
         \Settings::register(new MailingSettings, $this->app);
         //Binds settings section slug in Route system
         $app = $this->app;
-        \Route::bind('setting_section', function ($value, $route) use ($app) {
-            return $app->make('settings.'.$value);
-        });
+        \Route::bind(
+            'setting_section', function ($value, $route) use ($app) {
+                return $app->make('settings.'.$value);
+            }
+        );
     }
 
     /**
@@ -149,21 +155,29 @@ class CoreServiceProvider extends ModuleServiceProvider
 
     public function registerDatabaseMacros()
     {
-        Blueprint::macro('createdBy', function ($table = 'users', $column = 'id') {
-            $this->unsignedInteger('created_by')->nullable()->index();
-            $this->foreign('created_by')->references($column)->on($table)->onDelete('set null');
-        });
-        Blueprint::macro('updatedBy', function ($table = 'users', $column = 'id') {
-            $this->unsignedInteger('updated_by')->nullable()->index();
-            $this->foreign('updated_by')->references($column)->on($table)->onDelete('set null');
-        });
-        Blueprint::macro('deletedBy', function ($table = 'users', $column = 'id') {
-            $this->unsignedInteger('deleted_by')->nullable()->index();
-            $this->foreign('deleted_by')->references($column)->on($table)->onDelete('set null');
-        });
-        Blueprint::macro('published', function ($default = true) {
-            $this->boolean('published')->default($default);
-        });
+        Blueprint::macro(
+            'createdBy', function ($table = 'users', $column = 'id') {
+                $this->unsignedInteger('created_by')->nullable()->index();
+                $this->foreign('created_by')->references($column)->on($table)->onDelete('set null');
+            }
+        );
+        Blueprint::macro(
+            'updatedBy', function ($table = 'users', $column = 'id') {
+                $this->unsignedInteger('updated_by')->nullable()->index();
+                $this->foreign('updated_by')->references($column)->on($table)->onDelete('set null');
+            }
+        );
+        Blueprint::macro(
+            'deletedBy', function ($table = 'users', $column = 'id') {
+                $this->unsignedInteger('deleted_by')->nullable()->index();
+                $this->foreign('deleted_by')->references($column)->on($table)->onDelete('set null');
+            }
+        );
+        Blueprint::macro(
+            'published', function ($default = true) {
+                $this->boolean('published')->default($default);
+            }
+        );
     }
 
     public function registerJsConfig()

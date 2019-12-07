@@ -3,7 +3,8 @@ namespace Pingu\Core\Exceptions;
 
 use Pingu\Core\Support\Actions;
 
-class ActionsException extends \Exception{
+class ActionsException extends \Exception
+{
 
     public static function undefined(string $name, Actions $class)
     {

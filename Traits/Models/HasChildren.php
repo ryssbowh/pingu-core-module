@@ -9,17 +9,22 @@ trait HasChildren
 {
     public static function bootHasChildren()
     {
-        static::deleting(function ($model) {
-            if($model->hasChildren()){
-                $model->children->each(function($item, $ind){
-                    $item->parent()->dissociate();
-                    $item->save();
-                });
+        static::deleting(
+            function ($model) {
+                if($model->hasChildren()) {
+                    $model->children->each(
+                        function ($item, $ind) {
+                            $item->parent()->dissociate();
+                            $item->save();
+                        }
+                    );
+                }
             }
-        });
+        );
     }
     /**
      * A model can have children
+     *
      * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function children(): HasMany
@@ -29,6 +34,7 @@ trait HasChildren
 
     /**
      * A model can have a parent
+     *
      * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parent(): BelongsTo

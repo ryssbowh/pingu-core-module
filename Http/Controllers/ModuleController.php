@@ -6,14 +6,17 @@ class ModuleController extends BaseController
 {
     /**
      * List all modules
+     *
      * @return view
      */
     public function index()
     {
         $modules = \Module::all();
-        return view('core::modules')->with([
+        return view('core::modules')->with(
+            [
             'modules' => $modules
-        ]);
+            ]
+        );
     }
 
     /**
@@ -25,7 +28,7 @@ class ModuleController extends BaseController
     public function install(string $moduleName)
     {
         $module = \Module::find($moduleName);
-        if($module and !$module->get('core')){
+        if($module and !$module->get('core')) {
             try{
                 \Artisan::call('module:migrate', ['module' => $moduleName, '--seed' => true]);
                 \Notify::success($moduleName.' has been installed');
@@ -48,7 +51,7 @@ class ModuleController extends BaseController
     public function uninstall(string $moduleName)
     {
         $module = \Module::find($moduleName);
-        if($module and !$module->get('core')){
+        if($module and !$module->get('core')) {
             try{
                 \Artisan::call('module:migrate-rollback', ['module' => $moduleName, '--unseed' => true]);
                 \Notify::success($moduleName.' has been uninstalled');

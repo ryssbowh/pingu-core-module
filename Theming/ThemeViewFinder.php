@@ -49,10 +49,10 @@ class ThemeViewFinder extends FileViewFinder
         $newPaths = [];
         foreach($paths as $path){
             $pathRelativeToApp = substr($path, strlen(base_path()) + 1);
-            if (strpos($pathRelativeToApp, 'Modules') === 0){
+            if (strpos($pathRelativeToApp, 'Modules') === 0) {
                 $newPath = '/'.config('core.themes.modules_namespaced_views').'/'.$namespace;
             }
-            elseif (strpos($pathRelativeToApp, 'vendor') === 0){
+            elseif (strpos($pathRelativeToApp, 'vendor') === 0) {
                 $newPath = '/vendor/'.$namespace;
             }
             else{
@@ -69,8 +69,8 @@ class ThemeViewFinder extends FileViewFinder
     /**
      * Override replaceNamespace() to add path for custom error pages "Theme/errors/..."
      *
-     * @param  string  $namespace
-     * @param  string|array  $hints
+     * @param  string       $namespace
+     * @param  string|array $hints
      * @return void
      */
     public function replaceNamespace($namespace, $hints)
@@ -82,9 +82,11 @@ class ThemeViewFinder extends FileViewFinder
 
             $searchPaths = array_diff($this->paths, Theme::getLaravelViewPaths());
 
-            $addPaths = array_map(function ($path) use ($namespace) {
-                return "$path/$namespace";
-            }, $searchPaths);
+            $addPaths = array_map(
+                function ($path) use ($namespace) {
+                    return "$path/$namespace";
+                }, $searchPaths
+            );
 
             $this->prependNamespace($namespace, $addPaths);
         }
@@ -93,7 +95,7 @@ class ThemeViewFinder extends FileViewFinder
     /**
      * Set the array of paths where the views are being searched.
      *
-     * @param  array  $paths
+     * @param array $paths
      */
     public function setPaths($paths)
     {

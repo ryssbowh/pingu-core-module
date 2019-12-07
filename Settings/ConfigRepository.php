@@ -27,8 +27,8 @@ class ConfigRepository extends \Illuminate\Config\Repository
      * Set a given configuration value.
      * Will not override config that are settings
      *
-     * @param array|string  $key
-     * @param mixed   $value
+     * @param array|string $key
+     * @param mixed        $value
      * 
      * @return void
      */

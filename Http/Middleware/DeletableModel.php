@@ -12,14 +12,14 @@ class DeletableModel
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure                 $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next, string $slug)
     {
         $model = $request->route()->parameters[$slug] ?? null;
-        if($model and !$model->deletable){
+        if($model and !$model->deletable) {
             throw ProtectedModel::forDeletion($model);
         }
         return $next($request);

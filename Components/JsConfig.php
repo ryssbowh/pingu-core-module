@@ -3,7 +3,8 @@
 namespace Pingu\Core\Components;
 
 class JsConfig
-{   
+{
+   
     protected $config = [];
 
     public function __construct()

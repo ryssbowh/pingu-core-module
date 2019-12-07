@@ -1,4 +1,6 @@
 <?php
 namespace Pingu\Core\Exceptions;
 
-class ModelSlugAlreadyRegistered extends \Exception{}
+class ModelSlugAlreadyRegistered extends \Exception
+{
+}

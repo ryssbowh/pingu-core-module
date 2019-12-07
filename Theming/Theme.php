@@ -15,10 +15,18 @@ class Theme
     public $settings = [];
     protected $layouts = [];
 
-    /** @var Theme  */
+    /**
+     * 
+     *
+     * @var Theme  
+     */
     public $parent;
 
-    /** @var Themes */
+    /**
+     * 
+     *
+     * @var Themes 
+     */
     private $themes;
 
     public function __construct($themeName, $assetPath = null, $viewsPath = null, array $layouts = [], Theme $parent = null)
@@ -46,9 +54,11 @@ class Theme
 
     public function getLayoutsArray()
     {
-        return array_map(function ($layout) {
-            return $layout['name'];
-        }, $this->layouts);
+        return array_map(
+            function ($layout) {
+                return $layout['name'];
+            }, $this->layouts
+        );
     }
 
     public function getViewPaths()
@@ -164,12 +174,16 @@ class Theme
         File::makeDirectory($viewsPath);
         File::makeDirectory($assetPath);
 
-        $themeJson = new \Pingu\Core\Components\themeManifest(array_merge($this->settings, [
-            'name' => $this->name,
-            'extends' => $this->parent ? $this->parent->name : null,
-            'asset-path' => $this->assetPath,
-            'view-path' => $this->viewsPath,
-        ]));
+        $themeJson = new \Pingu\Core\Components\themeManifest(
+            array_merge(
+                $this->settings, [
+                'name' => $this->name,
+                'extends' => $this->parent ? $this->parent->name : null,
+                'asset-path' => $this->assetPath,
+                'view-path' => $this->viewsPath,
+                ]
+            )
+        );
         $themeJson->saveToFile($this->getPath()."/theme.json");
 
         $this->themes->rebuildCache();
@@ -202,12 +216,16 @@ class Theme
 
     public function loadSettings($settings = [])
     {
-        $this->settings = array_diff_key((array) $settings, array_flip([
-            'name',
-            'extends',
-            'views-path',
-            'asset-path'
-        ]));
+        $this->settings = array_diff_key(
+            (array) $settings, array_flip(
+                [
+                'name',
+                'extends',
+                'views-path',
+                'asset-path'
+                ]
+            )
+        );
     }
 
 }

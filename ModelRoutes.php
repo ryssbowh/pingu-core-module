@@ -14,7 +14,7 @@ class ModelRoutes
     /**
      * Registers one slug for one model class in the laravel Route system
      * 
-     * @param  string $class
+     * @param string $class
      */
     public function registerSlugFromObject(HasRouteSlugContract $object)
     {

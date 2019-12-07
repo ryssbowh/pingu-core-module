@@ -41,7 +41,7 @@ class ThemeLink extends Command
         foreach($themes as $theme){
             $publicDirectory = public_path(config('core.themes.public_path'));
             $publicLink = $publicDirectory.'/'.$theme->name;
-            if($deleting){
+            if($deleting) {
                 $this->deleteLink($publicLink);
                 $this->info("Deleted link ".$publicLink);
             }
@@ -55,10 +55,10 @@ class ThemeLink extends Command
 
     protected function createLink($publicThemeFolder, $publicDirectory, $publicLink)
     {
-        if(!file_exists($publicThemeFolder)){
+        if(!file_exists($publicThemeFolder)) {
             \File::makeDirectory($publicThemeFolder);
         }
-        if(!file_exists($publicDirectory)){
+        if(!file_exists($publicDirectory)) {
             \File::makeDirectory($publicDirectory);
         }
         $this->deleteLink($publicLink);
@@ -68,7 +68,7 @@ class ThemeLink extends Command
 
     public function deleteLink($publicLink)
     {
-        if(file_exists($publicLink)){
+        if(file_exists($publicLink)) {
             \File::delete($publicLink);
         }
     }

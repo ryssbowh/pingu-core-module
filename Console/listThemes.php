@@ -21,12 +21,15 @@ class listThemes extends baseThemeCommand
         $this->info('|      Theme Name      |        Extends       |      Views Path      |      Asset Path      |');
         $this->info('+----------------------+----------------------+----------------------+----------------------+');
         foreach ($themes as $theme) {
-            $this->info(sprintf("| %-20s | %-20s | %-20s | %-20s |",
-                $theme->name,
-                $theme->getParent() ? $theme->getParent()->name : "",
-                $theme->viewsPath,
-                $theme->assetPath
-            ));
+            $this->info(
+                sprintf(
+                    "| %-20s | %-20s | %-20s | %-20s |",
+                    $theme->name,
+                    $theme->getParent() ? $theme->getParent()->name : "",
+                    $theme->viewsPath,
+                    $theme->assetPath
+                )
+            );
         }
         $this->info('+----------------------+----------------------+----------------------+----------------------+');
         $this->info('Views Path is relative to: ' . themes_path());

@@ -17,22 +17,26 @@ class ThemeServiceProvider extends ServiceProvider
         /*--------------------------------------------------------------------------
         | Bind in IOC
         |--------------------------------------------------------------------------*/
-        $this->app->singleton('core.themes', function () {
-            return new Themes();
-        });
+        $this->app->singleton(
+            'core.themes', function () {
+                return new Themes();
+            }
+        );
 
         /*--------------------------------------------------------------------------
         | Replace FileViewFinder
         |--------------------------------------------------------------------------*/
-        $this->app->singleton('view.finder', function ($app) {
-            $finder = new ThemeViewFinder(
-                $app['files'],
-                $app['config']['view.paths'],
-                null
-            );
-            \View::setFinder($finder);
-            return $finder;
-        });
+        $this->app->singleton(
+            'view.finder', function ($app) {
+                $finder = new ThemeViewFinder(
+                    $app['files'],
+                    $app['config']['view.paths'],
+                    null
+                );
+                \View::setFinder($finder);
+                return $finder;
+            }
+        );
 
         $this->app->singleton('core.themeConfig', ThemeConfig::class);
 
@@ -49,11 +53,13 @@ class ThemeServiceProvider extends ServiceProvider
         /*--------------------------------------------------------------------------
         | Register Console Commands
         |--------------------------------------------------------------------------*/
-        $this->commands([
+        $this->commands(
+            [
             listThemes::class,
             createTheme::class,
             refreshThemeCache::class,
-        ]);
+            ]
+        );
 
         /*--------------------------------------------------------------------------
         | Register custom Blade Directives
@@ -73,62 +79,76 @@ class ThemeServiceProvider extends ServiceProvider
         |   @js  (filename, alias, depends-on-alias)
         |--------------------------------------------------------------------------*/
 
-        Blade::extend(function ($value) {
-            return preg_replace_callback('/\@js\s*\(\s*([^),]*)(?:,\s*([^),]*))?(?:,\s*([^),]*))?\)/', function ($match) {
+        Blade::extend(
+            function ($value) {
+                return preg_replace_callback(
+                    '/\@js\s*\(\s*([^),]*)(?:,\s*([^),]*))?(?:,\s*([^),]*))?\)/', function ($match) {
 
-                $p1 = trim($match[1], " \t\n\r\0\x0B\"'");
-                $p2 = trim(empty($match[2]) ? $p1 : $match[2], " \t\n\r\0\x0B\"'");
-                $p3 = trim(empty($match[3]) ? '' : $match[3], " \t\n\r\0\x0B\"'");
+                        $p1 = trim($match[1], " \t\n\r\0\x0B\"'");
+                        $p2 = trim(empty($match[2]) ? $p1 : $match[2], " \t\n\r\0\x0B\"'");
+                        $p3 = trim(empty($match[3]) ? '' : $match[3], " \t\n\r\0\x0B\"'");
 
-                if (empty($p3)) {
-                    return "<?php Asset::script('$p2', theme_url('$p1'));?>";
-                } else {
-                    return "<?php Asset::script('$p2', theme_url('$p1'), '$p3');?>";
-                }
+                        if (empty($p3)) {
+                            return "<?php Asset::script('$p2', theme_url('$p1'));?>";
+                        } else {
+                            return "<?php Asset::script('$p2', theme_url('$p1'), '$p3');?>";
+                        }
 
-            }, $value);
-        });
+                    }, $value
+                );
+            }
+        );
 
-        Blade::extend(function ($value) {
-            return preg_replace_callback('/\@jsIn\s*\(\s*([^),]*)(?:,\s*([^),]*))?(?:,\s*([^),]*))?(?:,\s*([^),]*))?\)/',
-                function ($match) {
+        Blade::extend(
+            function ($value) {
+                return preg_replace_callback(
+                    '/\@jsIn\s*\(\s*([^),]*)(?:,\s*([^),]*))?(?:,\s*([^),]*))?(?:,\s*([^),]*))?\)/',
+                    function ($match) {
 
-                    $p1 = trim($match[1], " \t\n\r\0\x0B\"'");
-                    $p2 = trim($match[2], " \t\n\r\0\x0B\"'");
-                    $p3 = trim(empty($match[3]) ? $p2 : $match[3], " \t\n\r\0\x0B\"'");
-                    $p4 = trim(empty($match[4]) ? '' : $match[4], " \t\n\r\0\x0B\"'");
+                        $p1 = trim($match[1], " \t\n\r\0\x0B\"'");
+                        $p2 = trim($match[2], " \t\n\r\0\x0B\"'");
+                        $p3 = trim(empty($match[3]) ? $p2 : $match[3], " \t\n\r\0\x0B\"'");
+                        $p4 = trim(empty($match[4]) ? '' : $match[4], " \t\n\r\0\x0B\"'");
 
-                    if (empty($p4)) {
-                        return "<?php Asset::container('$p1')->script('$p3', theme_url('$p2'));?>";
-                    } else {
-                        return "<?php Asset::container('$p1')->script('$p3', theme_url('$p2'), '$p4');?>";
-                    }
+                        if (empty($p4)) {
+                            return "<?php Asset::container('$p1')->script('$p3', theme_url('$p2'));?>";
+                        } else {
+                            return "<?php Asset::container('$p1')->script('$p3', theme_url('$p2'), '$p4');?>";
+                        }
 
-                }, $value);
-        });
+                    }, $value
+                );
+            }
+        );
 
-        Blade::extend(function ($value) {
-            return preg_replace_callback('/\@css\s*\(\s*([^),]*)(?:,\s*([^),]*))?(?:,\s*([^),]*))?\)/', function ($match) {
+        Blade::extend(
+            function ($value) {
+                return preg_replace_callback(
+                    '/\@css\s*\(\s*([^),]*)(?:,\s*([^),]*))?(?:,\s*([^),]*))?\)/', function ($match) {
 
-                $p1 = trim($match[1], " \t\n\r\0\x0B\"'");
-                $p2 = trim(empty($match[2]) ? $p1 : $match[2], " \t\n\r\0\x0B\"'");
-                $p3 = trim(empty($match[3]) ? '' : $match[3], " \t\n\r\0\x0B\"'");
+                        $p1 = trim($match[1], " \t\n\r\0\x0B\"'");
+                        $p2 = trim(empty($match[2]) ? $p1 : $match[2], " \t\n\r\0\x0B\"'");
+                        $p3 = trim(empty($match[3]) ? '' : $match[3], " \t\n\r\0\x0B\"'");
 
-                if (empty($p3)) {
-                    return "<?php Asset::style('$p2', theme_url('$p1'));?>";
-                } else {
-                    return "<?php Asset::style('$p2', theme_url('$p1'), '$p3');?>";
-                }
+                        if (empty($p3)) {
+                            return "<?php Asset::style('$p2', theme_url('$p1'));?>";
+                        } else {
+                            return "<?php Asset::style('$p2', theme_url('$p1'), '$p3');?>";
+                        }
 
-            }, $value);
-        });
+                    }, $value
+                );
+            }
+        );
 
         /**
          * Add dump function to blade
          */
-        Blade::directive('dump', function($param) {
-            return "<pre><?php (new \BeyondCode\DumpServer\Dumper)->dump({$param}); ?></pre>";
-        });
+        Blade::directive(
+            'dump', function ($param) {
+                return "<pre><?php (new \BeyondCode\DumpServer\Dumper)->dump({$param}); ?></pre>";
+            }
+        );
     }
 
 }

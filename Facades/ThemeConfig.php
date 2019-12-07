@@ -3,12 +3,14 @@ namespace Pingu\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class ThemeConfig extends Facade {
+class ThemeConfig extends Facade
+{
 
-	protected static function getFacadeAccessor() {
+    protected static function getFacadeAccessor()
+    {
 
-		return 'core.themeConfig';
+        return 'core.themeConfig';
 
-	}
+    }
 
 }

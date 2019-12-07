@@ -15,8 +15,10 @@ trait CreatedBy
 
     public static function bootCreatedBy()
     {
-        static::saving(function ($model) {
-            $model->createdBy()->associate(\Auth::user());
-        });
+        static::saving(
+            function ($model) {
+                $model->createdBy()->associate(\Auth::user());
+            }
+        );
     }
 }

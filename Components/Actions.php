@@ -5,7 +5,8 @@ namespace Pingu\Core\Components;
 use Pingu\Core\Support\Actions as ActionsSupport;
 
 class Actions
-{   
+{
+   
     protected $actionsInstances = [];
 
     public function register($class, ActionsSupport $actions)

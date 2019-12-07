@@ -33,53 +33,65 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
 
         $main = Menu::where(['machineName' => 'main-menu'])->first();
 
-        if(!$main){
-            $main = Menu::create([
+        if(!$main) {
+            $main = Menu::create(
+                [
                 'machineName' => 'main-menu',
                 'name' => 'Main Menu',
                 'deletable' => 0
-            ]);
+                ]
+            );
 
-            MenuItem::create([
+            MenuItem::create(
+                [
                 'name' => 'Admin',
                 'weight' => 1,
                 'active' => 1,
                 'url' => 'admin',
                 'deletable' => false,
                 'permission_id' => $perm1->id
-            ], $main);
+                ], $main
+            );
         }
 
         $admin = Menu::where(['machineName' => 'admin-menu'])->first();
 
-        if(!$admin){
-            $admin = Menu::create([
+        if(!$admin) {
+            $admin = Menu::create(
+                [
                 'machineName' => 'admin-menu',
                 'name' => 'Amin Menu',
                 'deletable' => 0
-            ]);
-            $settings = MenuItem::create([
+                ]
+            );
+            $settings = MenuItem::create(
+                [
                 'name' => 'Settings',
                 'weight' => 1,
                 'active' => 1,
                 'deletable' => 0,
                 'permission_id' => null
-            ], $admin);
-            $structure = MenuItem::create([
+                ], $admin
+            );
+            $structure = MenuItem::create(
+                [
                 'name' => 'Structure',
                 'weight' => 2,
                 'active' => 1,
                 'deletable' => 0,
                 'permission_id' => null
-            ], $admin);
-            MenuItem::create([
+                ], $admin
+            );
+            MenuItem::create(
+                [
                 'name' => 'Modules',
                 'weight' => 3,
                 'active' => 1,
                 'deletable' => 0,
                 'url' => 'core.admin.modules',
                 'permission_id' => $perm4->id
-            ], $admin);
+                ], $admin
+            );
         }
 
         \Settings::repository('general')->create();

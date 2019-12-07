@@ -7,13 +7,19 @@ use Pingu\Core\Seeding\SeederMigrator;
 
 abstract class AbstractSeedCommand extends Command
 {
-    /** @var SeederMigrator */
+    /**
+     * @var SeederMigrator 
+     */
     protected $migrator;
 
-    /** @var array */
+    /**
+     * @var array 
+     */
     protected $migrationOptions = [];
 
-    /** @var string */
+    /**
+     * @var string 
+     */
     protected $migrationPath;
 
     /**

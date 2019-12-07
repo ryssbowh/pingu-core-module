@@ -44,7 +44,7 @@ class MakeComposer extends baseThemeCommand
         // Get composer name
         $composerName = $this->argument('composerName');
         $path = themes_path($themeName.'/Composers/'.$composerName.'.php');
-        if(file_exists($path)){
+        if(file_exists($path)) {
             $this->error("Error: Composer $composerName already exists");
             return;
         }

@@ -69,7 +69,7 @@ abstract class Uris
     /**
      * Getter
      * 
-     * @param string $action
+     * @param string  $action
      * @param ?string $prefix
      *
      * @throws UriException
@@ -90,7 +90,7 @@ abstract class Uris
      * if an object is found in replacements, its getRouteKey method will be used for the replacement
      * 
      * @param string  $action
-     * @param mixed $replacements
+     * @param mixed   $replacements
      * @param ?string $prefix
      * 
      * @return string

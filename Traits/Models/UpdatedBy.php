@@ -15,8 +15,10 @@ trait UpdatedBy
 
     public static function bootUpdatedBy()
     {
-        static::saving(function ($model) {
-            $model->updatedBy()->associate(\Auth::user());
-        });
+        static::saving(
+            function ($model) {
+                $model->updatedBy()->associate(\Auth::user());
+            }
+        );
     }
 }

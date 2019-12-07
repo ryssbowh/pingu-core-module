@@ -10,14 +10,14 @@ class HomepageMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure                 $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {   
         $home = config('core.homepage');
-        if($request->path() == '/' and $home != '/'){
+        if($request->path() == '/' and $home != '/') {
             return redirect($home);
         }
         return $next($request);
