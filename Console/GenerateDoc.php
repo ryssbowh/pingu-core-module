@@ -13,7 +13,7 @@ class GenerateDoc extends Command
      *
      * @var string
      */
-    protected $name = 'module:generate-doc';
+    protected $name = 'generate-doc';
 
     /**
      * The console command description.
@@ -38,44 +38,10 @@ class GenerateDoc extends Command
      * @return mixed
      */
     public function handle()
-    {
-        if($name = $this->argument('module')){
-            $module = \Module::findOrFail($name);
-            $modules = [$module];
-        }
-        else{
-            $modules = \Module::all();
-        }
+    {   
         $phar = module_path('Core').'/phpDocumentor.phar';
-        foreach($modules as $module){
-            if(!file_exists($module->getPath().'/phpdoc.dist.xml')){
-                $this->warn("phpdoc.dist.xml not found for module ".$module->getName());
-                continue;
-            }
-            echo "Generating for {$module->getPath()}...\n";
-            exec('cd '.$module->getPath()." && php $phar", $output);
-        }
-    }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['module', InputArgument::OPTIONAL, 'Module name.'],
-        ];
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [];
+        $this->info('Generating docs...');
+        exec($phar, $output);
+        $this->info('Docs generated !');
     }
 }

@@ -27,6 +27,7 @@ use Pingu\Core\Http\Middleware\EditSettings;
 use Pingu\Core\Http\Middleware\EditableModel;
 use Pingu\Core\Http\Middleware\HomepageMiddleware;
 use Pingu\Core\Http\Middleware\IndexSettings;
+use Pingu\Core\Http\Middleware\Published;
 use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Core\ModelRoutes;
@@ -46,7 +47,8 @@ class CoreServiceProvider extends ModuleServiceProvider
         'deletableModel' => DeletableModel::class,
         'editableModel' => EditableModel::class,
         'indexSettings' => IndexSettings::class,
-        'editSettings' => EditSettings::class
+        'editSettings' => EditSettings::class,
+        'published' => Published::class,
     ];
 
     protected $groupMiddlewares = [
@@ -158,6 +160,9 @@ class CoreServiceProvider extends ModuleServiceProvider
         Blueprint::macro('deletedBy', function ($table = 'users', $column = 'id') {
             $this->unsignedInteger('deleted_by')->nullable()->index();
             $this->foreign('deleted_by')->references($column)->on($table)->onDelete('set null');
+        });
+        Blueprint::macro('published', function ($default = true) {
+            $this->boolean('published')->default($default);
         });
     }
 
