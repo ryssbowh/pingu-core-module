@@ -217,6 +217,12 @@ function modules_path()
     return base_path().'/Modules';
 }
 
+/**
+ * Turns a class or object into a machine name
+ * 
+ * @param  object|string $class
+ * @return string
+ */
 function class_machine_name($class)
 {
     if (is_object($class)) {
@@ -224,7 +230,13 @@ function class_machine_name($class)
     }
     return strtolower(Str::studly(class_basename($class)));
 }
-
+    
+/**
+ * Returns the base namespace of a class or object
+ * 
+ * @param  object|string $class
+ * @return string
+ */
 function base_namespace($class)
 {
     if (is_object($class)) {
@@ -234,6 +246,10 @@ function base_namespace($class)
     return substr($class, 0, strlen($class) - strlen($name) - 1);
 }
 
+/**
+ * @param  object|string $class
+ * @return string
+ */
 function object_to_class($class)
 {
     if (is_object($class)) {
@@ -242,6 +258,10 @@ function object_to_class($class)
     return $class;
 }
 
+/**
+ * @param  object|string $class
+ * @return object
+ */
 function class_to_object($class)
 {
     if (is_string($class)) {
@@ -250,7 +270,15 @@ function class_to_object($class)
     return $class;
 }
 
-function friendly_size($size, $unit = '')
+/**
+ * Friendly size formatter. Takes a size in bytes.
+ * 
+ * @param int $size 
+ * @param string $unit
+ * 
+ * @return string
+ */
+function friendly_size(int $size, $unit = '')
 {
     if ((!$unit && $size >= 1000*1000*1000) || $unit == "GB") {
         return number_format($size/(1000*1000*1000), 2)."GB";
