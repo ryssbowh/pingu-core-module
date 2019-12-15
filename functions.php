@@ -13,7 +13,7 @@ use Pingu\Core\Exceptions\RouteNameDoesNotExistsException;
 |
 */
 
-function friendly_field_name($name)
+function friendly_field_name($name): string
 {
     return Str::title(str_replace('_', ' ', $name));
 }
@@ -24,7 +24,7 @@ function friendly_field_name($name)
  * @param  strign $str
  * @return string
  */
-function explodeCamelCase($str)
+function explode_camel_case($str): string
 {
     return trim(implode(' ', preg_split('/(?=[A-Z])/', $str)));
 }
@@ -35,10 +35,10 @@ function explodeCamelCase($str)
  * @param  string $str
  * @return string
  */
-function friendlyClassname($class)
+function friendly_classname($class): string
 {
     $str = object_to_class($class);
-    return explodeCamelCase(class_basename($str));
+    return explode_camel_case(class_basename($str));
 }
 
 /**
@@ -47,7 +47,7 @@ function friendlyClassname($class)
  * @param  string $filename
  * @return string|null
  */
-function themes_path($filename = null)
+function themes_path($filename = null): ?string
 {
     return app()->make('core.themes')->themes_path($filename);
 }
@@ -58,7 +58,7 @@ function themes_path($filename = null)
  * @param  string $url
  * @return string|null
  */
-function theme_url($url)
+function theme_url($url): string
 {
     return app()->make('core.themes')->url($url);
 }
@@ -69,14 +69,14 @@ function theme_url($url)
  * @param  string $uri
  * @return bool
  */
-function route_exists($uri)
+function route_exists($uri): bool
 {
-    if(!is_string($uri)) { return false;
+    if (!is_string($uri)) { return false;
     }
     $uri = trim($uri, '/');
     $routes = \Route::getRoutes()->getRoutes();
-    foreach($routes as $r){
-        if(($r->uri() == $uri or $uri == $r->getName()) and in_array('GET', $r->methods())) {
+    foreach ($routes as $r) {
+        if (($r->uri() == $uri or $uri == $r->getName()) and in_array('GET', $r->methods())) {
             return true;
         }
     }
@@ -93,7 +93,7 @@ function route_exists($uri)
  */
 function route_by_name(string $name)
 {
-    if(!$route = Route::getRoutes()->getByName($name)) {
+    if (!$route = Route::getRoutes()->getByName($name)) {
         throw new RouteNameDoesNotExistsException("Route ".$name." doesn't exists");
     }
     return $route;
@@ -108,8 +108,8 @@ function route_by_name(string $name)
 function routes_with_friendly_name()
 {
     $routes = [];
-    foreach(app('router')->getRoutes()->getIterator() as $route){
-        if($friendly = $route->getAction('friendly') and $route->getName()) {
+    foreach (app('router')->getRoutes()->getIterator() as $route) {
+        if ($friendly = $route->getAction('friendly') and $route->getName()) {
             $routes[$route->getName()] = $friendly;
         }
     }
@@ -140,7 +140,7 @@ function theme_config($value, $default = null)
  * @param  array  $replacements
  * @return string
  */
-function replaceUriSlugs(string $uri, array $replacements)
+function replaceUriSlugs(string $uri, array $replacements): string
 {
     preg_match_all("/(?:\G(?!^)|)(\{[\w\-]+\})/", $uri, $matches);
     $matches = $matches[0];
@@ -157,7 +157,7 @@ function replaceUriSlugs(string $uri, array $replacements)
 /**
  * upload_max_filesize in Kb
  */
-function upload_max_filesize()
+function upload_max_filesize(): int
 {
     return rtrim(ini_get('upload_max_filesize'), 'M')*1000;
 }
@@ -168,7 +168,7 @@ function upload_max_filesize()
  * @param  ?string $file
  * @return string
  */
-function temp_path($file = null)
+function temp_path($file = null): string
 {
     $path = config('filesystems.disks.tmp.root');
     if($file) {
@@ -183,7 +183,7 @@ function temp_path($file = null)
  * @param  string $file
  * @return ?string
  */
-function namespace_from_file($file)
+function namespace_from_file($file): ?string
 {
     $src = file_get_contents($file);
     if (preg_match('#^namespace\s+(.+?);$#sm', $src, $m)) {
@@ -197,9 +197,9 @@ function namespace_from_file($file)
  * 
  * @return string
  */
-function adminPrefix()
+function adminPrefix(): string
 {
-    return config('core.adminPrefix');
+    return config('core.adminPrefix', '');
 }
 
 /**
@@ -207,12 +207,12 @@ function adminPrefix()
  * 
  * @return string
  */
-function ajaxPrefix()
+function ajaxPrefix(): string
 {
-    return config('core.ajaxPrefix');
+    return config('core.ajaxPrefix', '');
 }
 
-function modules_path()
+function modules_path(): string
 {
     return base_path().'/Modules';
 }
@@ -223,11 +223,9 @@ function modules_path()
  * @param  object|string $class
  * @return string
  */
-function class_machine_name($class)
+function class_machine_name($class): string
 {
-    if (is_object($class)) {
-        $class = get_class($class);
-    }
+    $class = object_to_class($class);
     return strtolower(Str::studly(class_basename($class)));
 }
     
@@ -237,7 +235,7 @@ function class_machine_name($class)
  * @param  object|string $class
  * @return string
  */
-function base_namespace($class)
+function base_namespace($class): string
 {
     if (is_object($class)) {
         $class = get_class($class);
@@ -250,7 +248,7 @@ function base_namespace($class)
  * @param  object|string $class
  * @return string
  */
-function object_to_class($class)
+function object_to_class($class): string
 {
     if (is_object($class)) {
         return get_class($class);
@@ -262,7 +260,7 @@ function object_to_class($class)
  * @param  object|string $class
  * @return object
  */
-function class_to_object($class)
+function class_to_object($class): object
 {
     if (is_string($class)) {
         return new $class;
@@ -278,7 +276,7 @@ function class_to_object($class)
  * 
  * @return string
  */
-function friendly_size(int $size, $unit = '')
+function friendly_size(int $size, $unit = ''): string
 {
     if ((!$unit && $size >= 1000*1000*1000) || $unit == "GB") {
         return number_format($size/(1000*1000*1000), 2)."GB";

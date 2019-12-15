@@ -15,13 +15,31 @@ abstract class Uris
         $this->uris = $this->uris();
     }
 
+    /**
+     * Extra uris
+     * 
+     * @return array
+     */
     abstract protected function uris(): array;
 
+    /**
+     * Returns all uris
+     * 
+     * @return array
+     */
     public function all(): array
     {
         return $this->uris;
     }
 
+    /**
+     * Add a uri
+     * 
+     * @param string $action
+     * @param string $uri
+     *
+     * @throws UriException
+     */
     public function add(string $action, string $uri)
     {
         if ($this->has($action)) {
@@ -30,6 +48,11 @@ abstract class Uris
         $this->uris[$action] = $uri;
     }
 
+    /**
+     * Add many uris
+     * 
+     * @param array $uris
+     */
     public function addMany(array $uris)
     {
         foreach ($uris as $action => $uri) {
@@ -37,6 +60,11 @@ abstract class Uris
         }
     }
 
+    /**
+     * Replaces many uris
+     * 
+     * @param array  $uris
+     */
     public function replaceMany(array $uris)
     {
         foreach ($uris as $action => $uri) {
@@ -44,16 +72,34 @@ abstract class Uris
         }
     }
 
+    /**
+     * Replace one uri
+     * 
+     * @param string $action
+     * @param string $uri
+     */
     public function replace(string $action, string $uri)
     {
         $this->uris[$action] = $uri;
     }
 
+    /**
+     * Does an uri exist for an action
+     * 
+     * @param string  $action
+     * 
+     * @return boolean
+     */
     public function has(string $action): bool
     {
         return isset($this->uris[$action]);
     }
 
+    /**
+     * Remove the uri for an action
+     * 
+     * @param string $action
+     */
     public function remove(string $action): bool
     {
         if ($this->has($action)) {
@@ -61,6 +107,14 @@ abstract class Uris
         }
     }
 
+    /**
+     * Forward all calls to get
+     * 
+     * @param string $name
+     * @param mixed $args
+     * 
+     * @return mixed
+     */
     public function __call($name, $args)
     {
         return $this->get($name);

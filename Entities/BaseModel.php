@@ -43,7 +43,7 @@ abstract class BaseModel extends Model implements HasFields
      */
     public static function friendlyName(): string
     {
-        return static::$friendlyName ?? friendlyClassname(static::class);
+        return static::$friendlyName ?? friendly_classname(static::class);
     }
 
     /**
