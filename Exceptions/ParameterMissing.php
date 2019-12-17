@@ -5,10 +5,9 @@ namespace Pingu\Core\Exceptions;
 class ParameterMissing extends \Exception
 {
 
-    public function __construct($field, $method)
+    public function __construct($field)
     {
-        $message = $field." is missing in $method parameters";
-        parent::__construct($message);
+        parent::__construct("parameter $field missing in request");
     }
 
 }

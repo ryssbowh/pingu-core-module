@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Routing\Route;
+use Pingu\Core\Exceptions\ParameterMissing;
 use Pingu\Core\Exceptions\RouteActionNotSet;
 use Pingu\Core\Exceptions\RouteParameterException;
 
@@ -35,7 +36,31 @@ class BaseController extends Controller
         $this->route = $request->route();
     }
 
-    protected function routeParameter($key)
+    /**
+     * Requires an input parameter
+     * 
+     * @param string $name
+     * 
+     * @return mixed
+     * @throws ParameterMissing
+     */
+    protected function requireParameter(string $name)
+    {
+        $data = $this->request->input($name, null);
+        if (is_null($data)) {
+            throw new ParameterMissing($name);
+        }
+        return $data;
+    }
+
+    /**
+     * Requires a route parameter
+     * 
+     * @param string $key
+     * 
+     * @return mixed
+     */
+    protected function routeParameter(string $key)
     {
         if(is_int($key)) {
             $parameters = array_keys($this->route->parameters);
@@ -49,6 +74,13 @@ class BaseController extends Controller
         throw new RouteParameterException($key);
     }
 
+    /**
+     * Requires a route action
+     * 
+     * @param string $name
+     * 
+     * @return mixed
+     */
     protected function getRouteAction(string $name)
     {
         $actions = $this->route->action;

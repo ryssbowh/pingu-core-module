@@ -28,6 +28,12 @@ export function log(message)
     }
 }
 
+export function logWarning(message)
+{
+    message = '['+config('app.name')+'] '+message;
+    console.log("%c"+message, "color:orange");
+}
+
 export function logError(message)
 {
     message = '['+config('app.name')+'] '+message;

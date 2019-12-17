@@ -93,7 +93,7 @@ function route_exists($uri): bool
  */
 function route_by_name(string $name)
 {
-    if (!$route = Route::getRoutes()->getByName($name)) {
+    if (!$route = \Route::getRoutes()->getByName($name)) {
         throw new RouteNameDoesNotExistsException("Route ".$name." doesn't exists");
     }
     return $route;

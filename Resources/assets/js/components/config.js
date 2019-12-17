@@ -8,7 +8,7 @@ const Config = (() => {
         config = PinguJsConfig;
     }
 
-    function get(key)
+    function get(key = false)
     {
         if(!key) {
             return config;
