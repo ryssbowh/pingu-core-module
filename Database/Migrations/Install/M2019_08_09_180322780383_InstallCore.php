@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class M2019_08_09_180322780383_Install extends Migration
+class M2019_08_09_180322780383_InstallCore extends Migration
 {
     /**
      * Run the migrations.

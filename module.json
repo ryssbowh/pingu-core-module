@@ -12,7 +12,8 @@
         "Pingu\\Core\\Providers\\SeederServiceProvider",
         "Pingu\\Core\\Providers\\ThemeServiceProvider",
         "Pingu\\Core\\Providers\\RouteServiceProvider",
-        "Ryssbowh\\UniqueMigrations\\MigrationServiceProvider"
+        "Ryssbowh\\UniqueMigrations\\MigrationServiceProvider",
+        "Vkovic\\LaravelCommando\\Providers\\CommandoServiceProvider"
     ],
     "aliases": {
         "Settings": "Pingu\\Core\\Facades\\Settings",
