@@ -24,9 +24,6 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
     {
         Permission::findOrCreate(['name' => 'browse site', 'section' => 'Core']);
         $perm1 = Permission::findOrCreate(['name' => 'access admin area', 'section' => 'Core']);
-        Permission::findOrCreate(['name' => 'view debug bar', 'section' => 'Core', 'helper' => 'This should only be for developers']);
-        Permission::findOrCreate(['name' => 'view site in maintenance mode', 'section' => 'Core', 'helper' => 'Login will always be available in maintenance mode']);
-        Permission::findOrCreate(['name' => 'put site in maintenance mode', 'section' => 'Core']);
 
         $perm4 = Permission::findOrCreate(['name' => 'view modules', 'section' => 'Core']);
         Permission::findOrCreate(['name' => 'activate modules', 'section' => 'Core']);
@@ -94,8 +91,8 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
             );
         }
 
-        \Settings::repository('general')->create();
-        \Settings::repository('mailing')->create();
+        \Settings::repository('general')->create(false);
+        \Settings::repository('mailing')->create(false);
     }
 
     /**

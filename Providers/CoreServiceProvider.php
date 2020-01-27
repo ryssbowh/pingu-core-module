@@ -21,7 +21,6 @@ use Pingu\Core\Config\MailingSettings;
 use Pingu\Core\Entities\BundleField;
 use Pingu\Core\Entity;
 use Pingu\Core\EntityField;
-use Pingu\Core\Http\Middleware\ActivateDebugBar;
 use Pingu\Core\Http\Middleware\DeletableModel;
 use Pingu\Core\Http\Middleware\EditSettings;
 use Pingu\Core\Http\Middleware\EditableModel;
@@ -53,7 +52,6 @@ class CoreServiceProvider extends ModuleServiceProvider
 
     protected $groupMiddlewares = [
         'web' => [
-            ActivateDebugBar::class,
             SetThemeMiddleware::class
         ],
         'ajax' => [

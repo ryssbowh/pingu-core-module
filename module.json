@@ -6,7 +6,6 @@
     "core": 1,
     "order": -100,
     "providers": [
-        "Barryvdh\\Debugbar\\ServiceProvider",
         "Pingu\\Core\\Providers\\CoreServiceProvider",
         "Pingu\\Core\\Providers\\CommandServiceProvider",
         "Pingu\\Core\\Providers\\SeederServiceProvider",

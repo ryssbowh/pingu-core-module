@@ -208,9 +208,14 @@ abstract class SettingsRepository
             \Settings::create($key, $this->name(), $this->encrypted($key));
         }
 
+        $access = null;
         if ($perm) {
-            $permission = Permission::findOrCreate(['name' => $this->accessPermission(), 'section' => 'Settings']);
-            Permission::findOrCreate(['name' => $this->editPermission(), 'section' => 'Settings']);
+            if ($this->accessPermission()) {
+                $access = Permission::findOrCreate(['name' => $this->accessPermission(), 'section' => 'Settings']);
+            }
+            if ($this->editPermission()) {
+                $perm = Permission::findOrCreate(['name' => $this->editPermission(), 'section' => 'Settings']);
+            }
         }
 
         if ($item) {
@@ -220,7 +225,7 @@ abstract class SettingsRepository
                 'active' => 1,
                 'url' => '/'.adminPrefix().'/settings/'.$this->name(),
                 'deletable' => 0,
-                'permission_id' => $permission ? $permission->id : null
+                'permission_id' => $access ? $access->id : null
                 ], 'admin-menu', 'admin-menu.settings'
             );
         }
