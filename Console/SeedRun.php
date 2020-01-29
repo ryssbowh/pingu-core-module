@@ -37,6 +37,8 @@ class SeedRun extends AbstractSeedCommand
             return;
         }
 
+        $this->call('cache:clear');
+
         // Prepare the migrator.
         $this->prepareMigrator();
 

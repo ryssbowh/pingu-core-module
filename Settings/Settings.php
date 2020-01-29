@@ -48,21 +48,40 @@ class Settings
         return $this->repositories[$name];
     }
 
+    /**
+     * Load all settings, either from cache or database
+     * 
+     * @return array
+     */
     public function all(): array
     {
-        return \Cache::rememberForever(
-            $this->cacheKey, function () {
-                if (!\Schema::hasTable('settings')) {
-                    return [];
+        if (config('core.settings.useCache')) {
+            $_this = $this;
+            return \Cache::rememberForever(
+                $this->cacheKey, function () use ($_this) {
+                    return $_this->loadAll();
                 }
-                $settings = SettingModel::all()->sortBy('weight')->keyBy('name');
-                $out = [];
-                foreach ($settings as $setting) {
-                    $out[$setting->name] = $setting->value;
-                }
-                return $out;
-            }
-        );
+            );
+        }
+        return $this->loadAll();
+    }
+
+    /**
+     * Load all settings from database
+     * 
+     * @return array
+     */
+    protected function loadAll()
+    {
+        if (!\Schema::hasTable('settings')) {
+            return [];
+        }
+        $settings = SettingModel::all()->sortBy('weight')->keyBy('name');
+        $out = [];
+        foreach ($settings as $setting) {
+            $out[$setting->name] = $setting->value;
+        }
+        return $out;
     }
 
     /**

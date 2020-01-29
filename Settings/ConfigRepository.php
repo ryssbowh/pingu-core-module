@@ -11,7 +11,6 @@ class ConfigRepository extends \Illuminate\Config\Repository
 
     public function loadSettings(array $settings)
     {
-        // dump($settings);
         foreach ($settings as $name => $value) {
             $this->settings[] = $name;
             Arr::set($this->items, $name, $value);

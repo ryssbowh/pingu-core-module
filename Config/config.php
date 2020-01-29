@@ -70,5 +70,8 @@ return [
     ],
     'views' => [
         'suggestionsCacheKey' => 'core.views.suggestions'
+    ],
+    'settings' => [
+        'useCache' => !env('APP_DEBUG')
     ]
 ];
