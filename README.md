@@ -75,8 +75,6 @@ the `HomepageMiddleware` sets the homepage when the uri is /.
  
 the `setThemeMiddleware` sets the current theme (if it's an ajax call, \_theme must be set in the call).
 
-the `ActivateDebugBar` activates the debug bar if the right permission is set.
-
 `redirectIfAuthenticated` used on routes that are only for non-authenticated users.
 
 the `EditableModel` will check if a model is editable, the model must have a field editable. call it with `editableModel:{modelSlug}`
@@ -96,7 +94,7 @@ Changes to it includes :
 - Themes can define a config which will override the normal config. Access it with `theme_config()` which will return the normal config if it does not exists in your theme.
 - Themes can define Composers to add variables to any view. use the command `module:make-composer`.
 - Admin theme will be set if request starts with /admin or if ajax call define a \_theme=admin
-- Themes now sits in Themes folder. a symbolic link is created at theme creation. It links public/themes/{themeName} to Themes/{themeName}/public so you can have assets publicly available in your Themes folder. If your running your site in a vagrant it's important to run the create command from within your box, or the link will be incorrect. To access your assets you can use the `theme_url` function.
+- Themes now sits in Themes folder. a symbolic link is created at theme creation. It links public/themes/{themeName} to Themes/{themeName}/public so you can have assets publicly available in your Themes folder. If your running your site in a virtual environment it's important to run the create command from within your environment, or the link may be incorrect. To access your assets you can use the `theme_url` function.
  
 ### Commands
 Includes commands provided by [igaster/laravel-theme](https://github.com/igaster/laravel-theme) from which packaging commands have been removed.
@@ -149,9 +147,6 @@ Config can be sent to the front end by registering it through the facade JsConfi
 ### Schema less attributes
 You'll find occurences of schema less attributes package, used to add attributes to models without changing the code of the model. This is promising but is not in use now.
 
-### Debug bar
-Debug bar from [https://github.com/barryvdh/laravel-debugbar](https://github.com/barryvdh/laravel-debugbar) is accessible if you have the permission `view debug bar`
-
 ### Database Blueprint
 The Blueprint class has been extended to include `updatedBy`, `createdBy` and `deletedBy` methods that adds a field to a table : `updated_by`, `created_by` and `deleted_by` which are all a foreign key to the table users.
 
@@ -165,8 +160,8 @@ I have a cache `fields.object1.fields` and `fields.object1.validator`, Array Cac
 ### Core Modules boot order
 Core modules :
 - Core : -100
-- Field : -99
 - Entity : -99
+- Field : -98
 - User : -98
 - Permissions : -97
 - Block : -96
@@ -176,3 +171,7 @@ Core modules :
 - Media : -40
 - Page : -30
 - Taxonomy : -20
+
+### Installation && migrations
+
+Core modules have a migration sub folder (Install) which will be run before any other migrations when installing Pingu
