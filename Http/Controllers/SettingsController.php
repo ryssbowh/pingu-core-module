@@ -55,7 +55,7 @@ class SettingsController extends BaseController
     protected function getEditView(SettingsRepository $repository, Form $form)
     {
         return view('core::settings.edit')->with(
-            ['form' => $form, 'section' => $repository->section()]
+            ['html' => $form, 'section' => $repository->section()]
         );
     }
 

@@ -8,15 +8,6 @@ var name = dir.split(path.sep).pop();
 var assetPath = __dirname + '/Resources/assets';
 var publicPath = 'module-assets/';
 
-mix.webpackConfig({
-  resolve: {
-    alias: {
-      'PinguHelpers': path.resolve(assetPath + '/js/components', './helpers'),
-      'PinguConfig': path.resolve(assetPath + '/js/components', './config')
-    }
-  }
-});
-
 //Javascript
 mix.js(assetPath + '/js/app.js', publicPath + name+'.js').sourceMaps();
 mix.autoload({

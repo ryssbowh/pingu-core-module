@@ -1,20 +1,17 @@
-const Config = (() => {
+class Config {
 
-    let config;
-
-    function init()
+    constructor()
     {
-        console.log('Config initialized');
-        config = PinguJsConfig;
+        this.config = PinguJsConfig;
     }
 
-    function get(key = false)
+    get(key = false)
     {
         if(!key) {
-            return config;
+            return this.config;
         }
         let elems = key.split('.');
-        let config2 = config;
+        let config2 = this.config;
         elems.forEach(
             function (elem) {
                 config2 = config2[elem];
@@ -23,7 +20,7 @@ const Config = (() => {
         return config2;
     }
 
-    function setRecursive(elems, value, config)
+    setRecursive(elems, value, config)
     {
         if(elems.length == 1) {
             config[elems[0]] = value;
@@ -35,18 +32,12 @@ const Config = (() => {
         return config;
     }
 
-    function set(key, value)
+    set(key, value)
     {
         let elems = key.split('.');
-        config = setRecursive(elems, value, config);
+        this.config = setRecursive(elems, value, this.config);
     }
 
-    return {
-        init: init,
-        get: get,
-        set: set
-    };
-
-})();
+};
 
 export default Config;
