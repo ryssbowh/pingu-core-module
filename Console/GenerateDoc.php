@@ -20,7 +20,7 @@ class GenerateDoc extends Command
      *
      * @var string
      */
-    protected $description = 'Generates documentation with php documentor';
+    protected $description = 'Generates documentation with php documentor, doc will go in the docs folder';
 
     /**
      * Create a new command instance.
