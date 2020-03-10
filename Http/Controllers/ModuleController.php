@@ -12,7 +12,7 @@ class ModuleController extends BaseController
     public function index()
     {
         $modules = \Module::all();
-        return view('core::modules')->with(
+        return view('pages.modules.index')->with(
             [
             'modules' => $modules
             ]

@@ -17,7 +17,12 @@ use Pingu\Forms\Support\Form;
 class SettingsController extends BaseController
 {
     /**
-     * @inheritDoc
+     * Edit action
+     * 
+     * @param Request            $request   
+     * @param SettingsRepository $repository
+     * 
+     * @return view
      */
     public function edit(Request $request, SettingsRepository $repository)
     {   
@@ -27,7 +32,12 @@ class SettingsController extends BaseController
     }
 
     /**
-     * @inheritDoc
+     * update action
+     * 
+     * @param SettingsRequest    $request 
+     * @param SettingsRepository $repository
+     * 
+     * @return redirect
      */
     public function update(SettingsRequest $request, SettingsRepository $repository)
     {
@@ -42,7 +52,12 @@ class SettingsController extends BaseController
     }
 
     /**
-     * @inheritDoc
+     * Index action
+     * 
+     * @param Request            $request
+     * @param SettingsRepository $repository
+     * 
+     * @return view
      */
     public function index(Request $request, SettingsRepository $repository)
     {
@@ -50,21 +65,42 @@ class SettingsController extends BaseController
     }
 
     /**
-     * @inheritDoc
+     * Get edit view
+     * 
+     * @param SettingsRepository $repository
+     * @param Form               $form   
+     *     
+     * @return view
      */
     protected function getEditView(SettingsRepository $repository, Form $form)
     {
-        return view('core::settings.edit')->with(
+        return view()->first($this->getEditViewNames($repository),
             ['html' => $form, 'section' => $repository->section()]
         );
     }
 
     /**
-     * @inheritDoc
+     * Get view names for edit view
+     * 
+     * @param SettingsRepository $repository
+     * 
+     * @return array
+     */
+    protected function getEditViewNames(SettingsRepository $repository): array
+    {
+        return ['pages.settings.'.$repository->name().'.edit', 'pages.settings.edit'];
+    }
+
+    /**
+     * Get index view
+     * 
+     * @param SettingsRepository $repository
+     * 
+     * @return view
      */
     protected function getIndexView(SettingsRepository $repository)
     {
-        return view('core::settings.list')->with(
+        return view()->first($this->getIndexViewNames($repository)
             [
             'repository' => $repository, 
             'canEdit' => \Auth::user()->hasPermissionTo($repository->editPermission()),
@@ -73,12 +109,38 @@ class SettingsController extends BaseController
         );
     }
 
-    protected function getEditUrl(SettingsRepository $repository)
+    /**
+     * Get view names for index view
+     * 
+     * @param SettingsRepository $repository
+     * 
+     * @return array
+     */
+    protected function getIndexViewNames(SettingsRepository $repository): array
+    {
+        return ['pages.settings.'.$repository->name().'.index', 'pages.settings.index'];
+    }
+
+    /**
+     * Get url to edit
+     * 
+     * @param SettingsRepository $repository
+     * 
+     * @return string
+     */
+    protected function getEditUrl(SettingsRepository $repository): string
     {
         return '/admin/settings/'.$repository->name().'/edit';
     }
 
-    protected function getUpdateUrl(SettingsRepository $repository)
+    /**
+     * Get url to update
+     * 
+     * @param SettingsRepository $repository
+     * 
+     * @return string
+     */
+    protected function getUpdateUrl(SettingsRepository $repository): string
     {
         return '/admin/settings/'.$repository->name();
     }
