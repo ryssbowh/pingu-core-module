@@ -3,6 +3,7 @@
 namespace Pingu\Core\Theming;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Pingu\Core\Exceptions\{themeAlreadyExists, themeNotFound};
 use ThemeConfig, View;
@@ -107,7 +108,8 @@ class Themes
      */
     public function setByName(?string $themeName, $setAssets = true)
     {
-        if(is_null($themeName)) { return;
+        if (is_null($themeName)) { 
+            return;
         }
 
         if ($this->exists($themeName)) {
@@ -119,9 +121,11 @@ class Themes
         $this->activeTheme = $theme;
 
         // set theme view paths
-        $paths = array_merge(config('view.paths'), $theme->getViewPaths());
+        $paths = $theme->getViewPaths();
         config(['view.paths' => $paths]);
         app('view.finder')->setPaths($paths);
+        app('view.finder')->addThemeModulePaths($paths);
+        app('view.finder')->addThemeVendorPath($paths);
 
         //set theme config
         $config = (include $theme->getPath('config.php'));

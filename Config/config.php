@@ -36,6 +36,8 @@ return [
          */
         'modules_namespaced_views' => 'modules',
 
+        'vendor_namespaced_views' => 'vendor',
+
         /*
         |--------------------------------------------------------------------------
         | Set behavior if an asset is not found in a Theme hierarchy.

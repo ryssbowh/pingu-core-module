@@ -88,13 +88,16 @@ The base model **which all models must extend** provides with friendly names and
 The functions.php provides with a couple of useful functions.
  
 ### Themes
-The code from [igaster/laravel-theme](https://github.com/igaster/laravel-theme) has been ported over.
+Based on the code from [igaster/laravel-theme](https://github.com/igaster/laravel-theme) with significant changes.
 Changes to it includes :
-- rewrote findNamespacedView of themeViewFinder
+- rewrote themeViewFinder to add module namespaces
 - Themes can define a config which will override the normal config. Access it with `theme_config()` which will return the normal config if it does not exists in your theme.
 - Themes can define Composers to add variables to any view. use the command `module:make-composer`.
 - Admin theme will be set if request starts with /admin or if ajax call define a \_theme=admin
 - Themes now sits in Themes folder. a symbolic link is created at theme creation. It links public/themes/{themeName} to Themes/{themeName}/public so you can have assets publicly available in your Themes folder. If your running your site in a virtual environment it's important to run the create command from within your environment, or the link may be incorrect. To access your assets you can use the `theme_url` function.
+
+Module views are namespaced with `@` (example `core@contrextualLinks`) and will be looked for in the modules folder of the Themes.
+Normal namespaces (`::`) will be looked for in the vendor folder of the Themes. `pagination::bootstrap-4` must be in the `Theme/views/vendor/pagination` in order to be found.
  
 ### Commands
 Includes commands provided by [igaster/laravel-theme](https://github.com/igaster/laravel-theme) from which packaging commands have been removed.

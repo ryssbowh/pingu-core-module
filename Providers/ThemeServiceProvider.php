@@ -26,11 +26,13 @@ class ThemeServiceProvider extends ServiceProvider
         /*--------------------------------------------------------------------------
         | Replace FileViewFinder
         |--------------------------------------------------------------------------*/
+        $hints = app('view')->getFinder()->getHints();
         $this->app->singleton(
-            'view.finder', function ($app) {
+            'view.finder', function ($app) use ($hints) {
                 $finder = new ThemeViewFinder(
                     $app['files'],
                     $app['config']['view.paths'],
+                    $hints,
                     null
                 );
                 \View::setFinder($finder);

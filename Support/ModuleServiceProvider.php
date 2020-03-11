@@ -45,4 +45,16 @@ class ModuleServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Register a module view file namespace.
+     *
+     * @param  string|array  $path
+     * @param  string  $namespace
+     * @return void
+     */
+    protected function loadModuleViewsFrom($path, $namespace)
+    {
+        $this->app['view.finder']->addModuleNamespace($namespace, $path);
+    }
+
 }

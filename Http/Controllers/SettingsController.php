@@ -100,7 +100,7 @@ class SettingsController extends BaseController
      */
     protected function getIndexView(SettingsRepository $repository)
     {
-        return view()->first($this->getIndexViewNames($repository)
+        return view()->first($this->getIndexViewNames($repository),
             [
             'repository' => $repository, 
             'canEdit' => \Auth::user()->hasPermissionTo($repository->editPermission()),

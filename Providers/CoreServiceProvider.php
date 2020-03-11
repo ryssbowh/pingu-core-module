@@ -129,7 +129,7 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->registerFactories();
         $this->registerAssets();
         $this->registerJsConfig();
-        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'core');
+        $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', 'core');
         $this->registerDatabaseMacros();
 
         \Policies::registerInGate();

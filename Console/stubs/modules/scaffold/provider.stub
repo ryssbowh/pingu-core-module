@@ -29,7 +29,7 @@ class $CLASS$ extends ModuleServiceProvider
         $this->registerModelSlugs(__DIR__.'/../'.$this->modelFolder);
         $this->registerTranslations();
         $this->registerConfig();
-        $this->loadViewsFrom(__DIR__ . '/../Resources/views', '$LOWER_NAME$');
+        $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', '$LOWER_NAME$');
         $this->registerFactories();
         //$this->registerAssets();
     }

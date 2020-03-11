@@ -6,89 +6,97 @@ use Illuminate\Support\Arr;
 use Illuminate\View\FileViewFinder;
 use Pingu\Core\Exceptions\themeNotFound;
 use Pingu\Core\Facades\Theme;
+use InvalidArgumentException;
 
 class ThemeViewFinder extends FileViewFinder
 {
-    public function __construct(Filesystem $files, array $paths, array $extensions = null)
+    const MODULE_PATH_DELIMITER = '@';
+
+    protected $moduleHints = [];
+
+    public function __construct(Filesystem $files, array $paths, array $hints, array $extensions = null)
     {
+        $this->hints = $hints;
         $this->themeEngine = \App::make('core.themes');
         parent::__construct($files, $paths, $extensions);
     }
 
-    /*
-     * Override findNamespacedView() to add "Theme/vendor/..." paths
-     *
-     * @param  string  $name
-     * @return string
-     */
-    protected function findNamespacedView($name)
+    public function find($name)
     {
-        // Extract the $view and the $namespace parts
-        list($namespace, $view) = $this->parseNamespaceSegments($name);
-
-        $paths = $this->addThemeNamespacePaths($namespace);
-
-        // Find and return the view
-        return $this->findInPaths($view, $paths);
-    }
-
-    public function addThemeNamespacePaths($namespace)
-    {
-        if (!isset($this->hints[$namespace])) {
-            return [];
+        if (isset($this->views[$name])) {
+            return $this->views[$name];
         }
 
-        $paths = $this->hints[$namespace];
-        // try{
-            $themePaths = Theme::getViewPaths();
-        // }
-        // catch(themeNotFound $e){
-        //     return $paths;
-        // }
-
-        $newPaths = [];
-        foreach($paths as $path){
-            $pathRelativeToApp = substr($path, strlen(base_path()) + 1);
-            if (strpos($pathRelativeToApp, 'Modules') === 0) {
-                $newPath = '/'.config('core.themes.modules_namespaced_views').'/'.$namespace;
-            }
-            elseif (strpos($pathRelativeToApp, 'vendor') === 0) {
-                $newPath = '/vendor/'.$namespace;
-            }
-            else{
-                continue;
-            }
-
-            foreach($themePaths as $themePath){
-                $newPaths[] = $themePath.$newPath;
-            }
+        if ($this->hasModuleInformation($name = trim($name))) {
+            return $this->views[$name] = $this->findModuleView($name);
         }
-        return array_merge($newPaths, $paths);
+
+        if ($this->hasHintInformation($name = trim($name))) {
+            return $this->views[$name] = $this->findNamespacedView($name);
+        }
+
+        return $this->views[$name] = $this->findInPaths($name, $this->paths);
     }
 
-    /**
-     * Override replaceNamespace() to add path for custom error pages "Theme/errors/..."
-     *
-     * @param  string       $namespace
-     * @param  string|array $hints
-     * @return void
-     */
-    public function replaceNamespace($namespace, $hints)
+    public function addModuleNamespace($namespace, $hints)
     {
-        $this->hints[$namespace] = (array) $hints;
+        $hints = (array) $hints;
 
-        // Overide Error Pages
-        if ($namespace == 'errors' || $namespace == 'mails') {
+        if (isset($this->hints[$namespace])) {
+            $hints = array_merge($this->moduleHints[$namespace], $hints);
+        }
 
-            $searchPaths = array_diff($this->paths, Theme::getLaravelViewPaths());
+        $this->moduleHints[$namespace] = $hints;
+    }
 
-            $addPaths = array_map(
-                function ($path) use ($namespace) {
-                    return "$path/$namespace";
-                }, $searchPaths
-            );
+    protected function parseModuleSegments($name)
+    {
+        $segments = explode(static::MODULE_PATH_DELIMITER, $name);
 
-            $this->prependNamespace($namespace, $addPaths);
+        if (count($segments) !== 2) {
+            throw new InvalidArgumentException("View [{$name}] has an invalid name.");
+        }
+
+        if (! isset($this->moduleHints[$segments[0]])) {
+            throw new InvalidArgumentException("No module hint path defined for [{$segments[0]}].");
+        }
+
+        return $segments;
+    }
+
+    public function hasModuleInformation($name)
+    {
+        return strpos($name, static::MODULE_PATH_DELIMITER) > 0;
+    }
+
+    protected function findModuleView($name)
+    {
+        [$namespace, $view] = $this->parseModuleSegments($name);
+
+        return $this->findInPaths($view, $this->moduleHints[$namespace]);
+    }
+
+    public function addThemeModulePaths($themeViewPaths)
+    {
+        foreach ($this->moduleHints as $namespace => $paths) {
+            foreach (array_reverse($themeViewPaths) as $themeViewPath) {
+                $newPath = $themeViewPath.'/'.config('core.themes.modules_namespaced_views').'/'.$namespace;
+                if (is_dir($newPath)) {
+                    $this->moduleHints[$namespace] = array_unique(array_merge([$newPath], $this->moduleHints[$namespace]));
+                }
+            }
+        }
+    }
+
+    public function addThemeVendorPath($themeViewPaths)
+    {
+        foreach ($this->hints as $namespace => $paths) {
+            foreach (array_reverse($themeViewPaths) as $themeViewPath) {
+                $newPath = $themeViewPath.'/'.config('core.themes.vendor_namespaced_views').'/'.$namespace;
+                if (is_dir($newPath)) {
+                    $this->hints[$namespace] = array_unique(array_merge([$newPath], $this->hints[$namespace]));
+                }
+            }
         }
     }
 
@@ -101,14 +109,6 @@ class ThemeViewFinder extends FileViewFinder
     {
         $this->paths = $paths;
         $this->flush();
-    }
-
-    /**
-     * Get the array of paths wherew the views are being searched.
-     */
-    public function getPaths()
-    {
-        return $this->paths;
     }
 
 }
