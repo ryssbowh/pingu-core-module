@@ -232,11 +232,20 @@ class CoreServiceProvider extends ModuleServiceProvider
     protected function registerConfig()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'core'
+            __DIR__.'/../Config/core.php', 'core'
+        );
+        $this->mergeConfigFrom(
+            __DIR__.'/../Config/theming.php', 'theming'
         );
         $this->replaceConfigFrom(
             __DIR__.'/../Config/modules.php', 'modules'
         );
+        $this->publishes([
+            __DIR__.'/../Config/core.php' => config_path('module-core.php')
+        ], 'config');
+        $this->publishes([
+            __DIR__.'/../Config/theming.php' => config_path('module-core-theming.php')
+        ], 'config');
     }
 
     /**

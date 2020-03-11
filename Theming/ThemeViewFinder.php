@@ -12,8 +12,15 @@ class ThemeViewFinder extends FileViewFinder
 {
     const MODULE_PATH_DELIMITER = '@';
 
+    /**
+     * [$moduleHints description]
+     * @var array
+     */
     protected $moduleHints = [];
 
+    /**
+     * @inheritDoc
+     */
     public function __construct(Filesystem $files, array $paths, array $hints, array $extensions = null)
     {
         $this->hints = $hints;
@@ -21,6 +28,9 @@ class ThemeViewFinder extends FileViewFinder
         parent::__construct($files, $paths, $extensions);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function find($name)
     {
         if (isset($this->views[$name])) {
@@ -38,7 +48,13 @@ class ThemeViewFinder extends FileViewFinder
         return $this->views[$name] = $this->findInPaths($name, $this->paths);
     }
 
-    public function addModuleNamespace($namespace, $hints)
+    /**
+     * add module namespaces
+     * 
+     * @param string $namespace
+     * @param string|array $hints
+     */
+    public function addModuleNamespace(string $namespace, $hints)
     {
         $hints = (array) $hints;
 
@@ -49,7 +65,14 @@ class ThemeViewFinder extends FileViewFinder
         $this->moduleHints[$namespace] = $hints;
     }
 
-    protected function parseModuleSegments($name)
+    /**
+     * Parse a module namespaced view
+     * 
+     * @param string $name
+     * 
+     * @return array
+     */
+    protected function parseModuleSegments(string $name)
     {
         $segments = explode(static::MODULE_PATH_DELIMITER, $name);
 
@@ -64,23 +87,42 @@ class ThemeViewFinder extends FileViewFinder
         return $segments;
     }
 
-    public function hasModuleInformation($name)
+    /**
+     * Does a view name is module namespaced
+     * 
+     * @param string  $name
+     * 
+     * @return boolean
+     */
+    public function hasModuleInformation(string $name)
     {
         return strpos($name, static::MODULE_PATH_DELIMITER) > 0;
     }
 
-    protected function findModuleView($name)
+    /**
+     * Find a module namespaced view
+     * 
+     * @param string $name
+     * 
+     * @return string
+     */
+    protected function findModuleView(string $name)
     {
         [$namespace, $view] = $this->parseModuleSegments($name);
 
         return $this->findInPaths($view, $this->moduleHints[$namespace]);
     }
 
-    public function addThemeModulePaths($themeViewPaths)
+    /**
+     * Add some paths to every module namespace hints
+     * 
+     * @param array $themeViewPaths
+     */
+    public function addThemeModulePaths(array $themeViewPaths)
     {
         foreach ($this->moduleHints as $namespace => $paths) {
             foreach (array_reverse($themeViewPaths) as $themeViewPath) {
-                $newPath = $themeViewPath.'/'.config('core.themes.modules_namespaced_views').'/'.$namespace;
+                $newPath = $themeViewPath.'/'.config('theming.modules_namespaced_views').'/'.$namespace;
                 if (is_dir($newPath)) {
                     $this->moduleHints[$namespace] = array_unique(array_merge([$newPath], $this->moduleHints[$namespace]));
                 }
@@ -88,11 +130,16 @@ class ThemeViewFinder extends FileViewFinder
         }
     }
 
+    /**
+     * Add some paths to every namespace hints
+     * 
+     * @param array $themeViewPaths
+     */
     public function addThemeVendorPath($themeViewPaths)
     {
         foreach ($this->hints as $namespace => $paths) {
             foreach (array_reverse($themeViewPaths) as $themeViewPath) {
-                $newPath = $themeViewPath.'/'.config('core.themes.vendor_namespaced_views').'/'.$namespace;
+                $newPath = $themeViewPath.'/'.config('theming.vendor_namespaced_views').'/'.$namespace;
                 if (is_dir($newPath)) {
                     $this->hints[$namespace] = array_unique(array_merge([$newPath], $this->hints[$namespace]));
                 }

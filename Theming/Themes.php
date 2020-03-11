@@ -141,7 +141,7 @@ class Themes
         $composersClass = "Pingu\\Themes\\".$theme->name."\\Composer";
         View::composers($composersClass::getComposers());
 
-        Event::dispatch('core.theme.change', $theme);
+        Event::dispatch('theming.change', $theme);
         return $theme;
     }
 
@@ -218,7 +218,7 @@ class Themes
 
     public function cacheEnabled()
     {
-        return config('core.themes.cache', false);
+        return config('theming.cache', false);
     }
 
     // Rebuilds the cache file
@@ -262,8 +262,8 @@ class Themes
                 // default theme settings
                 $defaults = [
                     'name'       => $themeName,
-                    'asset-path' => config('core.theme.asset_path'),
-                    'views-path' => config('core.theme.views_path'),
+                    'asset-path' => config('theming.asset_path'),
+                    'views-path' => config('theming.views_path'),
                     'extends'    => null
                 ];
 

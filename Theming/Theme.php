@@ -34,8 +34,8 @@ class Theme
         $this->themes = resolve('core.themes');
 
         $this->name = $themeName;
-        $this->assetPath = ($assetPath === null ? config('core.themes.asset_path') : $assetPath);
-        $this->viewsPath = ($viewsPath === null ? config('core.themes.views_path') : $viewsPath);
+        $this->assetPath = ($assetPath === null ? config('theming.asset_path') : $assetPath);
+        $this->viewsPath = ($viewsPath === null ? config('theming.views_path') : $viewsPath);
         $this->parent = $parent;
         $this->layouts = $layouts;
 

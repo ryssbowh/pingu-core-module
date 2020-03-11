@@ -39,7 +39,7 @@ class ThemeLink extends Command
         }
 
         foreach($themes as $theme){
-            $publicDirectory = public_path(config('core.themes.public_path'));
+            $publicDirectory = public_path(config('theming.public_path'));
             $publicLink = $publicDirectory.'/'.$theme->name;
             if($deleting) {
                 $this->deleteLink($publicLink);

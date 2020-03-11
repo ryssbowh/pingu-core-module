@@ -28,8 +28,8 @@ class createTheme extends baseThemeCommand
             return;
         }
 
-        $viewsPath = $this->ask('Views folder', config('core.themes.views_path'));
-        $assetPath = $this->ask('Assets folder', config('core.themes.asset_path'));
+        $viewsPath = $this->ask('Views folder', config('theming.views_path'));
+        $assetPath = $this->ask('Assets folder', config('theming.asset_path'));
 
         $viewsPathFull = themes_path($themeName.'/'.$viewsPath);
         $assetPathFull = themes_path($themeName.'/'.$assetPath);
