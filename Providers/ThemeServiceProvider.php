@@ -68,6 +68,7 @@ class ThemeServiceProvider extends ServiceProvider
         |--------------------------------------------------------------------------*/
 
         $this->registerBladeDirectives();
+        $this->registerConfig();
     }
 
     protected function registerBladeDirectives()
@@ -151,6 +152,21 @@ class ThemeServiceProvider extends ServiceProvider
                 return "<pre><?php (new \BeyondCode\DumpServer\Dumper)->dump({$param}); ?></pre>";
             }
         );
+    }
+
+    /**
+     * Register config.
+     *
+     * @return void
+     */
+    protected function registerConfig()
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/../Config/theming.php', 'theming'
+        );
+        $this->publishes([
+            __DIR__.'/../Config/theming.php' => config_path('theming.php')
+        ], 'theming-config');
     }
 
 }

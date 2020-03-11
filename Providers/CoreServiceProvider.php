@@ -234,18 +234,12 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../Config/core.php', 'core'
         );
-        $this->mergeConfigFrom(
-            __DIR__.'/../Config/theming.php', 'theming'
-        );
         $this->replaceConfigFrom(
             __DIR__.'/../Config/modules.php', 'modules'
         );
         $this->publishes([
-            __DIR__.'/../Config/core.php' => config_path('module-core.php')
-        ], 'config');
-        $this->publishes([
-            __DIR__.'/../Config/theming.php' => config_path('module-core-theming.php')
-        ], 'config');
+            __DIR__.'/../Config/core.php' => config_path('core.php')
+        ], 'core-config');
     }
 
     /**
@@ -276,13 +270,4 @@ class CoreServiceProvider extends ModuleServiceProvider
         }
     }
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return [];
-    }
 }

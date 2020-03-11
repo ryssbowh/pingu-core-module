@@ -65,6 +65,9 @@ class $CLASS$ extends ModuleServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../$PATH_CONFIG$/config.php', '$LOWER_NAME$'
         );
+        $this->publishes([
+            __DIR__.'/../$PATH_CONFIG$/config.php' => config_path('$LOWER_NAME$.php')
+        ], '$LOWER_NAME$-config');
     }
 
     /**
