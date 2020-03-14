@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Event;
  */
 trait ThrowsEvents
 {
-
     /**
      * Automatically boot with Model, and register Events handler.
      */

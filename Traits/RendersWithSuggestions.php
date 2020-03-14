@@ -6,8 +6,13 @@ trait RendersWithSuggestions
 {
     protected $viewSuggestions = [];
 
+    /**
+     * Data for the view
+     * 
+     * @return array
+     */
     protected abstract function getViewData(): array;
-
+    
     protected function setViewSuggestions(array $suggestions)
     {
         $this->viewSuggestions = $suggestions;
