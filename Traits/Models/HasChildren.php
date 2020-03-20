@@ -27,9 +27,9 @@ trait HasChildren
      *
      * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function children(): HasMany
+    public function children($orderBy = 'weight'): HasMany
     {
-        return $this->hasMany(static::class, 'parent_id')->orderBy('weight');
+        return $this->hasMany(static::class, 'parent_id')->orderBy($orderBy);
     }
 
     /**

@@ -132,7 +132,6 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', 'core');
         $this->registerDatabaseMacros();
 
-        \Policies::registerInGate();
         \Routes::registerAll();
 
         /**

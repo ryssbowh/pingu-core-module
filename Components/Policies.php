@@ -10,6 +10,7 @@ class Policies
     public function register(string $class, string $policy)
     {
         $this->policies[$class] = $policy;
+        \Gate::policy($class, $policy);
     }
 
     public function get($object)
@@ -23,12 +24,5 @@ class Policies
     public function all()
     {
         return $this->policies;
-    }
-
-    public function registerInGate()
-    {
-        foreach ($this->policies as $object => $policy) {
-            \Gate::policy($object, $policy);
-        }
     }
 }
