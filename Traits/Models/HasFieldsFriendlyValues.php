@@ -3,6 +3,7 @@
 namespace Pingu\Core\Traits\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 use Pingu\User\Entities\User;
 
 trait HasFieldsFriendlyValues
@@ -10,11 +11,11 @@ trait HasFieldsFriendlyValues
     /**
      * Friendly value for an attribute
      * 
-     * @param string $name
+     * @param string $key
      * 
      * @return mixed
      */
-    public function getFriendlyValue($name)
+    public function getFriendlyValue($key)
     {
         $value = $this->getAttributeFromArray($key);
         
