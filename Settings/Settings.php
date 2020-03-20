@@ -49,6 +49,17 @@ class Settings
     }
 
     /**
+     * 
+     * @param string $name
+     * 
+     * @return SettingsRepository
+     */
+    public function hasRepository(string $name): bool
+    {
+        return isset($this->repositories[$name]);
+    }
+
+    /**
      * Load all settings, either from cache or database
      * 
      * @return array
@@ -79,7 +90,9 @@ class Settings
         $settings = SettingModel::all()->sortBy('weight')->keyBy('name');
         $out = [];
         foreach ($settings as $setting) {
-            $out[$setting->name] = $setting->value;
+            if ($this->hasRepository($setting->repository)) {
+                $out[$setting->name] = $setting->value;
+            }
         }
         return $out;
     }
