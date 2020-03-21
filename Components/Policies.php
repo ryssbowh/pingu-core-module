@@ -7,8 +7,9 @@ class Policies
    
     protected $policies = [];
 
-    public function register(string $class, string $policy)
+    public function register($class, string $policy)
     {
+        $class = object_to_class($class);
         $this->policies[$class] = $policy;
         \Gate::policy($class, $policy);
     }

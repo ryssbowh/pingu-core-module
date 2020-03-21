@@ -17,12 +17,12 @@ Route::get('/', 'CoreController@home');
  * Modules
  */
 Route::get('/modules', ['uses' => 'ModuleController@index'])
-    ->middleware('can:view modules')
+    ->middleware('permission:view modules')
     ->name('core.admin.modules');
 Route::post('/modules/install/{module}', ['uses' => 'ModuleController@install'])
-    ->middleware('can:activate modules');
+    ->middleware('permission:activate modules');
 Route::post('/modules/uninstall/{module}', ['uses' => 'ModuleController@uninstall'])
-    ->middleware('can:activate modules');
+    ->middleware('permission:activate modules');
 
 /**
  * Settings

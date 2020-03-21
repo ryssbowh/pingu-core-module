@@ -32,10 +32,9 @@ class SettingsForm extends Form
         $fields = $this->repository->getFields();
         $elems = [];
         foreach ($fields as $field) {
-            $field->option('default', config($field->machineName()));
-            $elems[] = $field->toFormElement();
+            $elems[] = $field->toFormElement(config($field->machineName()));
         }
-        $elems[] = new Submit();
+        $elems[] = new Submit('_submit');
         return $elems;
     }
 
