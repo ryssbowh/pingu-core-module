@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Pingu\Core\Exceptions\FieldNotFillable;
+use Pingu\Core\Traits\Models\HasFieldsFriendlyNames;
 use Pingu\Core\Traits\Models\HasFieldsFriendlyValues;
 use Pingu\Core\Traits\Models\HasRouteSlug;
 use Pingu\Core\Traits\Models\ThrowsEvents;
@@ -23,7 +24,8 @@ abstract class BaseModel extends Model implements HasFields
         HasBaseFields,
         HasForms,
         HasRouteSlug,
-        HasFieldsFriendlyValues;
+        HasFieldsFriendlyValues,
+        HasFieldsFriendlyNames;
 
     protected $fillable = [];
 
@@ -102,15 +104,6 @@ abstract class BaseModel extends Model implements HasFields
     protected static function tableName() 
     {
         return (new static)->getTable();
-    }
-
-    public static function fieldFriendlyName($name)
-    {
-        $method = 'get'.ucFirst($name).'FriendlyName';
-        if (method_exists(static::class, $method)) {
-            return static::$method();
-        }
-        return friendly_field_name($name);
     }
 
     public function getAllAttributes()

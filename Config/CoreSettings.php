@@ -28,7 +28,7 @@ class CoreSettings extends SettingsRepository
         'app_name' => 'required|string',
         'devel_maintenance_message' => 'required|string',
         'session_lifetime' => 'required|integer|min:0',
-        'user.guestRole' => 'required|integer'
+        'user_guestRole' => 'required|exists:roles,id'
     ];
     protected $units = [
         'session.lifetime' => 'Minutes'
