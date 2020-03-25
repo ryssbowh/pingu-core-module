@@ -31,7 +31,7 @@ class ArrayCache
     protected function addKey(string $key)
     {
         if (!Arr::has($this->keys, $key)) {
-            data_set($this->keys, $key, []);
+            data_set($this->keys, $key, true);
             $this->write();
         }
     }
@@ -81,21 +81,26 @@ class ArrayCache
 
     public function forget($key)
     {
-        if ($data = data_get($this->keys, $key)) {
+        if (data_get($this->keys, $key)) {
             $this->performForget($key, data_get($this->keys, $key));
-            Arr::forget($this->keys, $key);
-            $this->write();
+            $this->forgetKey($key);
         }
     }
 
-    protected function performForget(string $key, array $array)
+    protected function performForget(string $key, $array)
     {
-        if (!$array) {
+        if (!is_array($array)) {
             \Cache::forget($key);
             return;
         }
         foreach ($array as $newkey => $array) {
             $this->performForget($key.'.'.$newkey, $array);
         }
+    }
+
+    protected function forgetKey(string $key)
+    {
+        Arr::forget($this->keys, $key);
+        $this->write();
     }
 }

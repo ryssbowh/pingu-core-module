@@ -1,28 +1,5 @@
 class Helpers {
 
-    log(message, format = false)
-    {
-        if(Config.get('app.env') != 'production') {
-            if (format) {
-                console.log(message, format);
-            } else {
-                console.log(message);
-            }
-        }
-    }
-
-    logWarning(message)
-    {
-        message = '['+Config.get('app.name')+'] '+message;
-        this.log("%c"+message, "color:orange");
-    }
-
-    logError(message)
-    {
-        message = '['+Config.get('app.name')+'] '+message;
-        this.log("%c"+message, "color:red");
-    }
-
     ajax(url, data, type = 'POST')
     {
         let _this = this;
@@ -39,14 +16,14 @@ class Helpers {
             function (data) {
                 $('body').css('cursor', 'initial');
                 if(data.status == 200) { return; }
-                let message = "%cAjax call failed : \nStatus: " + data.status;
+                let message = "Ajax call failed : \nStatus: " + data.status;
                 if(data.responseJSON.message) {
                     message += "\nMessage : " + data.responseJSON.message;
                 }
                 if(data.responseJSON.exception) {
                     message += "\nException : " + data.responseJSON.exception;
                 }
-                _this.logError(message);
+                Logger.logError(message);
                 $('body').trigger('ajax.failure', data);
             }
         ).done(

@@ -1,5 +1,6 @@
 import Config from './components/config';
 import Helpers from './components/helpers';
+import Logger from './components/logger';
 
 $.ajaxSetup(
     {
@@ -20,4 +21,5 @@ String.prototype.trimLeft = function (charlist) {
 $(() => {
 	window.Config = new Config();
     window.Helpers = new Helpers();
+    window.Logger = new Logger();
 });

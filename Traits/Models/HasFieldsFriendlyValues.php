@@ -33,7 +33,7 @@ trait HasFieldsFriendlyValues
     }
 
     /**
-     * Detect whether key has form mutator.
+     * Detect whether key has friendly mutator.
      *
      * @param string  $key
      *
@@ -45,7 +45,7 @@ trait HasFieldsFriendlyValues
     }
 
     /**
-     * Mutate field attribute.
+     * Mutate friendly field attribute.
      *
      * @param string  $key
      * @param mixed  $value
