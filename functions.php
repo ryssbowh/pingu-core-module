@@ -226,7 +226,7 @@ function modules_path(): string
 function class_machine_name($class): string
 {
     $class = object_to_class($class);
-    return strtolower(Str::studly(class_basename($class)));
+    return Str::snake(class_basename($class));
 }
     
 /**

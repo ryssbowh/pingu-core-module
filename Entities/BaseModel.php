@@ -2,27 +2,28 @@
 
 namespace Pingu\Core\Entities;
 
-use Greabock\Tentacles\EloquentTentacle;
+use Collective\Html\Eloquent\FormAccessible;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Pingu\Core\Exceptions\FieldNotFillable;
 use Pingu\Core\Traits\Models\HasFieldsFriendlyNames;
 use Pingu\Core\Traits\Models\HasFieldsFriendlyValues;
 use Pingu\Core\Traits\Models\HasFriendlyName;
 use Pingu\Core\Traits\Models\ThrowsEvents;
-use Pingu\Field\Contracts\FieldRepository;
-use Pingu\Field\Contracts\FieldsValidator;
-use Pingu\Field\Contracts\HasFields;
+use Pingu\Field\Contracts\HasFieldsContract;
 use Pingu\Field\Traits\HasBaseFields;
+use Pingu\Forms\Contracts\FormRepositoryContract;
+use Pingu\Forms\Contracts\HasFormsContract;
+use Pingu\Forms\Support\BaseForms;
 
-abstract class BaseModel extends Model implements HasFields
+abstract class BaseModel extends Model implements HasFieldsContract, HasFormsContract
 {
     use ThrowsEvents,
         HasBaseFields,
         HasFriendlyName,
         HasFieldsFriendlyValues,
-        HasFieldsFriendlyNames;
+        HasFieldsFriendlyNames,
+        FormAccessible;
 
     protected $fillable = [];
 
@@ -91,5 +92,13 @@ abstract class BaseModel extends Model implements HasFields
     public function getAllOriginal()
     {
         return $this->getOriginal();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function forms(): FormRepositoryContract
+    {
+        return new BaseForms($this);
     }
 }

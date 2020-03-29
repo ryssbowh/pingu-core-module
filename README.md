@@ -17,7 +17,6 @@
 - Theme
 - ThemeConfig
 - JsConfig
-- ArrayCache
 - Actions
 - Policies
 - Routes
@@ -153,12 +152,7 @@ You'll find occurences of schema less attributes package, used to add attributes
 ### Database Blueprint
 The Blueprint class has been extended to include `updatedBy`, `createdBy` and `deletedBy` methods that adds a field to a table : `updated_by`, `created_by` and `deleted_by` which are all a foreign key to the table users.
 
-if using `deletedBy`, you must also use laravel `softDeletes` or it won't work.
-
-### ArrayCache
-
-This is a helper to save cache looking at keys as dotted arrays. So we are able to clear any sub-array we want. example :
-I have a cache `fields.object1.fields` and `fields.object1.validator`, Array Cache will empty all cache for object1 if you call `ArrayCache::forget('fields.object1')` and will empty all cache for fields if you call `ArrayCache::forget('fields')` 
+if using `deletedBy`, you must also use laravel `softDeletes` or it won't work. 
 
 ### Core Modules boot order
 Core modules :

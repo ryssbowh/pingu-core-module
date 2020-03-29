@@ -12,6 +12,7 @@
         "Pingu\\Core\\Providers\\ThemeServiceProvider",
         "Pingu\\Core\\Providers\\RouteServiceProvider",
         "Ryssbowh\\UniqueMigrations\\MigrationServiceProvider",
+        "Ryssbowh\\ArrayCache\\ArrayCacheServiceProvider",
         "Vkovic\\LaravelCommando\\Providers\\CommandoServiceProvider"
     ],
     "aliases": {
@@ -23,7 +24,7 @@
         "Notify": "Pingu\\Core\\Facades\\Notify",
         "ThemeConfig": "Pingu\\Core\\Facades\\ThemeConfig",
         "DebugBar": "Barryvdh\\Debugbar\\Facade",
-        "ArrayCache": "Pingu\\Core\\Facades\\ArrayCache",
+        "ArrayCache": "Ryssbowh\\ArrayCache\\Facade\\ArrayCache",
         "Uris": "Pingu\\Core\\Facades\\Uris",
         "Routes": "Pingu\\Core\\Facades\\Routes",
         "Actions": "Pingu\\Core\\Facades\\Actions",

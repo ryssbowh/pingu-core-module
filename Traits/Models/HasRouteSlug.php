@@ -23,7 +23,7 @@ trait HasRouteSlug
      */
     public static function routeSlug(): string
     {
-        return Str::snake(class_basename(static::class));
+        return class_machine_name(static::class);
     }
 
 }

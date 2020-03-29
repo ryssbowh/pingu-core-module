@@ -32,7 +32,6 @@ use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Core\ModelRoutes;
 use Pingu\Core\Settings\ConfigRepository;
 use Pingu\Core\Settings\Settings as SettingsRepo;
-use Pingu\Core\Support\ArrayCache;
 use Pingu\Core\Support\ModuleServiceProvider;
 use Pingu\Forms\Fields\Number;
 use Pingu\Forms\Fields\Text;
@@ -74,8 +73,6 @@ class CoreServiceProvider extends ModuleServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('core.arrayCache', ArrayCache::class);
-
         $settings = new SettingsRepo;
         $config = $this->app['config']->all();
         $this->app->singleton(
@@ -132,8 +129,6 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', 'core');
         $this->registerDatabaseMacros();
 
-        \Routes::registerAll();
-
         /**
          * Generates modules links when disabled/enabled
          */
@@ -148,6 +143,10 @@ class CoreServiceProvider extends ModuleServiceProvider
                 \Artisan::call('module:link', ['module' => $modules[0]->getName(), '--delete' => true]);
             }
         );
+
+        $this->app->booted(function () {
+            \Routes::registerAll();
+        });
     }
 
     public function registerDatabaseMacros()

@@ -21,18 +21,20 @@ class ModelRoutes
         $slug = $object::routeSlug();
         $slugs = $object::routeSlugs();
         $class = get_class($object);
-        if (isset($this->modelSlugs[$slug])) {
-            throw new ModelSlugAlreadyRegistered("slug '$slug' for $class is already registered by ".$this->modelSlugs[$slug]);
-        }
-        if (isset($this->modelSlugs[$slugs])) {
-            throw new ModelSlugAlreadyRegistered("slug '$slugs' for $class is already registered by ".$this->modelSlugs[$slugs]);
-        }
-        $this->modelSlugs[$slug] = $object;
-        $this->modelSlugs[$slugs] = $object;
+        $this->registerSlug($slug, $class);
+        $this->registerSlug($slugs, $class);
         \Route::model($slug, $class);
     }
 
-    public function getModel(string $slug)
+    public function registerSlug(string $slug, string $class)
+    {
+        if (isset($this->modelSlugs[$slug])) {
+            throw new ModelSlugAlreadyRegistered("slug '$slug' for $class is already registered by ".$this->modelSlugs[$slug]);
+        }
+        $this->modelSlugs[$slug] = $class;
+    }
+
+    public function getModel(string $slug): string
     {
         return $this->modelSlugs[$slug] ?? null;
     }

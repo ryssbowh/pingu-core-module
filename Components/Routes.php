@@ -30,6 +30,9 @@ class Routes
 
     public function registerAll()
     {
+        if (app()->routesAreCached()) {
+            return;
+        }
         foreach ($this->routeInstances as $routes) {
             $routes->register();
         }
