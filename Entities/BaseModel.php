@@ -33,9 +33,22 @@ abstract class BaseModel extends Model implements HasFieldsContract, HasFormsCon
 
     public $descriptiveField = 'id';
 
-    public function getDescription()
+    /**
+     * Short description for this object
+     * 
+     * @return string
+     */
+    public function getDescription(): string
     {
         return $this->{$this->descriptiveField};
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function identifier(): string
+    {
+        return 'model-'.class_machine_name($this);
     }
 
     /**
@@ -82,16 +95,6 @@ abstract class BaseModel extends Model implements HasFieldsContract, HasFormsCon
     protected static function tableName() 
     {
         return (new static)->getTable();
-    }
-
-    public function getAllAttributes()
-    {
-        return $this->getAttributes();
-    }
-
-    public function getAllOriginal()
-    {
-        return $this->getOriginal();
     }
 
     /**

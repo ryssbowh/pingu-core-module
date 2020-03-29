@@ -2,7 +2,7 @@
 namespace Pingu\Core\Components;
 
 use Pingu\Core\Contracts\HasActionsContract;
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 use Request;
 
 class ContextualLinks

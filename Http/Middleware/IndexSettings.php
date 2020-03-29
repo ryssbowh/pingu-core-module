@@ -18,7 +18,6 @@ class IndexSettings
     public function handle(Request $request, Closure $next)
     {
         $repository = $request->route()->parameter('setting_section');
-        $model = \Permissions::getPermissionableModel();
 
         $permission = $repository->accessPermission();
         

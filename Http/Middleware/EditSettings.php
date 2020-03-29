@@ -18,7 +18,6 @@ class EditSettings
     public function handle(Request $request, Closure $next, $repository)
     {
         $repository = $request->route()->parameter('setting_section');
-        $model = \Permissions::getPermissionableModel();
 
         $permission = $repository->editPermission();
         
