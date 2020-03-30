@@ -104,4 +104,24 @@ abstract class BaseModel extends Model implements HasFieldsContract, HasFormsCon
     {
         return new BaseForms($this);
     }
+
+    /**
+     * Get all attributes (including bundle fields)
+     * 
+     * @return array
+     */
+    public function getAllAttributes()
+    {
+        return $this->getAttributes();
+    }
+
+    /**
+     * Get all original (including bundle fields)
+     * 
+     * @return array
+     */
+    public function getAllOriginal()
+    {
+        return $this->getOriginal();
+    }
 }
