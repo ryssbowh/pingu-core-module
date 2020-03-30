@@ -7,6 +7,7 @@
     "order": -100,
     "providers": [
         "Pingu\\Core\\Providers\\CoreServiceProvider",
+        "Pingu\\Core\\Providers\\EventServiceProvider",
         "Pingu\\Core\\Providers\\CommandServiceProvider",
         "Pingu\\Core\\Providers\\SeederServiceProvider",
         "Pingu\\Core\\Providers\\ThemeServiceProvider",
@@ -18,6 +19,7 @@
     "aliases": {
         "Settings": "Pingu\\Core\\Facades\\Settings",
         "Theme": "Pingu\\Core\\Facades\\Theme",
+        "ThemeHooks": "Pingu\\Core\\Facades\\ThemeHooks",
         "JsConfig": "Pingu\\Core\\Facades\\JsConfig",
         "ContextualLinks": "Pingu\\Core\\Facades\\ContextualLinks",
         "ModelRoutes": "Pingu\\Core\\Facades\\ModelRoutes",

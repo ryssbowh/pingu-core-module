@@ -71,20 +71,19 @@ class Themes
     {
         $setting = 'core.frontTheme';
 
-        if($request->ajax()) {
+        if ($request->ajax()) {
             $params = $request->all();
-            if(isset($params['_theme'])) {
-                if($params['_theme'] == 'admin') { $setting = 'core.adminTheme';
+            if (isset($params['_theme'])) {
+                if ($params['_theme'] == 'admin') { 
+                    $setting = 'core.adminTheme';
                 }
-            }
-            else{
+            } else {
                 //ajax call doesn't set a theme, aborting
                 return null;
             }
-        }
-        else{
+        } else {
             $segments = $request->segments();
-            if(isset($segments[0]) and $segments[0] == 'admin') {
+            if (isset($segments[0]) and $segments[0] == 'admin') {
                 $setting = 'core.adminTheme';
             }
         }
@@ -130,6 +129,10 @@ class Themes
         //set theme config
         $config = (include $theme->getPath('config.php'));
         ThemeConfig::setConfig($config);
+
+        //set theme hooks
+        $hooksClass = "Pingu\\Themes\\".$theme->name."\\Hooks";
+        \ThemeHooks::set($hooksClass);
 
         //register the theme assets
         if($setAssets) {

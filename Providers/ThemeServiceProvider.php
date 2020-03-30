@@ -1,4 +1,5 @@
 <?php
+
 namespace Pingu\Core\Providers;
 
 use Illuminate\Routing\Router;
@@ -6,6 +7,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Pingu\Core\Console\{createTheme, refreshThemeCache, listThemes};
 use Pingu\Core\Theming\ThemeConfig;
+use Pingu\Core\Theming\ThemeHooks;
 use Pingu\Core\Theming\ThemeViewFinder;
 use Pingu\Core\Theming\Themes;
 
@@ -41,6 +43,7 @@ class ThemeServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton('core.themeConfig', ThemeConfig::class);
+        $this->app->singleton('core.themeHooks', ThemeHooks::class);
 
     }
 
