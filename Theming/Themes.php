@@ -132,7 +132,7 @@ class Themes
 
         //set theme hooks
         $hooksClass = "Pingu\\Themes\\".$theme->name."\\Hooks";
-        \ThemeHooks::set($hooksClass);
+        \ThemeHooks::register($hooksClass);
 
         //register the theme assets
         if($setAssets) {
@@ -229,7 +229,7 @@ class Themes
     {
         $themes = $this->scanJsonFiles();
         file_put_contents($this->cachePath, json_encode($themes, JSON_PRETTY_PRINT));
-        $stub = file_get_contents(realpath(__DIR__ . '/../stubs/theme_cache.stub'));
+        $stub = file_get_contents(realpath(__DIR__ . '/../Console/stubs/themes/theme_cache.stub'));
         $contents = str_replace('[CACHE]', var_export($themes, true), $stub);
         file_put_contents($this->cachePath, $contents);
     }

@@ -7,49 +7,64 @@ use Pingu\Core\Exceptions\themeException;
 class ThemeHooks
 {
     /**
-     * Theme Hooks class
+     * Current hooks class
      * @var string
      */
-    protected $themeHooks;
+    protected $class;
 
     /**
-     * Defined hooks
+     * Hook list, for each defined Hook class
      * @var array
      */
-    protected $hooks;
+    protected $hooks = [];
 
     /**
      * Set the theme hooks class
      * 
      * @param string $class
      */
-    public function set(string $class)
+    public function register(string $class)
     {
         if (!class_exists($class)) {
             throw new themeException($class.' is not a valid hook theme hook class');
         }
-        $this->themeHooks = $class;
+        $this->class = $class;
         $this->resolveHooks();
     }
 
     /**
-     * Dispatch a theme hook
+     * Dispatch theme hooks for a renderer
      * 
-     * @param string $identifier
+     * @param string $type
+     * @param string $hook
      * @param array  $data
      * 
      * @return bool caught
      */
-    public function dispatch(string $identifier, array $data): bool
+    public function dispatch(string $type, string $hook, array $data): bool
     {
-        if (!$this->themeHooks) {
-            return false;
+        $caught = $caught2 = $this->dispatchOne($type, $data);
+        if ($hook) {
+            $caught2 = $this->dispatchOne($hook, $data);
         }
-        if (!$this->hasHook($identifier)) {
-            return false;
+        return ($caught or $caught2);
+    }
+
+    /**
+     * Dispatch one hook
+     * 
+     * @param string $hook
+     * @param array  $data
+     * 
+     * @return bool caught
+     */
+    protected function dispatchOne(string $hook, array $data): bool
+    {
+        if ($this->hasHook($hook)) {
+            $this->class::$hook(...$data);
+            return true;
         }
-        $this->themeHooks::$identifier(...$data);
-        return true;
+        return false;
     }
 
     /**
@@ -65,14 +80,40 @@ class ThemeHooks
     }
 
     /**
-     * Resolve all hooks for the current class
+     * Resolve all hooks for the current class, either from cache or built
+     *
+     * @return array
      */
     protected function resolveHooks()
     {
-        $ref = new \ReflectionClass($this->themeHooks);
+        $_this = $this;
+        if (config('theme.cache')) {
+            $key = config('theme.hooksCacheKey').'.'.\Theme::current()->name;
+            \Log::debug($key);
+            $this->hooks = \Cache::rememberForever(
+                $key, function () use ($_this, $class) {
+                    return $_this->buildHooks();
+                }
+            );
+        } else {
+            $this->hooks = $this->buildHooks();
+        }
+    }
+
+    /**
+     * Build hooks list using reflection.
+     * Only list static and public methods
+     * 
+     * @return array
+     */
+    protected function buildHooks(): array
+    {
+        $ref = new \ReflectionClass($this->class);
         $methods = $ref->getMethods(\ReflectionMethod::IS_PUBLIC & \ReflectionMethod::IS_PUBLIC);
-        $this->hooks = array_map(function ($method) {
-            return $method->name;
-        }, $methods);
+        return array_map(
+            function ($method) {
+                return $method->name;
+            }, $methods
+        );
     }
 }

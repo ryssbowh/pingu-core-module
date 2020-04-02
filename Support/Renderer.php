@@ -38,14 +38,20 @@ abstract class Renderer implements RendererContract
      * 
      * @return array
      */
-    abstract public function getDefaultViews(): array;
+    public function getDefaultViews(): array
+    {
+        return [];
+    }
 
     /**
      * Default data
      * 
      * @return array
      */
-    abstract public function getDefaultData(): array;
+    public function getDefaultData(): array
+    {
+        return [];
+    }
 
     /**
      * @inheritDoc
@@ -139,7 +145,16 @@ abstract class Renderer implements RendererContract
     /**
      * @inheritDoc
      */
-    public function setData(array $data)
+    public function setData(string $name, $value)
+    {
+        $this->addData($name, $value, true);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function replaceData(array $data)
     {
         $this->data = $data;
         return $this;

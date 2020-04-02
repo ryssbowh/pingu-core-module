@@ -2,8 +2,11 @@
 
 namespace Pingu\Core\Http\Controllers;
 
+use Pingu\Core\Traits\RendersAdminViews;
+
 class ModuleController extends BaseController
 {
+    use RendersAdminViews;
     /**
      * List all modules
      *
@@ -12,11 +15,10 @@ class ModuleController extends BaseController
     public function index()
     {
         $modules = \Module::all();
-        return view('pages.modules.index')->with(
-            [
+        $data = [
             'modules' => $modules
-            ]
-        );
+        ];
+        return $this->renderAdminView('pages.modules.index', 'index-modules', $data);
     }
 
     /**

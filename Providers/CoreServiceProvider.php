@@ -29,6 +29,7 @@ use Pingu\Core\Http\Middleware\IndexSettings;
 use Pingu\Core\Http\Middleware\Published;
 use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
+use Pingu\Core\Http\Middleware\StartSession;
 use Pingu\Core\ModelRoutes;
 use Pingu\Core\Settings\ConfigRepository;
 use Pingu\Core\Settings\Settings as SettingsRepo;
@@ -51,20 +52,20 @@ class CoreServiceProvider extends ModuleServiceProvider
 
     protected $groupMiddlewares = [
         'web' => [
-            SetThemeMiddleware::class
         ],
         'ajax' => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            SetThemeMiddleware::class
         ]
     ];
 
-    protected $globalMiddlewares = [];
+    protected $globalMiddlewares = [
+        StartSession::class,
+        SetThemeMiddleware::class
+    ];
 
     /**
      * Register the service provider.

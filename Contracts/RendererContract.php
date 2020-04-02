@@ -60,7 +60,7 @@ interface RendererContract
     public function getData(): array;
 
     /**
-     * Add data
+     * Data setter
      * 
      * @param string $name
      * @param mixed  $value
@@ -87,7 +87,16 @@ interface RendererContract
      *
      * @return Renderer
      */
-    public function setData(array $data);
+    public function setData(string $name, $value);
+
+    /**
+     * Replaces all data
+     * 
+     * @param array $data
+     *
+     * @return Renderer
+     */
+    public function replaceData(array $data);
 
     /**
      * Identifier for this renderer, will be caught by the Theme hooks
@@ -95,6 +104,13 @@ interface RendererContract
      * @return string
      */
     public function identifier(): string;
+
+    /**
+     * Identifier for this renderer's object, will be caught by the Theme hooks
+     * 
+     * @return string
+     */
+    public function objectIdentifier(): string;
 
     /**
      * Data to be sent to the hook

@@ -40,5 +40,6 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'cache' => false
+    'cache' => false,
+    'hooksCacheKey' => 'themes.hooks-methods'
 ];

@@ -50,7 +50,8 @@ class createTheme extends baseThemeCommand
             "name" => $themeName,
             "extends" => $parentTheme,
             "views-path" => $viewsPath,
-            "asset-path" => $assetPath
+            "asset-path" => $assetPath,
+            "layouts" => []
             ]
         );
 
@@ -69,6 +70,7 @@ class createTheme extends baseThemeCommand
         $this->createConfigFile($themeName);
         $this->createPackageFile($themeName);
         $this->createComposeFile($themeName);
+        $this->createHooksFile($themeName);
 
         $themeJson->saveToFile(themes_path($themeName."/theme.json"));
 
@@ -92,6 +94,13 @@ class createTheme extends baseThemeCommand
         $replace = [$name, strtolower($name)];
         $content = str_replace($search, $replace, $content);
         $this->files->put(themes_path($name).'/composer.json', $content);
+    }
+
+    public function createHooksFile($name)
+    {
+        $content = file_get_contents(module_path('Core').'/Console/stubs/themes/hooks.stub');
+        $content = str_replace('$NAME$', $name, $content);
+        $this->files->put(themes_path($name).'/Hooks.php', $content);
     }
 
     public function createWebpackFile($themeName, $assetFolder)

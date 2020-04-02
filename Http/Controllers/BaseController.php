@@ -90,6 +90,11 @@ class BaseController extends Controller
         return $actions[$name];
     }
 
+    protected function renderRenderer(RendererContract $renderer)
+    {
+        return $renderer->render();
+    }
+
 }
 
 ?>
