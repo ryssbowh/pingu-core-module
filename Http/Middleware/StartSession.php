@@ -3,9 +3,9 @@
 namespace Pingu\Core\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
+use Illuminate\Session\Middleware\StartSession as StartSessionBase;
 
-class SetThemeMiddleware
+class StartSession extends StartSessionBase
 {
     /**
      * Handle an incoming request.
@@ -14,13 +14,12 @@ class SetThemeMiddleware
      * @param  \Closure                 $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next)
     {   
         $segments = $request->segments();
         if ($segments and $segments[0] == config('core.apiPrefix', 'api')) {
             return $next($request);
         }
-        \Theme::setByRequest($request);
-        return $next($request);
+        return parent::handle($request, $next);
     }
 }

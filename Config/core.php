@@ -23,7 +23,10 @@ return [
      * Prefix for admin routes
      */
     'adminPrefix' => 'admin',
-
+    /**
+     * Prefix for api routes
+     */
+    'apiPrefix' => 'api',
     'seeders' => [
         'table' => 'seedings',
         'dir' => 'seeds',
