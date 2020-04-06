@@ -4,6 +4,7 @@ namespace Pingu\Core\Events;
 
 use Illuminate\View\View;
 use Pingu\Core\Contracts\RendererContract;
+use Pingu\Entity\Entities\ViewMode;
 
 class Rendered
 {
@@ -11,11 +12,6 @@ class Rendered
      * @var RendererContract
      */
     public $renderer;
-
-    /**
-     * Object being rendered
-     */
-    public $object;
 
     /**
      * View rendered
@@ -34,11 +30,10 @@ class Rendered
      *
      * @return void
      */
-    public function __construct(string &$html, View $view, RendererContract $renderer, $object)
+    public function __construct(string &$html, View $view, RendererContract $renderer)
     {
         $this->view = $view;
         $this->html = &$html;
         $this->renderer = $renderer;
-        $this->object = $object;
     }
 }

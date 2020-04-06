@@ -16,8 +16,8 @@ trait RendersWithRenderer
     /**
      * @inheritDoc
      */
-    public function render(): string
+    public function render($viewMode = null): string
     {
-        return $this->getRenderer()->render();
+        return $this->getRenderer()->render($viewMode);
     }
 }

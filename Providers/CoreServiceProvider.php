@@ -34,6 +34,7 @@ use Pingu\Core\ModelRoutes;
 use Pingu\Core\Settings\ConfigRepository;
 use Pingu\Core\Settings\Settings as SettingsRepo;
 use Pingu\Core\Support\ModuleServiceProvider;
+use Pingu\Core\Validation\CoreValidationRules;
 use Pingu\Forms\Fields\Number;
 use Pingu\Forms\Fields\Text;
 use Spatie\TranslationLoader\LanguageLine;
@@ -129,6 +130,7 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->registerJsConfig();
         $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', 'core');
         $this->registerDatabaseMacros();
+        $this->registerValidationRules();
 
         /**
          * Generates modules links when disabled/enabled
@@ -148,6 +150,11 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->app->booted(function () {
             \Routes::registerAll();
         });
+    }
+
+    public function registerValidationRules()
+    {
+        \Validator::extend('valid_url', CoreValidationRules::class.'@validUrl');
     }
 
     public function registerDatabaseMacros()

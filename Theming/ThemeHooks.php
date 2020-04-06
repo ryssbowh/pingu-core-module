@@ -36,29 +36,11 @@ class ThemeHooks
      * Dispatch theme hooks for a renderer
      * 
      * @param string $type
-     * @param string $hook
      * @param array  $data
      * 
      * @return bool caught
      */
-    public function dispatch(string $type, string $hook, array $data): bool
-    {
-        $caught = $caught2 = $this->dispatchOne($type, $data);
-        if ($hook) {
-            $caught2 = $this->dispatchOne($hook, $data);
-        }
-        return ($caught or $caught2);
-    }
-
-    /**
-     * Dispatch one hook
-     * 
-     * @param string $hook
-     * @param array  $data
-     * 
-     * @return bool caught
-     */
-    protected function dispatchOne(string $hook, array $data): bool
+    public function dispatch(string $hook, array $data): bool
     {
         if ($this->hasHook($hook)) {
             $this->class::$hook(...$data);
@@ -89,7 +71,6 @@ class ThemeHooks
         $_this = $this;
         if (config('theme.cache')) {
             $key = config('theme.hooksCacheKey').'.'.\Theme::current()->name;
-            \Log::debug($key);
             $this->hooks = \Cache::rememberForever(
                 $key, function () use ($_this, $class) {
                     return $_this->buildHooks();

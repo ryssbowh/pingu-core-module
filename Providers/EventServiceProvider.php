@@ -9,8 +9,5 @@ use Pingu\Core\Listeners\DispatchThemeHook;
 class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
-        Rendering::class => [
-            DispatchThemeHook::class
-        ]
     ];
 }

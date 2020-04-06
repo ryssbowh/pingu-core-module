@@ -2,17 +2,14 @@
 
 namespace Pingu\Core\Contracts;
 
+use Illuminate\Support\Collection;
+
 interface RendererContract
 {
     /**
-     * Object being rendered
-     * 
-     * @return object
-     */
-    public function getObject();
-    
-    /**
      * Render
+     *
+     * @param ?viewMode
      * 
      * @return string
      */
@@ -53,11 +50,18 @@ interface RendererContract
     public function prependView(string $name);
 
     /**
+     * Removes a view from the list
+     * 
+     * @param string $name
+     */
+    public function removeView(string $name);
+
+    /**
      * Data getter
      * 
-     * @return array
+     * @return Collection|mixed
      */
-    public function getData(): array;
+    public function getData(?string $name);
 
     /**
      * Data setter
@@ -92,30 +96,18 @@ interface RendererContract
     /**
      * Replaces all data
      * 
-     * @param array $data
+     * @param Collection $data
      *
      * @return Renderer
      */
-    public function replaceData(array $data);
+    public function replaceData(Collection $data);
 
     /**
-     * Identifier for this renderer, will be caught by the Theme hooks
+     * Is a data set
      * 
-     * @return string
-     */
-    public function identifier(): string;
-
-    /**
-     * Identifier for this renderer's object, will be caught by the Theme hooks
+     * @param string  $name
      * 
-     * @return string
+     * @return boolean
      */
-    public function objectIdentifier(): string;
-
-    /**
-     * Data to be sent to the hook
-     * 
-     * @return array
-     */
-    public function getHookData(): array;
+    public function hasData(string $name): bool;
 }

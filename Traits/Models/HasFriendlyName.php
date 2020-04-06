@@ -13,7 +13,7 @@ trait HasFriendlyName
      */
     public static function friendlyName(): string
     {
-        return static::$friendlyName ?? friendly_classname(static::class);
+        return friendly_classname(static::class);
     }
 
     /**

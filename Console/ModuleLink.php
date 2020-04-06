@@ -32,21 +32,19 @@ class ModuleLink extends Command
     {
         $moduleName = $this->argument('module');
         $deleting = $this->option('delete');
-        if(!$moduleName) {
+        if (!$moduleName) {
             $modules = \Module::all();
-        }
-        else{
+        } else {
             $module = \Module::findOrFail($moduleName);
             $modules = [$module];
         }
-        foreach($modules as $module){
+        foreach ($modules as $module) {
             $publicDirectory = public_path(config('modules.public_path'));
             $publicLink = $publicDirectory.'/'.$module->getName();
-            if($deleting) {
+            if ($deleting) {
                 $this->deleteLink($publicLink);
                 $this->info("Deleted link ".$publicLink);
-            }
-            else{
+            } else {
                 $publicModuleFolder = $module->getPath().'/public';
                 $this->createLink($publicModuleFolder, $publicDirectory, $publicLink);
                 $this->info("Created link ".$publicLink.' -> '.$publicModuleFolder);
@@ -56,10 +54,10 @@ class ModuleLink extends Command
 
     protected function createLink($publicModuleFolder, $publicDirectory, $publicLink)
     {
-        if(!file_exists($publicModuleFolder)) {
+        if (!file_exists($publicModuleFolder)) {
             \File::makeDirectory($publicModuleFolder);
         }
-        if(!file_exists($publicDirectory)) {
+        if (!file_exists($publicDirectory)) {
             \File::makeDirectory($publicDirectory);
         }
         $this->deleteLink($publicLink);
@@ -68,7 +66,7 @@ class ModuleLink extends Command
 
     public function deleteLink($publicLink)
     {
-        if(file_exists($publicLink)) {
+        if (file_exists($publicLink)) {
             \File::delete($publicLink);
         }
     }
