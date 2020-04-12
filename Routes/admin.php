@@ -18,7 +18,7 @@ Route::get('/', 'CoreController@home');
  */
 Route::get('/modules', ['uses' => 'ModuleController@index'])
     ->middleware('permission:view modules')
-    ->name('core.admin.modules');
+    ->name('modules');
 Route::post('/modules/install/{module}', ['uses' => 'ModuleController@install'])
     ->middleware('permission:activate modules');
 Route::post('/modules/uninstall/{module}', ['uses' => 'ModuleController@uninstall'])
@@ -27,9 +27,21 @@ Route::post('/modules/uninstall/{module}', ['uses' => 'ModuleController@uninstal
 /**
  * Settings
  */
-Route::get('/settings/{setting_section}', ['uses' => 'SettingsController@index'])
-    ->middleware('indexSettings:setting_section');
-Route::get('/settings/{setting_section}/edit', ['uses' => 'SettingsController@edit'])
-    ->middleware('editSettings:setting_section');
-Route::put('/settings/{setting_section}', ['uses' => 'SettingsController@update'])
-    ->middleware('editSettings:setting_section');
+if (pingu_installed()) {
+    foreach (\Settings::allRepositories() as $name => $repository) {
+        Route::get('/settings/'.$name, ['uses' => 'SettingsController@index'])
+            ->name(adminPrefix().'.settings.'.$name)
+            ->middleware('indexSettings:'.$name);
+        Route::get('/settings/'.$name.'/edit', ['uses' => 'SettingsController@edit'])
+            ->name(adminPrefix().'.settings.'.$name.'.edit')
+            ->middleware('editSettings:'.$name);
+        Route::put('/settings/'.$name, ['uses' => 'SettingsController@update'])
+            ->middleware('editSettings:'.$name);
+    }
+}
+
+Route::get('settings/cache', ['uses' => 'CacheController@index'])
+    ->name(adminPrefix().'.settings.cache')
+    ->middleware('permission:manage cache');
+Route::post('settings/cache', ['uses' => 'CacheController@empty'])
+    ->middleware('permission:manage cache');

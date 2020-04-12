@@ -16,7 +16,7 @@ class SettingsRequest extends FormRequest
     public function rules()
     {   
         $rules = [];
-        $repository = $this->route('setting_section');
+        $repository = \Settings::repository($this->segment(3));
         return $repository->getValidations();
     }
 
@@ -37,7 +37,7 @@ class SettingsRequest extends FormRequest
      */
     public function messages()
     {   
-        $repository = $this->route('setting_section');
+        $repository = \Settings::repository($this->segment(3));
         return $repository->getMessages();
     }
 }

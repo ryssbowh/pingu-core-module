@@ -49,6 +49,16 @@ class Settings
     }
 
     /**
+     * Get all registered repositories
+     * 
+     * @return array
+     */
+    public function allRepositories(): array
+    {
+        return $this->repositories;
+    }
+
+    /**
      * 
      * @param string $name
      * 

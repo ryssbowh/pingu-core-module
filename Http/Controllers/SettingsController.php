@@ -11,21 +11,25 @@ use Pingu\Core\Http\Controllers\BaseController;
 use Pingu\Core\Http\Requests\AddSettingRequest;
 use Pingu\Core\Http\Requests\SettingsRequest;
 use Pingu\Core\Settings\SettingsRepository;
+use Pingu\Core\Traits\RendersAdminViews;
 use Pingu\Forms\Support\Fields\Submit;
 use Pingu\Forms\Support\Form;
 
 class SettingsController extends BaseController
 {
+    use RendersAdminViews;
+
     /**
      * Edit action
      * 
-     * @param Request            $request   
-     * @param SettingsRepository $repository
+     * @param Request $request   
+     * @param string  $repository
      * 
      * @return view
      */
-    public function edit(Request $request, SettingsRepository $repository)
+    public function edit(Request $request)
     {   
+        $repository = \Settings::repository($request->segment(3));
         $form = $repository->editForm(['url' => $this->getUpdateUrl($repository)]);
 
         return $this->getEditView($repository, $form);
@@ -34,13 +38,14 @@ class SettingsController extends BaseController
     /**
      * update action
      * 
-     * @param SettingsRequest    $request 
-     * @param SettingsRepository $repository
+     * @param SettingsRequest $request 
+     * @param string          $repository
      * 
      * @return redirect
      */
-    public function update(SettingsRequest $request, SettingsRepository $repository)
+    public function update(SettingsRequest $request)
     {
+        $repository = \Settings::repository($request->segment(3));
         $validated = $request->validated();
         $settings = collect();
         foreach ($validated as $key => $value) {
@@ -54,13 +59,14 @@ class SettingsController extends BaseController
     /**
      * Index action
      * 
-     * @param Request            $request
-     * @param SettingsRepository $repository
+     * @param Request $request
+     * @param string  $repository
      * 
      * @return view
      */
-    public function index(Request $request, SettingsRepository $repository)
+    public function index(Request $request)
     {
+        $repository = \Settings::repository($request->segment(3));
         return $this->getIndexView($repository);
     }
 
@@ -74,8 +80,13 @@ class SettingsController extends BaseController
      */
     protected function getEditView(SettingsRepository $repository, Form $form)
     {
-        return view()->first($this->getEditViewNames($repository),
-            ['form' => $form, 'section' => $repository->section()]
+        return $this->renderAdminView(
+            $this->getEditViewNames($repository), 
+            'edit-settings', 
+            [
+                'form' => $form, 
+                'section' => $repository->section()
+            ]
         );
     }
 
@@ -100,11 +111,13 @@ class SettingsController extends BaseController
      */
     protected function getIndexView(SettingsRepository $repository)
     {
-        return view()->first($this->getIndexViewNames($repository),
+        return $this->renderAdminView(
+            $this->getIndexViewNames($repository),
+            'index-settings',
             [
-            'repository' => $repository, 
-            'canEdit' => \Auth::user()->hasPermissionTo($repository->editPermission()),
-            'editUri' => $this->getEditUrl($repository)
+                'repository' => $repository, 
+                'canEdit' => \Auth::user()->hasPermissionTo($repository->editPermission()),
+                'editUri' => $this->getEditUrl($repository)
             ]
         );
     }

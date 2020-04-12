@@ -13,6 +13,7 @@ use Pingu\Core\Components\Actions;
 use Pingu\Core\Components\ContextualLinks;
 use Pingu\Core\Components\JsConfig;
 use Pingu\Core\Components\Notify;
+use Pingu\Core\Components\PinguCaches;
 use Pingu\Core\Components\Policies;
 use Pingu\Core\Components\Routes;
 use Pingu\Core\Components\Uris;
@@ -97,16 +98,10 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->app->singleton('core.routes', Routes::class);
         $this->app->singleton('core.actions', Actions::class);
         $this->app->singleton('core.policies', Policies::class);
+        $this->app->singleton('core.caches', PinguCaches::class);
 
         \Settings::register(new CoreSettings, $this->app);
         \Settings::register(new MailingSettings, $this->app);
-        //Binds settings section slug in Route system
-        $app = $this->app;
-        \Route::bind(
-            'setting_section', function ($value, $route) use ($app) {
-                return $app->make('settings.'.$value);
-            }
-        );
     }
 
     /**

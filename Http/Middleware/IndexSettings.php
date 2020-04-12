@@ -17,7 +17,7 @@ class IndexSettings
      */
     public function handle(Request $request, Closure $next)
     {
-        $repository = $request->route()->parameter('setting_section');
+        $repository = \Settings::repository($request->segment(3));
 
         $permission = $repository->accessPermission();
         

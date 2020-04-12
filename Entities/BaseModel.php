@@ -2,7 +2,6 @@
 
 namespace Pingu\Core\Entities;
 
-use Collective\Html\Eloquent\FormAccessible;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Pingu\Core\Exceptions\FieldNotFillable;
@@ -15,6 +14,7 @@ use Pingu\Field\Traits\HasBaseFields;
 use Pingu\Forms\Contracts\FormRepositoryContract;
 use Pingu\Forms\Contracts\HasFormsContract;
 use Pingu\Forms\Support\BaseForms;
+use Pingu\Forms\Traits\FormAccessible;
 
 abstract class BaseModel extends Model implements HasFieldsContract, HasFormsContract
 {

@@ -31,7 +31,8 @@
         "Routes": "Pingu\\Core\\Facades\\Routes",
         "Actions": "Pingu\\Core\\Facades\\Actions",
         "Policies": "Pingu\\Core\\Facades\\Policies",
-        "Str": "Illuminate\\Support\\Str"
+        "Str": "Illuminate\\Support\\Str",
+        "PinguCaches": "Pingu\\Core\\Facades\\PinguCaches"
     },
     "files": [
         "functions.php"

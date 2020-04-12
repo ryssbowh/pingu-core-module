@@ -27,6 +27,7 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
 
         $perm4 = Permission::findOrCreate(['name' => 'view modules', 'section' => 'Core']);
         Permission::findOrCreate(['name' => 'activate modules', 'section' => 'Core']);
+        $perm5 = Permission::findOrCreate(['name' => 'manage cache', 'section' => 'Core']);
 
         $main = Menu::where(['machineName' => 'main-menu'])->first();
 
@@ -70,7 +71,17 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
                 'permission_id' => null
                 ], $admin
             );
-            $structure = MenuItem::create(
+            MenuItem::create(
+                [
+                'name' => 'Cache',
+                'weight' => 0,
+                'active' => 1,
+                'deletable' => 0,
+                'permission_id' => $perm5->id,
+                'url' => adminPrefix().'.settings.cache'
+                ], $admin, $settings
+            );
+            MenuItem::create(
                 [
                 'name' => 'Structure',
                 'weight' => 2,
@@ -85,7 +96,7 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
                 'weight' => 3,
                 'active' => 1,
                 'deletable' => 0,
-                'url' => 'core.admin.modules',
+                'url' => adminPrefix().'.modules',
                 'permission_id' => $perm4->id
                 ], $admin
             );
