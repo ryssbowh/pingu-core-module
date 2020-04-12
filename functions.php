@@ -278,14 +278,15 @@ function class_to_object($class): object
  */
 function friendly_size(int $size, $unit = ''): string
 {
+    $unit = strtoupper($unit);
     if ((!$unit && $size >= 1000*1000*1000) || $unit == "GB") {
-        return number_format($size/(1000*1000*1000), 2)."GB";
+        return number_format($size/(1000*1000*1000), 2)."Gb";
     }
     if ((!$unit && $size >= 1000*1000) || $unit == "MB") {
-        return number_format($size/(1000*1000), 2)."MB";
+        return number_format($size/(1000*1000), 2)."Mb";
     }
     if ((!$unit && $size >= 1000) || $unit == "KB") {
-        return number_format($size/(1000), 2)."KB";
+        return number_format($size/(1000), 2)."Kb";
     }
     return number_format($size)." bytes";
 }
