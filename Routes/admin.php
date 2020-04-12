@@ -45,3 +45,7 @@ Route::get('settings/cache', ['uses' => 'CacheController@index'])
     ->middleware('permission:manage cache');
 Route::post('settings/cache', ['uses' => 'CacheController@empty'])
     ->middleware('permission:manage cache');
+Route::post('settings/route_cache', ['uses' => 'CacheController@routeCache'])
+    ->middleware('permission:manage cache');
+Route::post('settings/rebuild_route_cache', ['uses' => 'CacheController@rebuildRouteCache'])
+    ->middleware('permission:manage cache');

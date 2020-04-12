@@ -13,22 +13,27 @@ class CacheController extends BaseController
     /**
      * Index action
      * 
-     * @param Request $request   
-     * @param string  $repository
-     * 
      * @return view
      */
     public function index()
     {   
+        $routeCache = app()->getCachedRoutesPath();
         return $this->renderAdminView(
             ['pages.settings.cache.index'],
             'index-caches',
             [
-                'caches' => \PinguCaches::all()
+                'caches' => \PinguCaches::all(),
+                'routesAreCached' => app()->routesAreCached(),
+                'cachedSince' => file_exists($routeCache) ? filemtime($routeCache) : false
             ]
         );
     }
 
+    /**
+     * Empty some cache
+     * 
+     * @param  Request $request
+     */
     public function empty(Request $request)
     {
         $caches = $request->post('caches', []);
@@ -38,6 +43,35 @@ class CacheController extends BaseController
             }
             \Notify::success('Caches cleared');
         }
+        return back();
+    }
+
+    /**
+     * Caches or clears route cache
+     * 
+     * @param  Request $request
+     */
+    public function routeCache(Request $request)
+    {
+        if ($request->post('cacheRoutes', false)) {
+            \Notify::success('Routes are now cached');
+            \Artisan::call('route:cache');
+        } else {
+            \Notify::success('Route cache cleared');
+            \Artisan::call('route:clear');
+        }
+        return back();
+    }
+
+    /**
+     * Rebuild the route cache
+     * 
+     * @param Request $request
+     */
+    public function rebuildRouteCache(Request $request)
+    {
+        \Notify::success('Route cache rebuilt');
+        \Artisan::call('route:cache');
         return back();
     }
 }
