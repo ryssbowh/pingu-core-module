@@ -146,13 +146,20 @@ abstract class Uris
      * @param string  $action
      * @param mixed   $replacements
      * @param ?string $prefix
+     * @param array $parameters
      * 
      * @return string
      */
-    public function make(string $action, $replacements = [], ?string $prefix = null)
+    public function make(string $action, $replacements = [], ?string $prefix = null, array $parameters = [])
     {
         $replacements = Arr::wrap($replacements);
-        $uri = $this->get($action, $prefix);
-        return replaceUriSlugs($uri, $replacements);
+        $uri = replaceUriSlugs($this->get($action, $prefix), $replacements);
+        if ($parameters) {
+            array_walk($parameters, function (&$value, $key) {
+                $value = $key.'='.$value;
+            });
+            $uri .= '?'.implode('&', $parameters);
+        }
+        return $uri;
     }
 }
