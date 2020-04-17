@@ -1,14 +1,5 @@
 import Config from './components/config';
-import Helpers from './components/helpers';
 import Logger from './components/logger';
-
-$.ajaxSetup(
-    {
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    }
-);
 
 String.prototype.trimLeft = function (charlist) {
     if (charlist === undefined) {
@@ -18,8 +9,11 @@ String.prototype.trimLeft = function (charlist) {
     return this.replace(new RegExp("^[" + charlist + "]+"), "");
 };
 
+String.prototype.rtrim = function(s) { 
+    return this.replace(new RegExp(s + "*$"),''); 
+};
+
 $(() => {
 	window.Config = new Config();
-    window.Helpers = new Helpers();
     window.Logger = new Logger();
 });

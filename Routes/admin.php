@@ -18,7 +18,7 @@ Route::get('/', 'CoreController@home');
  */
 Route::get('/modules', ['uses' => 'ModuleController@index'])
     ->middleware('permission:view modules')
-    ->name('modules');
+    ->name(adminPrefix().'.modules');
 Route::post('/modules/install/{module}', ['uses' => 'ModuleController@install'])
     ->middleware('permission:activate modules');
 Route::post('/modules/uninstall/{module}', ['uses' => 'ModuleController@uninstall'])
@@ -30,10 +30,10 @@ Route::post('/modules/uninstall/{module}', ['uses' => 'ModuleController@uninstal
 if (pingu_installed()) {
     foreach (\Settings::allRepositories() as $name => $repository) {
         Route::get('/settings/'.$name, ['uses' => 'SettingsController@index'])
-            ->name(adminPrefix().'.settings.'.$name)
+            ->name('admin.settings.'.$name)
             ->middleware('indexSettings:'.$name);
         Route::get('/settings/'.$name.'/edit', ['uses' => 'SettingsController@edit'])
-            ->name(adminPrefix().'.settings.'.$name.'.edit')
+            ->name('admin.settings.'.$name.'.edit')
             ->middleware('editSettings:'.$name);
         Route::put('/settings/'.$name, ['uses' => 'SettingsController@update'])
             ->middleware('editSettings:'.$name);

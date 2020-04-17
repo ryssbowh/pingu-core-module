@@ -205,7 +205,9 @@ abstract class SettingsRepository
     public function create($perm = true, $item = true)
     {
         foreach ($this->keys() as $key) {
-            \Settings::create($key, $this->name(), $this->encrypted($key));
+            if (!\Settings::has($key)) {
+                \Settings::create($key, $this->name(), $this->encrypted($key));
+            }
         }
 
         $access = null;
@@ -223,7 +225,7 @@ abstract class SettingsRepository
                 [
                 'name' => $this->section(),
                 'active' => 1,
-                'url' => '/'.adminPrefix().'/settings/'.$this->name(),
+                'url' => 'admin.settings.'.$this->name(),
                 'deletable' => 0,
                 'permission_id' => $access ? $access->id : null
                 ], 'admin-menu', 'admin-menu.settings'

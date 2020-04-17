@@ -87,7 +87,6 @@ class Themes
                 $setting = 'core.adminTheme';
             }
         }
-
         return $this->setByName(config($setting), !$request->wantsJson());
     }
 

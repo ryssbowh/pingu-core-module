@@ -96,7 +96,7 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
                 'weight' => 3,
                 'active' => 1,
                 'deletable' => 0,
-                'url' => adminPrefix().'.modules',
+                'url' => 'core.admin.modules',
                 'permission_id' => $perm4->id
                 ], $admin
             );

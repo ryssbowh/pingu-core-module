@@ -10,10 +10,6 @@ var publicPath = 'module-assets/';
 
 //Javascript
 mix.js(assetPath + '/js/app.js', publicPath + name+'.js').sourceMaps();
-mix.autoload({
-    'jquery': ['$', 'jQuery'],
-    'moment' : ['moment']
-});
 
 //Css
 mix.sass(assetPath + '/sass/app.scss', publicPath + name+'.css');

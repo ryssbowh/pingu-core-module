@@ -69,6 +69,11 @@ class Settings
         return isset($this->repositories[$name]);
     }
 
+    public function has(string $name)
+    {
+        return isset($this->all()[$name]);
+    }
+
     /**
      * Load all settings, either from cache or database
      * 
@@ -120,7 +125,7 @@ class Settings
     public function create(string $name, string $repository, bool $encrypted, $value = null)
     {
         $all = $this->all();
-        if (isset($all[$name])) {
+        if ($this->has($name)) {
             throw SettingsException::alreadyDefined($name);
         }
 
