@@ -10,13 +10,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Routing\Router;
 use Pingu\Core\Components\Accessors;
 use Pingu\Core\Components\Actions;
+use Pingu\Core\Components\Compiler;
 use Pingu\Core\Components\ContextualLinks;
 use Pingu\Core\Components\JsConfig;
-use Pingu\Core\Components\RouteSlugs;
 use Pingu\Core\Components\Notify;
 use Pingu\Core\Components\PinguCaches;
 use Pingu\Core\Components\Policies;
 use Pingu\Core\Components\RouteContext;
+use Pingu\Core\Components\RouteSlugs;
 use Pingu\Core\Components\Routes;
 use Pingu\Core\Components\Uris;
 use Pingu\Core\Config\CoreSettings;
@@ -33,6 +34,7 @@ use Pingu\Core\Http\Middleware\StartSession;
 use Pingu\Core\Settings\ConfigRepository;
 use Pingu\Core\Settings\Settings as SettingsRepo;
 use Pingu\Core\Support\ModuleServiceProvider;
+use Pingu\Core\Test;
 use Pingu\Core\Validation\CoreValidationRules;
 
 class CoreServiceProvider extends ModuleServiceProvider
@@ -71,6 +73,12 @@ class CoreServiceProvider extends ModuleServiceProvider
      */
     public function register()
     {
+        $compiler = new Compiler($this->app);
+        $this->app->singleton('core.compiler', function ($app) use ($compiler) {
+            return $compiler;
+        });
+        Test::register();
+
         $settings = new SettingsRepo;
         $config = $this->app['config']->all();
         $this->app->singleton(
@@ -84,7 +92,6 @@ class CoreServiceProvider extends ModuleServiceProvider
                 return new ConfigRepository($config, $settings);
             }
         );
-
         $this->app->singleton('core.contextualLinks', ContextualLinks::class);
         $this->app->singleton('core.notify', Notify::class);
         $this->app->singleton('core.routeSlugs', RouteSlugs::class);

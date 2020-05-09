@@ -37,5 +37,8 @@ return [
     ],
     'settings' => [
         'useCache' => true
+    ],
+    'compiling' => [
+        'onRuntime' => (env('APP_ENV') == 'local')
     ]
 ];
