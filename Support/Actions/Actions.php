@@ -3,8 +3,8 @@
 namespace Pingu\Core\Support;
 
 use Closure;
+use Illuminate\Support\Arr;
 use Pingu\Core\Exceptions\ActionsException;
-use Pingu\Entity\Events\ActionsRetrieved;
 
 abstract class Actions
 {
@@ -18,6 +18,18 @@ abstract class Actions
         $this->actions = $this->actions();
     }
 
+    /**
+     * Actions defined for this model
+     * Each action must define the following
+     * 'name' => [
+     *     'label' => 'label'
+     *     'url' => Closure,
+     *     'scope' => '*' or array,
+     *     'access' => Closure($model) (optionnal)
+     * ]
+     * 
+     * @return [type] [description]
+     */
     abstract protected function actions(): array;
 
     /**
@@ -25,6 +37,7 @@ abstract class Actions
      * 
      * @param string       $name
      * @param string       $label
+     * @param string|array $scopes
      * @param Closure      $url
      * @param Closure|null $accessCallback
      *
@@ -32,12 +45,12 @@ abstract class Actions
      *
      * @return Actions
      */
-    public function add(string $name, string $label, Closure $url, ?Closure $accessCallback = null)
+    public function add(string $name, string $label, Closure $url, $scopes = '*', ?Closure $accessCallback = null)
     {
         if ($this->has($name)) {
             throw ActionsException::defined($name, $this);
         }
-        return $this->replace($name, $label, $url, $accessCallback);
+        return $this->replace($name, $label, $url, $scopes, $accessCallback);
     }
 
     /**
@@ -45,16 +58,18 @@ abstract class Actions
      * 
      * @param string       $name
      * @param string       $label
+     * @param string|array $scopes
      * @param Closure      $url
      * @param Closure|null $accessCallback
      * 
      * @return Actions
      */
-    public function replace(string $name, string $label, Closure $url, ?Closure $accessCallback = null)
+    public function replace(string $name, string $label, Closure $url, $scopes = '*', ?Closure $accessCallback = null)
     {
         $this->actions[$name] = [
             'label' => $label,
             'url' => $url,
+            'scope' => Arr::wrap($scopes),
             'access' => $accessCallback
         ];
         return $this;
@@ -70,7 +85,7 @@ abstract class Actions
     public function addMany(array $actions)
     {
         foreach ($actions as $name => $action) {
-            $this->add($name, $action['label'], $action['url'], $action['access'] ?? null);
+            $this->add($name, $action['label'], $action['url'], $action['scope'] ?? '*', $action['access'] ?? null);
         }
         return $this;
     }
@@ -85,7 +100,7 @@ abstract class Actions
     public function replaceMany(array $actions)
     {
         foreach ($actions as $name => $action) {
-            $this->replace($name, $action['label'], $action['url'], $action['access'] ?? null);
+            $this->replace($name, $action['label'], $action['url'], $action['scope'] ?? '*', $action['access'] ?? null);
         }
         return $this;
     }
@@ -143,20 +158,68 @@ abstract class Actions
      * Build all the action for an object, checking access
      * 
      * @param object $object
+     * @param string|array $scope
      * 
      * @return array
      */
-    public function make($object): array
+    public function make($object, $scope = '*'): array
     {
-        $actions = $this->actions;
-        event(new ActionsRetrieved($actions, $object));
-        foreach ($actions as $name => $action) {
-            if (isset($action['access']) and !$action['access']($object)) {
+        $actions = [];
+        foreach (array_keys($this->actions) as $name) {
+            if (is_null($built = $this->makeOne($object, $name, $scope))) {
                 unset($actions[$name]);
                 continue;
             }
-            $actions[$name]['url'] = $action['url']($object);
+            $actions[$name] = $built;
         }
         return $actions;
+    }
+
+    /**
+     * Builds one action. Returns null if the action is not accessible
+     * 
+     * @param object $object
+     * @param string $action
+     * @param string|array $scopes
+     *
+     * @throws ActionsException
+     * 
+     * @return ?array
+     */
+    public function makeOne($object, string $action, $scopes = '*'): ?array
+    {
+        if (!$this->has($action)) {
+            throw ActionsException::undefined($action, $object);
+        }
+        $action = $this->actions[$action];
+        if (!$this->actionIsInScope($action, Arr::wrap($scopes))) {
+            return null;
+        }
+        if (isset($action['access']) and !$action['access']($object)) {
+            return null;
+        }
+        $action['url'] = $action['url']($object, );
+        return $action;
+    }
+
+    /**
+     * Determine if an action is in a array of scopes
+     * 
+     * @param array  $action
+     * @param array  $scopes
+     * 
+     * @return bool
+     */
+    protected function actionIsInScope(array $action, array $scopes)
+    {
+        if (in_array('*', $action['scope']) or in_array('*', $scopes)) {
+            return true;
+        }
+        foreach ($scopes as $scope) {
+            if (in_array($scope, $action['scope'])) {
+                return true;
+            }
+        }
+        return false;
     }
 }

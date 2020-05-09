@@ -11,7 +11,7 @@ use Pingu\Core\Http\Controllers\BaseController;
 use Pingu\Core\Http\Requests\AddSettingRequest;
 use Pingu\Core\Http\Requests\SettingsRequest;
 use Pingu\Core\Settings\SettingsRepository;
-use Pingu\Core\Traits\RendersAdminViews;
+use Pingu\Core\Traits\Controllers\RendersAdminViews;
 use Pingu\Forms\Support\Fields\Submit;
 use Pingu\Forms\Support\Form;
 

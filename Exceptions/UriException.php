@@ -1,7 +1,7 @@
 <?php
 namespace Pingu\Core\Exceptions;
 
-use Pingu\Core\Support\Uris;
+use Pingu\Core\Support\Uris\Uris;
 
 class UriException extends \Exception
 {

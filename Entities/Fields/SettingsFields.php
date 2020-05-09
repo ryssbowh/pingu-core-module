@@ -10,4 +10,14 @@ class SettingsFields extends BaseFieldRepository
     {
         return [];
     }
+
+    public function rules(): array
+    {
+        return [];
+    }
+
+    public function messages(): array
+    {
+        return [];
+    }
 }

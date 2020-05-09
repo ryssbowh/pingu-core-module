@@ -9,4 +9,9 @@ class ClassException extends \Exception
         return new static($class." must implement ".$interface);
     }
 
+    public static function missingDependency(BaseModel $model, string $class)
+    {
+        return new static(get_class($model).' must define the following class : '.$class);
+    }
+
 }

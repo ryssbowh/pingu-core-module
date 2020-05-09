@@ -4,10 +4,17 @@ namespace Pingu\Core\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Pingu\Core\Contracts\HasIdentifierContract;
+use Pingu\Core\Contracts\HasUrisContract;
+use Pingu\Core\Contracts\RouteContexts\HasRouteContextContract;
 use Pingu\Core\Exceptions\FieldNotFillable;
+use Pingu\Core\Support\Uris\BaseModelUris;
+use Pingu\Core\Support\Uris\Uris;
 use Pingu\Core\Traits\Models\HasFieldsFriendlyNames;
 use Pingu\Core\Traits\Models\HasFieldsFriendlyValues;
 use Pingu\Core\Traits\Models\HasFriendlyName;
+use Pingu\Core\Traits\Models\HasRouteContexts;
+use Pingu\Core\Traits\Models\HasUrisThroughFacade;
 use Pingu\Core\Traits\Models\ThrowsEvents;
 use Pingu\Field\Contracts\HasFieldsContract;
 use Pingu\Field\Traits\HasBaseFields;
@@ -16,14 +23,20 @@ use Pingu\Forms\Contracts\HasFormsContract;
 use Pingu\Forms\Support\BaseForms;
 use Pingu\Forms\Traits\FormAccessible;
 
-abstract class BaseModel extends Model implements HasFieldsContract, HasFormsContract
+abstract class BaseModel extends Model implements 
+    HasFieldsContract, 
+    HasFormsContract, 
+    HasRouteContextContract,
+    HasUrisContract
 {
     use ThrowsEvents,
         HasBaseFields,
+        HasRouteContexts,
         HasFriendlyName,
         HasFieldsFriendlyValues,
         HasFieldsFriendlyNames,
-        FormAccessible;
+        FormAccessible,
+        HasUrisThroughFacade;
 
     protected $fillable = [];
 
@@ -33,6 +46,27 @@ abstract class BaseModel extends Model implements HasFieldsContract, HasFormsCon
 
     public $descriptiveField = 'id';
 
+    protected $observables = ['registered'];
+
+    /**
+     * Register a registered model event with the dispatcher.
+     *
+     * @param  \Closure|string  $callback
+     * @return void
+     */
+    public static function registered($callback)
+    {
+        static::registerModelEvent('registered', $callback);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected static function defaultUrisInstance(): Uris
+    {
+        return new BaseModelUris(static::class);
+    }
+    
     /**
      * Short description for this object
      * 
@@ -100,9 +134,9 @@ abstract class BaseModel extends Model implements HasFieldsContract, HasFormsCon
     /**
      * @inheritDoc
      */
-    public function forms(): FormRepositoryContract
+    public static function forms(): FormRepositoryContract
     {
-        return new BaseForms($this);
+        return new BaseForms;
     }
 
     /**
@@ -123,5 +157,13 @@ abstract class BaseModel extends Model implements HasFieldsContract, HasFormsCon
     public function getAllOriginal()
     {
         return $this->getOriginal();
+    }
+
+    /**
+     * Registers this entity
+     */
+    public function register()
+    {
+        $this->fireModelEvent('registered');
     }
 }

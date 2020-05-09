@@ -2,25 +2,27 @@
 
 namespace Pingu\Core\Components;
 
-use Pingu\Core\Support\Actions as ActionsSupport;
+use Pingu\Core\Contracts\ActionRepositoryContract;
+use Pingu\Core\Contracts\HasActionsContract;
+use Pingu\Core\Exceptions\ActionsException;
 
 class Actions
 {
     /**
      * @var array
      */
-    protected $actionsInstances = [];
+    protected $actionsRepos = [];
 
     /**
      * Registers an action class
      * 
      * @param string         $class
-     * @param ActionsSupport $actions
+     * @param ActionRepositoryContract|string $actions
      */
-    public function register($class, ActionsSupport $actions)
+    public function register($model, $actions)
     {
-        $class = object_to_class($class);
-        $this->actionsInstances[$class] = $actions;
+        $model = object_to_class($model);
+        $this->actionsRepos[$model] = $actions;
     }
 
     /**
@@ -28,14 +30,20 @@ class Actions
      * 
      * @param string|object $class
      * 
-     * @return ?ActionSupport
+     * @return ActionRepositoryContract
      */
-    public function get($class): ?ActionsSupport
+    public function get($model): ActionRepositoryContract
     {
-        $class = object_to_class($class);
-        if (isset($this->actionsInstances[$class])) {
-            return $this->actionsInstances[$class];
+        $model = object_to_class($model);
+        if (isset($this->actionsRepos[$model])) {
+            $repo = $this->actionsRepos[$model];
+            if (is_string($repo)) {
+                $repo = new $repo;
+                $this->actionsRepos[$model] = $repo;
+            }
+            return $repo;
         }
+        throw ActionsException::undefinedForModel($model);
     }
 
     /**
@@ -45,6 +53,6 @@ class Actions
      */
     public function all(): array
     {
-        return $this->actionsInstances;
+        return $this->actionsRepos;
     }
 }

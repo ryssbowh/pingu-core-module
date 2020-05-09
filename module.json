@@ -22,7 +22,7 @@
         "ThemeHooks": "Pingu\\Core\\Facades\\ThemeHooks",
         "JsConfig": "Pingu\\Core\\Facades\\JsConfig",
         "ContextualLinks": "Pingu\\Core\\Facades\\ContextualLinks",
-        "ModelRoutes": "Pingu\\Core\\Facades\\ModelRoutes",
+        "RouteSlugs": "Pingu\\Core\\Facades\\RouteSlugs",
         "Notify": "Pingu\\Core\\Facades\\Notify",
         "ThemeConfig": "Pingu\\Core\\Facades\\ThemeConfig",
         "DebugBar": "Barryvdh\\Debugbar\\Facade",
@@ -32,7 +32,8 @@
         "Actions": "Pingu\\Core\\Facades\\Actions",
         "Policies": "Pingu\\Core\\Facades\\Policies",
         "Str": "Illuminate\\Support\\Str",
-        "PinguCaches": "Pingu\\Core\\Facades\\PinguCaches"
+        "PinguCaches": "Pingu\\Core\\Facades\\PinguCaches",
+        "RouteContext": "Pingu\\Core\\Facades\\RouteContext"
     },
     "files": [
         "functions.php"

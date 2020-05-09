@@ -1,15 +1,15 @@
-<?php 
+<?php
 
-namespace Pingu\Core;
+namespace Pingu\Core\Components;
 
 use Pingu\Core\Contracts\HasRouteSlugContract;
 use Pingu\Core\Exceptions\ModelSlugAlreadyRegistered;
 use Symfony\Component\Finder\Finder;
 use hanneskod\classtools\Iterator\ClassIterator;
 
-class ModelRoutes
+class RouteSlugs
 {
-    protected $modelSlugs = [];
+    protected $routeSlugs = [];
 
     /**
      * Registers one slug for one model class in the laravel Route system
@@ -26,16 +26,31 @@ class ModelRoutes
         \Route::model($slug, $class);
     }
 
+    /**
+     * Registers a single slug
+     * 
+     * @param string $slug 
+     * @param string $class
+     *
+     * @throws ModelSlugAlreadyRegistered
+     */
     public function registerSlug(string $slug, string $class)
     {
-        if (isset($this->modelSlugs[$slug])) {
-            throw new ModelSlugAlreadyRegistered("slug '$slug' for $class is already registered by ".$this->modelSlugs[$slug]);
+        if (isset($this->routeSlugs[$slug])) {
+            throw new ModelSlugAlreadyRegistered("slug '$slug' for $class is already registered by ".$this->routeSlugs[$slug]);
         }
-        $this->modelSlugs[$slug] = $class;
+        $this->routeSlugs[$slug] = $class;
     }
 
+    /**
+     * Get the model associated to a slug
+     * 
+     * @param string $slug
+     * 
+     * @return string
+     */
     public function getModel(string $slug): string
     {
-        return $this->modelSlugs[$slug] ?? null;
+        return $this->routeSlugs[$slug] ?? null;
     }
 }

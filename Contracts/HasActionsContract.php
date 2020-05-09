@@ -2,9 +2,14 @@
 
 namespace Pingu\Core\Contracts;
 
-use Pingu\Core\Support\Actions;
+use Pingu\Core\Contracts\ActionRepositoryContract;
 
 interface HasActionsContract
 {
-    public static function actions(): Actions;
+    /**
+     * Registered instance for this model
+     * 
+     * @return Actions
+     */
+    public static function actions(): ActionRepositoryContract;
 }

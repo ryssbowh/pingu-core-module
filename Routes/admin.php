@@ -18,7 +18,7 @@ Route::get('/', 'CoreController@home');
  */
 Route::get('/modules', ['uses' => 'ModuleController@index'])
     ->middleware('permission:view modules')
-    ->name(adminPrefix().'.modules');
+    ->name('admin.modules');
 Route::post('/modules/install/{module}', ['uses' => 'ModuleController@install'])
     ->middleware('permission:activate modules');
 Route::post('/modules/uninstall/{module}', ['uses' => 'ModuleController@uninstall'])

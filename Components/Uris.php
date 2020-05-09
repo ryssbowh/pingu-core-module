@@ -3,29 +3,39 @@
 namespace Pingu\Core\Components;
 
 use Pingu\Core\Contracts\HasUrisContract;
-use Pingu\Core\Contracts\RegistersUrisThroughFacade;
-use Pingu\Core\Support\Uris as UrisSupport;
+use Pingu\Core\Support\Uris\Uris as UrisSupport;
 
 class Uris
 {
-   
+    /**
+     * @var array
+     */
     protected $urisInstances = [];
 
-    public function register(string $class, UrisSupport $uris)
+    /**
+     * Get an instance of Uris for an object.
+     * Will be created on the spot if not registered
+     * 
+     * @param HasUrisContract $object
+     * 
+     * @return UrisSupport
+     */
+    public function get(string $class): UrisSupport
     {
-        $this->urisInstances[$class] = $uris;
-    }
-
-    public function get($object)
-    {
-        $class = object_to_class($object);
-        if (isset($this->urisInstances[$class])) {
-            return $this->urisInstances[$class];
+        if (!isset($this->urisInstances[$class])) {
+            $this->register($class, $class::makeUrisInstance());
         }
+        return $this->urisInstances[$class];
     }
 
-    public function all()
+    /**
+     * Registers an Uris instance
+     * 
+     * @param string      $identifier
+     * @param UrisSupport $uris
+     */
+    public function register(string $identifier, UrisSupport $uris)
     {
-        return $this->urisInstances;
+        $this->urisInstances[$identifier] = $uris;
     }
 }

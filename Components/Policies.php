@@ -4,9 +4,19 @@ namespace Pingu\Core\Components;
 
 class Policies
 {
-   
+   /**
+    * Registered policies
+    * 
+    * @var array
+    */
     protected $policies = [];
 
+    /**
+     * Registers a policy in the Gate system
+     * 
+     * @param string|object $class
+     * @param string $policy
+     */
     public function register($class, string $policy)
     {
         $class = object_to_class($class);
@@ -14,7 +24,14 @@ class Policies
         \Gate::policy($class, $policy);
     }
 
-    public function get($object)
+    /**
+     * Get the policy for an object
+     * 
+     * @param string|object $object
+     * 
+     * @return string
+     */
+    public function get($object): string
     {
         $class = object_to_class($object);
         if (isset($this->policies[$class])) {
@@ -22,7 +39,12 @@ class Policies
         }
     }
 
-    public function all()
+    /**
+     * Get all registered policies
+     * 
+     * @return array
+     */
+    public function all(): array
     {
         return $this->policies;
     }

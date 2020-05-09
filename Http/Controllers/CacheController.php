@@ -4,7 +4,7 @@ namespace Pingu\Core\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Pingu\Core\Http\Controllers\BaseController;
-use Pingu\Core\Traits\RendersAdminViews;
+use Pingu\Core\Traits\Controllers\RendersAdminViews;
 
 class CacheController extends BaseController
 {

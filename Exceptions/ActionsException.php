@@ -15,4 +15,9 @@ class ActionsException extends \Exception
     {
         return new static("Action '$name' already defined in ".get_class($class));
     }
+
+    public static function undefinedForModel(string $model)
+    {
+        return new static("Model $model doesn't have an action repository");
+    }
 }

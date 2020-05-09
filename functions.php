@@ -233,7 +233,7 @@ if (! function_exists('adminPrefix')) {
      */
     function adminPrefix(): string
     {
-        return config('core.adminPrefix', 'admin');
+        return trim(config('core.adminPrefix', 'admin'), '/');
     }
 }
 
@@ -245,7 +245,7 @@ if (! function_exists('ajaxPrefix')) {
      */
     function ajaxPrefix(): string
     {
-        return config('core.ajaxPrefix', 'ajax');
+        return trim(config('core.ajaxPrefix', 'ajax'), '/');
     }
 }
 

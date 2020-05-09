@@ -36,7 +36,7 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
                 [
                 'machineName' => 'main-menu',
                 'name' => 'Main Menu',
-                'deletable' => 0
+                'deletable' => false
                 ]
             );
 
@@ -59,7 +59,7 @@ class S2019_08_06_171621248759_InstallCore extends MigratableSeeder
                 [
                 'machineName' => 'admin-menu',
                 'name' => 'Amin Menu',
-                'deletable' => 0
+                'deletable' => false
                 ]
             );
             $settings = MenuItem::create(

@@ -12,16 +12,15 @@ use Pingu\Core\Components\Accessors;
 use Pingu\Core\Components\Actions;
 use Pingu\Core\Components\ContextualLinks;
 use Pingu\Core\Components\JsConfig;
+use Pingu\Core\Components\RouteSlugs;
 use Pingu\Core\Components\Notify;
 use Pingu\Core\Components\PinguCaches;
 use Pingu\Core\Components\Policies;
+use Pingu\Core\Components\RouteContext;
 use Pingu\Core\Components\Routes;
 use Pingu\Core\Components\Uris;
 use Pingu\Core\Config\CoreSettings;
 use Pingu\Core\Config\MailingSettings;
-use Pingu\Core\Entities\BundleField;
-use Pingu\Core\Entity;
-use Pingu\Core\EntityField;
 use Pingu\Core\Http\Middleware\DeletableModel;
 use Pingu\Core\Http\Middleware\EditSettings;
 use Pingu\Core\Http\Middleware\EditableModel;
@@ -31,14 +30,10 @@ use Pingu\Core\Http\Middleware\Published;
 use Pingu\Core\Http\Middleware\RedirectIfAuthenticated;
 use Pingu\Core\Http\Middleware\SetThemeMiddleware;
 use Pingu\Core\Http\Middleware\StartSession;
-use Pingu\Core\ModelRoutes;
 use Pingu\Core\Settings\ConfigRepository;
 use Pingu\Core\Settings\Settings as SettingsRepo;
 use Pingu\Core\Support\ModuleServiceProvider;
 use Pingu\Core\Validation\CoreValidationRules;
-use Pingu\Forms\Fields\Number;
-use Pingu\Forms\Fields\Text;
-use Spatie\TranslationLoader\LanguageLine;
 
 class CoreServiceProvider extends ModuleServiceProvider
 {
@@ -92,13 +87,14 @@ class CoreServiceProvider extends ModuleServiceProvider
 
         $this->app->singleton('core.contextualLinks', ContextualLinks::class);
         $this->app->singleton('core.notify', Notify::class);
-        $this->app->singleton('core.modelRoutes', ModelRoutes::class);
+        $this->app->singleton('core.routeSlugs', RouteSlugs::class);
         $this->app->singleton('core.jsconfig', JsConfig::class);
         $this->app->singleton('core.uris', Uris::class);
         $this->app->singleton('core.routes', Routes::class);
         $this->app->singleton('core.actions', Actions::class);
         $this->app->singleton('core.policies', Policies::class);
         $this->app->singleton('core.caches', PinguCaches::class);
+        $this->app->singleton('core.routeContext', RouteContext::class);
 
         \Settings::register(new CoreSettings, $this->app);
         \Settings::register(new MailingSettings, $this->app);
@@ -111,9 +107,6 @@ class CoreServiceProvider extends ModuleServiceProvider
      */
     public function boot(Router $router, Kernel $kernel)
     {
-        config('core.adminPrefix', trim(adminPrefix(), '/'));
-        config('core.ajaxPrefix', trim(ajaxPrefix(), '/'));
-        
         $this->registerGroupMiddlewares($router);
         $this->registerRouteMiddlewares($router);
         $this->registerGlobalMiddlewares($kernel);
@@ -126,7 +119,18 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', 'core');
         $this->registerDatabaseMacros();
         $this->registerValidationRules();
+        $this->addModuleEventListeners();
+        //Register all routes defined by objects
+        $this->app->booted(function () {
+            \Routes::registerAll();
+        });
+    }
 
+    /**
+     * Link/Unlink modules public directories when enabled/disabled
+     */
+    protected function addModuleEventListeners()
+    {
         /**
          * Generates modules links when disabled/enabled
          */
@@ -141,17 +145,19 @@ class CoreServiceProvider extends ModuleServiceProvider
                 \Artisan::call('module:link', ['module' => $modules[0]->getName(), '--delete' => true]);
             }
         );
-
-        $this->app->booted(function () {
-            \Routes::registerAll();
-        });
     }
 
+    /**
+     * Extends Laravel validation with new rules
+     */
     public function registerValidationRules()
     {
         \Validator::extend('valid_url', CoreValidationRules::class.'@validUrl');
     }
 
+    /**
+     * Handy macros for table creation
+     */
     public function registerDatabaseMacros()
     {
         Blueprint::macro(
@@ -179,6 +185,9 @@ class CoreServiceProvider extends ModuleServiceProvider
         );
     }
 
+    /**
+     * Adds some config to Javascript
+     */
     public function registerJsConfig()
     {
         \JsConfig::setManyFromConfig(
@@ -216,6 +225,9 @@ class CoreServiceProvider extends ModuleServiceProvider
         }
     }
 
+    /**
+     * Front end assets
+     */
     public function registerAssets()
     {
         Asset::addVersioning();

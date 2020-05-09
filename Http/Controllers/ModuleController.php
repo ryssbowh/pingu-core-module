@@ -2,7 +2,7 @@
 
 namespace Pingu\Core\Http\Controllers;
 
-use Pingu\Core\Traits\RendersAdminViews;
+use Pingu\Core\Traits\Controllers\RendersAdminViews;
 
 class ModuleController extends BaseController
 {

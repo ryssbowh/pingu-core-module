@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace Pingu\Core\Traits;
+namespace Pingu\Core\Traits\Controllers;
 
 use Pingu\Core\Renderers\AdminViewRenderer;
 

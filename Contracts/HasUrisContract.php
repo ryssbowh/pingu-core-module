@@ -2,7 +2,7 @@
 
 namespace Pingu\Core\Contracts;
 
-use Pingu\Core\Support\Uris;
+use Pingu\Core\Support\Uris\Uris;
 
 interface HasUrisContract
 {

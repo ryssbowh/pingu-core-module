@@ -1,18 +1,21 @@
 <?php
 
-namespace Pingu\Core\Support;
+namespace Pingu\Core\Support\Uris;
 
 use Illuminate\Support\Arr;
 use Pingu\Core\Exceptions\UriException;
 use Pingu\Entity\Traits\AccessUris;
 
 abstract class Uris
-{
+{   
+    /**
+     * @var array
+     */
     protected $uris = [];
 
     public function __construct()
     {
-        $this->uris = $this->uris();
+        $this->replaceMany($this->uris());
     }
 
     /**
@@ -45,6 +48,7 @@ abstract class Uris
         if ($this->has($action)) {
             throw UriException::defined($action, $this);
         }
+        $uri = $this->replaceSlugs($uri);
         $this->uris[$action] = $uri;
     }
 
@@ -80,7 +84,7 @@ abstract class Uris
      */
     public function replace(string $action, string $uri)
     {
-        $this->uris[$action] = $uri;
+        $this->uris[$action] = $this->replaceSlugs($uri);
     }
 
     /**
@@ -105,6 +109,27 @@ abstract class Uris
         if ($this->has($action)) {
             unset($this->uris[$action]);
         }
+    }
+
+    /**
+     * Slugs that can be replaced
+     * 
+     * @return array
+     */
+    protected function replacableSlugs(): array
+    {
+        return [];
+    }
+
+    /**
+     * Replaces slugs in the uri
+     * 
+     * @param  string $uri
+     * @return string
+     */
+    protected function replaceSlugs(string $uri)
+    {
+        return strtr($uri, $this->replacableSlugs());
     }
 
     /**

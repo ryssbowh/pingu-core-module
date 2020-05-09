@@ -192,10 +192,20 @@ abstract class BaseRenderer implements RendererContract
     protected function performRender(): string
     {
         event(new Rendering($this));
-        $view = view()->first($this->getViews(), $this->getData()->all());
+        $view = view()->first($this->getViews(), $this->getFinalData()->all());
         $html = $view->render();
         event(new Rendered($html, $view, $this));
         return $html;
+    }
+
+    /**
+     * Data to send to the view
+     * 
+     * @return Collection
+     */
+    protected function getFinalData(): Collection
+    {
+        return $this->getData();
     }
 
     /**
