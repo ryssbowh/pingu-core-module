@@ -29,15 +29,10 @@ class CommandServiceProvider extends ServiceProvider
     protected $defer = true;
 
     protected $commands = [
-        'command.themeComposer',
         'command.doc',
         'command.moduleLink',
-        'command.themeLink',
         'command.assets',
-        'command.seed',
-        'command.seeder.rollback',
-        'command.seeder.install',
-        'command.seeder.make',
+        
         'command.makeSettings'
     ];
     /**
@@ -55,11 +50,6 @@ class CommandServiceProvider extends ServiceProvider
     protected function registerCommands()
     {
         $this->app->bind(
-            'command.themeComposer', function ($app) {
-                return new MakeComposer($app['files']);
-            }
-        );
-        $this->app->bind(
             'command.doc', function ($app) {
                 return new GenerateDoc();
             }
@@ -70,41 +60,17 @@ class CommandServiceProvider extends ServiceProvider
             }
         );
         $this->app->bind(
-            'command.themeLink', function ($app) {
-                return new ThemeLink();
-            }
-        );
-        $this->app->bind(
             'command.assets', function ($app) {
                 return new BuildAssets();
             }
         );
-        $this->app->bind(
-            'command.seeder.install', function ($app) {
-                return new SeedInstall($app[SeederRepository::class]);
-            }
-        );
-        $this->app->bind(
-            'command.seeder.rollback', function ($app) {
-                return new SeedRollback($app[SeederMigrator::class]);
-            }
-        );
-        $this->app->bind(
-            'command.seeder.make', function ($app) {
-                return new SeedMake($app[SeederMigrationCreator::class], $app[Composer::class]);
-            }
-        );
+        
         $this->app->bind(
             'command.makeSettings', function ($app) {
                 return new ModuleMakeSettings($app['files']);
             }
         );
-        //Replaces laravel seed command :
-        $this->app->bind(
-            'command.seed', function ($app) {
-                return new SeedRun($app[SeederMigrator::class]);
-            }
-        );
+        
         $this->commands($this->commands);
     }
     /**

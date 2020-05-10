@@ -10,7 +10,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Routing\Router;
 use Pingu\Core\Components\Accessors;
 use Pingu\Core\Components\Actions;
-use Pingu\Core\Components\Compiler;
 use Pingu\Core\Components\ContextualLinks;
 use Pingu\Core\Components\JsConfig;
 use Pingu\Core\Components\Notify;
@@ -73,10 +72,6 @@ class CoreServiceProvider extends ModuleServiceProvider
      */
     public function register()
     {
-        $compiler = new Compiler($this->app);
-        $this->app->singleton('core.compiler', function ($app) use ($compiler) {
-            return $compiler;
-        });
         Test::register();
 
         $settings = new SettingsRepo;
@@ -124,34 +119,11 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->registerAssets();
         $this->registerJsConfig();
         $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', 'core');
-        $this->registerDatabaseMacros();
         $this->registerValidationRules();
-        $this->addModuleEventListeners();
         //Register all routes defined by objects
         $this->app->booted(function () {
             \Routes::registerAll();
         });
-    }
-
-    /**
-     * Link/Unlink modules public directories when enabled/disabled
-     */
-    protected function addModuleEventListeners()
-    {
-        /**
-         * Generates modules links when disabled/enabled
-         */
-        \Event::listen(
-            'modules.*.enabled', function ($name, $modules) {
-                \Artisan::call('module:link', ['module' => $modules[0]->getName()]);
-            }
-        );
-
-        \Event::listen(
-            'modules.*.disabled', function ($name, $modules) {
-                \Artisan::call('module:link', ['module' => $modules[0]->getName(), '--delete' => true]);
-            }
-        );
     }
 
     /**
@@ -160,36 +132,6 @@ class CoreServiceProvider extends ModuleServiceProvider
     public function registerValidationRules()
     {
         \Validator::extend('valid_url', CoreValidationRules::class.'@validUrl');
-    }
-
-    /**
-     * Handy macros for table creation
-     */
-    public function registerDatabaseMacros()
-    {
-        Blueprint::macro(
-            'createdBy', function ($table = 'users', $column = 'id') {
-                $this->unsignedInteger('created_by')->nullable()->index();
-                $this->foreign('created_by')->references($column)->on($table)->onDelete('set null');
-            }
-        );
-        Blueprint::macro(
-            'updatedBy', function ($table = 'users', $column = 'id') {
-                $this->unsignedInteger('updated_by')->nullable()->index();
-                $this->foreign('updated_by')->references($column)->on($table)->onDelete('set null');
-            }
-        );
-        Blueprint::macro(
-            'deletedBy', function ($table = 'users', $column = 'id') {
-                $this->unsignedInteger('deleted_by')->nullable()->index();
-                $this->foreign('deleted_by')->references($column)->on($table)->onDelete('set null');
-            }
-        );
-        Blueprint::macro(
-            'published', function ($default = true) {
-                $this->boolean('published')->default($default);
-            }
-        );
     }
 
     /**
